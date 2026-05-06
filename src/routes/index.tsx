@@ -44,12 +44,12 @@ function Index() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="nome">Name</Label>
+              <Label htmlFor="name">Name</Label>
               <Input
-                id="nome"
+                id="name"
                 required
-                value={form.nome}
-                onChange={(e) => setForm({ ...form, nome: e.target.value })}
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
               />
             </div>
             <div className="space-y-2">
@@ -63,13 +63,13 @@ function Index() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="telefone">Phone Number</Label>
+              <Label htmlFor="phone">Phone</Label>
               <Input
-                id="telefone"
+                id="phone"
                 type="tel"
                 required
-                value={form.telefone}
-                onChange={(e) => setForm({ ...form, telefone: e.target.value })}
+                value={form.phone}
+                onChange={(e) => setForm({ ...form, phone: e.target.value })}
               />
             </div>
             <Button type="submit" className="w-full" disabled={status === "loading"}>
