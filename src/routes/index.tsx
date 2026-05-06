@@ -38,13 +38,13 @@ function Index() {
     <main className="flex min-h-screen items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Tenho interesse neste imóvel</CardTitle>
-          <CardDescription>Preencha seus dados e entraremos em contato.</CardDescription>
+          <CardTitle>Interested in this property</CardTitle>
+          <CardDescription>Fill in your details and we'll get in touch.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="nome">Nome</Label>
+              <Label htmlFor="nome">Name</Label>
               <Input
                 id="nome"
                 required
@@ -63,7 +63,7 @@ function Index() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="telefone">Telefone</Label>
+              <Label htmlFor="telefone">Phone Number</Label>
               <Input
                 id="telefone"
                 type="tel"
@@ -73,13 +73,13 @@ function Index() {
               />
             </div>
             <Button type="submit" className="w-full" disabled={status === "loading"}>
-              {status === "loading" ? "Enviando..." : "Quero alugar"}
+              {status === "loading" ? "Sending..." : "I want to rent"}
             </Button>
             {status === "success" && (
-              <p className="text-sm text-green-600">Recebemos seu interesse! Em breve entraremos em contato.</p>
+              <p className="text-sm text-green-600">We received your interest! We'll be in touch soon.</p>
             )}
             {status === "error" && (
-              <p className="text-sm text-destructive">Erro ao enviar: {errorMsg}</p>
+              <p className="text-sm text-destructive">Error: {errorMsg}</p>
             )}
           </form>
         </CardContent>
