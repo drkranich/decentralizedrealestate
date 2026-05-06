@@ -11,7 +11,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const [form, setForm] = useState({ nome: "", email: "", telefone: "" });
+  const [form, setForm] = useState({ name: "", email: "", phone: "" });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -20,9 +20,9 @@ function Index() {
     setStatus("loading");
     setErrorMsg("");
     const { error } = await supabase.from("leads").insert({
-      nome: form.nome,
+      name: form.name,
       email: form.email,
-      telefone: form.telefone,
+      phone: form.phone,
       property_id: PROPERTY_ID,
     });
     if (error) {
@@ -31,7 +31,7 @@ function Index() {
       return;
     }
     setStatus("success");
-    setForm({ nome: "", email: "", telefone: "" });
+    setForm({ name: "", email: "", phone: "" });
   };
 
   return (
