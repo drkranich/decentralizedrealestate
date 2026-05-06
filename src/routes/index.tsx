@@ -11,7 +11,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const [form, setForm] = useState({ nome: "", email: "", telefone: "" });
+  const [form, setForm] = useState({ name: "", email: "", phone: "" });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -20,9 +20,9 @@ function Index() {
     setStatus("loading");
     setErrorMsg("");
     const { error } = await supabase.from("leads").insert({
-      nome: form.nome,
+      name: form.name,
       email: form.email,
-      telefone: form.telefone,
+      phone: form.phone,
       property_id: PROPERTY_ID,
     });
     if (error) {
@@ -31,7 +31,7 @@ function Index() {
       return;
     }
     setStatus("success");
-    setForm({ nome: "", email: "", telefone: "" });
+    setForm({ name: "", email: "", phone: "" });
   };
 
   return (
@@ -44,12 +44,12 @@ function Index() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="nome">Name</Label>
+              <Label htmlFor="name">Name</Label>
               <Input
-                id="nome"
+                id="name"
                 required
-                value={form.nome}
-                onChange={(e) => setForm({ ...form, nome: e.target.value })}
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
               />
             </div>
             <div className="space-y-2">
@@ -63,17 +63,17 @@ function Index() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="telefone">Phone Number</Label>
+              <Label htmlFor="phone">Phone</Label>
               <Input
-                id="telefone"
+                id="phone"
                 type="tel"
                 required
-                value={form.telefone}
-                onChange={(e) => setForm({ ...form, telefone: e.target.value })}
+                value={form.phone}
+                onChange={(e) => setForm({ ...form, phone: e.target.value })}
               />
             </div>
             <Button type="submit" className="w-full" disabled={status === "loading"}>
-              {status === "loading" ? "Sending..." : "I want to rent"}
+              {status === "loading" ? "Sending..." : "Quero alugar"}
             </Button>
             {status === "success" && (
               <p className="text-sm text-green-600">We received your interest! We'll be in touch soon.</p>
