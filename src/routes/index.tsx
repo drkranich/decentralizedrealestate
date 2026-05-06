@@ -73,7 +73,7 @@ function Index() {
               />
             </div>
             <Button type="submit" className="w-full" disabled={status === "loading"}>
-              {status === "loading" ? "Sending..." : "I want to rent"}
+              {status === "loading" ? "Sending..." : "Quero alugar"}
             </Button>
             {status === "success" && (
               <p className="text-sm text-green-600">We received your interest! We'll be in touch soon.</p>
