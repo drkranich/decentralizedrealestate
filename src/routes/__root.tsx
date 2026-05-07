@@ -9,6 +9,8 @@ import {
 } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
+import { BrandProvider } from "@/components/brand/BrandProvider";
+import { defaultBrand } from "@/config/brand";
 
 function NotFoundComponent() {
   return (
@@ -50,9 +52,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Property OS — The Global Real Estate Operating System" },
+      { title: `${defaultBrand.name} — ${defaultBrand.tagline}` },
       { name: "description", content: "Decentralized real estate platform for investing, hosting, and managing properties worldwide. Tokenized ownership, AI pricing, automated operations." },
-      { property: "og:title", content: "Property OS — The Global Real Estate Operating System" },
+      { property: "og:title", content: `${defaultBrand.name} — ${defaultBrand.tagline}` },
       { property: "og:description", content: "Invest, host, and manage properties globally with AI-powered automation." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -61,7 +63,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: appCss },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" },
+      ...(defaultBrand.theme.typography.googleFontsHref
+        ? [{ rel: "stylesheet", href: defaultBrand.theme.typography.googleFontsHref }]
+        : []),
     ],
   }),
   shellComponent: RootShell,
@@ -88,7 +92,9 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
+      <BrandProvider>
+        <Outlet />
+      </BrandProvider>
     </QueryClientProvider>
   );
 }

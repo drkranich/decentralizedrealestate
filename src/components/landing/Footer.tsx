@@ -1,4 +1,6 @@
-import { Building2, Github, Twitter, Linkedin } from "lucide-react";
+import * as Icons from "lucide-react";
+import { Logo } from "@/components/brand/Logo";
+import { useBrand } from "@/components/brand/BrandProvider";
 
 const cols = [
   { title: "Product", links: ["Properties", "Invest", "Manage", "Marketplace", "AI", "Pricing"] },
@@ -8,6 +10,7 @@ const cols = [
 ];
 
 export function Footer() {
+  const brand = useBrand();
   return (
     <footer id="cta" className="border-t border-border">
       <div className="mx-auto max-w-7xl px-4 py-16">
@@ -15,7 +18,7 @@ export function Footer() {
           <div className="grid items-center gap-8 lg:grid-cols-2">
             <div>
               <h3 className="font-display text-3xl font-bold md:text-4xl">Ready to operate real estate <span className="gradient-text">like a global tech company?</span></h3>
-              <p className="mt-3 text-muted-foreground">Join 84,000+ owners, hosts and investors using Property OS.</p>
+              <p className="mt-3 text-muted-foreground">Join 84,000+ owners, hosts and investors using {brand.name}.</p>
             </div>
             <div className="flex flex-wrap gap-3 lg:justify-end">
               <button className="rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background hover:opacity-90">Start free</button>
@@ -26,19 +29,17 @@ export function Footer() {
 
         <div className="mt-16 grid gap-10 md:grid-cols-6">
           <div className="md:col-span-2">
-            <div className="flex items-center gap-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald to-skyblue">
-                <Building2 className="h-5 w-5 text-white" />
-              </div>
-              <span className="font-display text-lg font-bold">Property<span className="gradient-text">OS</span></span>
-            </div>
-            <p className="mt-4 max-w-xs text-sm text-muted-foreground">The global operating system for real estate. Invest, host, manage — anywhere.</p>
+            <Logo />
+            <p className="mt-4 max-w-xs text-sm text-muted-foreground">{brand.tagline}</p>
             <div className="mt-5 flex gap-2">
-              {[Twitter, Github, Linkedin].map((I, i) => (
-                <a key={i} href="#" className="flex h-9 w-9 items-center justify-center rounded-full border border-border hover:bg-secondary">
-                  <I className="h-4 w-4" />
-                </a>
-              ))}
+              {brand.social.map((s) => {
+                const I = (Icons as any)[s.icon] ?? Icons.Link;
+                return (
+                  <a key={s.label} href={s.href} aria-label={s.label} className="flex h-9 w-9 items-center justify-center rounded-full border border-border hover:bg-secondary">
+                    <I className="h-4 w-4" />
+                  </a>
+                );
+              })}
             </div>
           </div>
           {cols.map((c) => (
@@ -56,11 +57,9 @@ export function Footer() {
         </div>
 
         <div className="mt-12 flex flex-col items-start justify-between gap-3 border-t border-border pt-6 text-xs text-muted-foreground md:flex-row md:items-center">
-          <div>© 2026 Property OS. All rights reserved.</div>
+          <div>{brand.legal.copyright}</div>
           <div className="flex gap-4">
-            <span>SOC 2 Type II</span>
-            <span>GDPR</span>
-            <span>ISO 27001</span>
+            {brand.legal.certifications.map((c) => <span key={c}>{c}</span>)}
           </div>
         </div>
       </div>

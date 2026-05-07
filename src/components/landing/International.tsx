@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Languages, DollarSign, CreditCard, Globe2 } from "lucide-react";
+import { useBrand } from "@/components/brand/BrandProvider";
 
 const features = [
   { icon: Languages, title: "32 languages", desc: "Localized end-to-end across the platform." },
@@ -9,6 +10,7 @@ const features = [
 ];
 
 export function International() {
+  const brand = useBrand();
   return (
     <section className="py-24">
       <div className="mx-auto max-w-7xl px-4">
@@ -19,7 +21,7 @@ export function International() {
                 <Globe2 className="h-3.5 w-3.5 text-emerald" /> Global by default
               </div>
               <h2 className="mt-4 font-display text-4xl font-bold md:text-5xl">Built for a <span className="text-emerald">borderless</span> real estate market.</h2>
-              <p className="mt-4 max-w-md text-background/70">From Lisbon to Tokyo, Property OS speaks your language, your currency, and your rules.</p>
+              <p className="mt-4 max-w-md text-background/70">From Lisbon to Tokyo, {brand.name} speaks your language, your currency, and your rules.</p>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
