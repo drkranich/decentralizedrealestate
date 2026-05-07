@@ -9,38 +9,194 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppSettingsRouteImport } from './routes/app.settings'
+import { Route as AppPropertiesRouteImport } from './routes/app.properties'
+import { Route as AppOwnerRouteImport } from './routes/app.owner'
+import { Route as AppMarketplaceRouteImport } from './routes/app.marketplace'
+import { Route as AppInvestorRouteImport } from './routes/app.investor'
+import { Route as AppFinanceRouteImport } from './routes/app.finance'
+import { Route as AppDashboardRouteImport } from './routes/app.dashboard'
+import { Route as AppCrmRouteImport } from './routes/app.crm'
+import { Route as AppContractsRouteImport } from './routes/app.contracts'
+import { Route as AppAiRouteImport } from './routes/app.ai'
+import { Route as AppPropertiesIdRouteImport } from './routes/app.properties.$id'
 
+const AppRoute = AppRouteImport.update({
+  id: '/app',
+  path: '/app',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppSettingsRoute = AppSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPropertiesRoute = AppPropertiesRouteImport.update({
+  id: '/properties',
+  path: '/properties',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppOwnerRoute = AppOwnerRouteImport.update({
+  id: '/owner',
+  path: '/owner',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMarketplaceRoute = AppMarketplaceRouteImport.update({
+  id: '/marketplace',
+  path: '/marketplace',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppInvestorRoute = AppInvestorRouteImport.update({
+  id: '/investor',
+  path: '/investor',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppFinanceRoute = AppFinanceRouteImport.update({
+  id: '/finance',
+  path: '/finance',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDashboardRoute = AppDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCrmRoute = AppCrmRouteImport.update({
+  id: '/crm',
+  path: '/crm',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppContractsRoute = AppContractsRouteImport.update({
+  id: '/contracts',
+  path: '/contracts',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAiRoute = AppAiRouteImport.update({
+  id: '/ai',
+  path: '/ai',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPropertiesIdRoute = AppPropertiesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AppPropertiesRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/app': typeof AppRouteWithChildren
+  '/app/ai': typeof AppAiRoute
+  '/app/contracts': typeof AppContractsRoute
+  '/app/crm': typeof AppCrmRoute
+  '/app/dashboard': typeof AppDashboardRoute
+  '/app/finance': typeof AppFinanceRoute
+  '/app/investor': typeof AppInvestorRoute
+  '/app/marketplace': typeof AppMarketplaceRoute
+  '/app/owner': typeof AppOwnerRoute
+  '/app/properties': typeof AppPropertiesRouteWithChildren
+  '/app/settings': typeof AppSettingsRoute
+  '/app/properties/$id': typeof AppPropertiesIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/app': typeof AppRouteWithChildren
+  '/app/ai': typeof AppAiRoute
+  '/app/contracts': typeof AppContractsRoute
+  '/app/crm': typeof AppCrmRoute
+  '/app/dashboard': typeof AppDashboardRoute
+  '/app/finance': typeof AppFinanceRoute
+  '/app/investor': typeof AppInvestorRoute
+  '/app/marketplace': typeof AppMarketplaceRoute
+  '/app/owner': typeof AppOwnerRoute
+  '/app/properties': typeof AppPropertiesRouteWithChildren
+  '/app/settings': typeof AppSettingsRoute
+  '/app/properties/$id': typeof AppPropertiesIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/app': typeof AppRouteWithChildren
+  '/app/ai': typeof AppAiRoute
+  '/app/contracts': typeof AppContractsRoute
+  '/app/crm': typeof AppCrmRoute
+  '/app/dashboard': typeof AppDashboardRoute
+  '/app/finance': typeof AppFinanceRoute
+  '/app/investor': typeof AppInvestorRoute
+  '/app/marketplace': typeof AppMarketplaceRoute
+  '/app/owner': typeof AppOwnerRoute
+  '/app/properties': typeof AppPropertiesRouteWithChildren
+  '/app/settings': typeof AppSettingsRoute
+  '/app/properties/$id': typeof AppPropertiesIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/app'
+    | '/app/ai'
+    | '/app/contracts'
+    | '/app/crm'
+    | '/app/dashboard'
+    | '/app/finance'
+    | '/app/investor'
+    | '/app/marketplace'
+    | '/app/owner'
+    | '/app/properties'
+    | '/app/settings'
+    | '/app/properties/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/app'
+    | '/app/ai'
+    | '/app/contracts'
+    | '/app/crm'
+    | '/app/dashboard'
+    | '/app/finance'
+    | '/app/investor'
+    | '/app/marketplace'
+    | '/app/owner'
+    | '/app/properties'
+    | '/app/settings'
+    | '/app/properties/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/app'
+    | '/app/ai'
+    | '/app/contracts'
+    | '/app/crm'
+    | '/app/dashboard'
+    | '/app/finance'
+    | '/app/investor'
+    | '/app/marketplace'
+    | '/app/owner'
+    | '/app/properties'
+    | '/app/settings'
+    | '/app/properties/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +204,129 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/settings': {
+      id: '/app/settings'
+      path: '/settings'
+      fullPath: '/app/settings'
+      preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/properties': {
+      id: '/app/properties'
+      path: '/properties'
+      fullPath: '/app/properties'
+      preLoaderRoute: typeof AppPropertiesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/owner': {
+      id: '/app/owner'
+      path: '/owner'
+      fullPath: '/app/owner'
+      preLoaderRoute: typeof AppOwnerRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/marketplace': {
+      id: '/app/marketplace'
+      path: '/marketplace'
+      fullPath: '/app/marketplace'
+      preLoaderRoute: typeof AppMarketplaceRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/investor': {
+      id: '/app/investor'
+      path: '/investor'
+      fullPath: '/app/investor'
+      preLoaderRoute: typeof AppInvestorRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/finance': {
+      id: '/app/finance'
+      path: '/finance'
+      fullPath: '/app/finance'
+      preLoaderRoute: typeof AppFinanceRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/dashboard': {
+      id: '/app/dashboard'
+      path: '/dashboard'
+      fullPath: '/app/dashboard'
+      preLoaderRoute: typeof AppDashboardRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/crm': {
+      id: '/app/crm'
+      path: '/crm'
+      fullPath: '/app/crm'
+      preLoaderRoute: typeof AppCrmRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/contracts': {
+      id: '/app/contracts'
+      path: '/contracts'
+      fullPath: '/app/contracts'
+      preLoaderRoute: typeof AppContractsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/ai': {
+      id: '/app/ai'
+      path: '/ai'
+      fullPath: '/app/ai'
+      preLoaderRoute: typeof AppAiRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/properties/$id': {
+      id: '/app/properties/$id'
+      path: '/$id'
+      fullPath: '/app/properties/$id'
+      preLoaderRoute: typeof AppPropertiesIdRouteImport
+      parentRoute: typeof AppPropertiesRoute
+    }
   }
 }
 
+interface AppPropertiesRouteChildren {
+  AppPropertiesIdRoute: typeof AppPropertiesIdRoute
+}
+
+const AppPropertiesRouteChildren: AppPropertiesRouteChildren = {
+  AppPropertiesIdRoute: AppPropertiesIdRoute,
+}
+
+const AppPropertiesRouteWithChildren = AppPropertiesRoute._addFileChildren(
+  AppPropertiesRouteChildren,
+)
+
+interface AppRouteChildren {
+  AppAiRoute: typeof AppAiRoute
+  AppContractsRoute: typeof AppContractsRoute
+  AppCrmRoute: typeof AppCrmRoute
+  AppDashboardRoute: typeof AppDashboardRoute
+  AppFinanceRoute: typeof AppFinanceRoute
+  AppInvestorRoute: typeof AppInvestorRoute
+  AppMarketplaceRoute: typeof AppMarketplaceRoute
+  AppOwnerRoute: typeof AppOwnerRoute
+  AppPropertiesRoute: typeof AppPropertiesRouteWithChildren
+  AppSettingsRoute: typeof AppSettingsRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppAiRoute: AppAiRoute,
+  AppContractsRoute: AppContractsRoute,
+  AppCrmRoute: AppCrmRoute,
+  AppDashboardRoute: AppDashboardRoute,
+  AppFinanceRoute: AppFinanceRoute,
+  AppInvestorRoute: AppInvestorRoute,
+  AppMarketplaceRoute: AppMarketplaceRoute,
+  AppOwnerRoute: AppOwnerRoute,
+  AppPropertiesRoute: AppPropertiesRouteWithChildren,
+  AppSettingsRoute: AppSettingsRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AppRoute: AppRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
