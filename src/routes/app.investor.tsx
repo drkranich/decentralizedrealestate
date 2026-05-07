@@ -334,7 +334,7 @@ function Investor() {
               <LineChart data={yieldProjection}>
                 <XAxis dataKey="y" tickLine={false} axisLine={false} fontSize={11} stroke="currentColor" opacity={0.4} />
                 <YAxis tickLine={false} axisLine={false} fontSize={11} stroke="currentColor" opacity={0.4} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
-                <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid var(--border)", background: "var(--card)" }} formatter={(v: number) => fmt(v, ccy)} />
+                <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid var(--border)", background: "var(--card)" }} formatter={(v: any) => fmt(Number(v), ccy)} />
                 <Line type="monotone" dataKey="conservative" stroke="var(--skyblue)" strokeWidth={2} dot={false} />
                 <Line type="monotone" dataKey="base" stroke="var(--emerald)" strokeWidth={3} dot={false} />
                 <Line type="monotone" dataKey="aggressive" stroke="var(--emerald-glow)" strokeWidth={2} strokeDasharray="4 4" dot={false} />
