@@ -319,7 +319,7 @@ function Dashboard() {
             {payouts.map((p, i) => (
               <div key={i} className="flex items-center justify-between rounded-xl border border-border/50 px-3 py-2 text-sm">
                 <span className="text-muted-foreground">{p.date}</span>
-                <span className="font-semibold">€{p.amount.toLocaleString()}</span>
+                <span className="font-semibold">€{p.amount.toLocaleString("en-US")}</span>
                 <Badge variant="emerald">{p.status}</Badge>
               </div>
             ))}
