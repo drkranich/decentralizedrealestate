@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Building2, Moon, Sun, Menu, X } from "lucide-react";
+import { Moon, Sun, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/brand/Logo";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -30,11 +31,8 @@ export function Navbar() {
     <header className={`fixed top-0 z-50 w-full transition-all duration-500 ${scrolled ? "py-3" : "py-5"}`}>
       <div className="mx-auto max-w-7xl px-4">
         <div className={`flex items-center justify-between rounded-full px-5 py-2.5 transition-all duration-500 ${scrolled ? "glass-strong shadow-soft" : ""}`}>
-          <Link to="/" className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald to-skyblue shadow-glow">
-              <Building2 className="h-5 w-5 text-white" />
-            </div>
-            <span className="font-display text-lg font-bold tracking-tight">Property<span className="gradient-text">OS</span></span>
+          <Link to="/">
+            <Logo />
           </Link>
 
           <nav className="hidden items-center gap-1 md:flex">

@@ -2,8 +2,9 @@ import { createFileRoute, Outlet, Link, useRouterState } from "@tanstack/react-r
 import { useState } from "react";
 import {
   LayoutDashboard, Building2, Home, Coins, ShoppingBag, Bot, Users,
-  BarChart3, FileText, Settings, Bell, Search, Menu, X, ChevronDown, Plus, Building
+  BarChart3, FileText, Settings, Bell, Search, Menu, X, ChevronDown, Plus
 } from "lucide-react";
+import { Logo } from "@/components/brand/Logo";
 
 export const Route = createFileRoute("/app")({
   component: AppLayout,
@@ -31,11 +32,8 @@ function AppLayout() {
       {/* Sidebar */}
       <aside className={`fixed inset-y-0 left-0 z-40 w-72 transform border-r border-border bg-card transition-transform lg:static lg:translate-x-0 ${open ? "translate-x-0" : "-translate-x-full"}`}>
         <div className="flex h-16 items-center justify-between border-b border-border px-5">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald to-skyblue shadow-glow">
-              <Building className="h-5 w-5 text-white" />
-            </div>
-            <span className="font-display text-lg font-bold">Property<span className="gradient-text">OS</span></span>
+          <Link to="/">
+            <Logo />
           </Link>
           <button onClick={() => setOpen(false)} className="lg:hidden">
             <X className="h-5 w-5" />
