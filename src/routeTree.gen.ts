@@ -20,6 +20,7 @@ import { Route as AppFinanceRouteImport } from './routes/app.finance'
 import { Route as AppDashboardRouteImport } from './routes/app.dashboard'
 import { Route as AppCrmRouteImport } from './routes/app.crm'
 import { Route as AppContractsRouteImport } from './routes/app.contracts'
+import { Route as AppComingSoonRouteImport } from './routes/app.coming-soon'
 import { Route as AppAiRouteImport } from './routes/app.ai'
 import { Route as AppPropertiesIdRouteImport } from './routes/app.properties.$id'
 
@@ -78,6 +79,11 @@ const AppContractsRoute = AppContractsRouteImport.update({
   path: '/contracts',
   getParentRoute: () => AppRoute,
 } as any)
+const AppComingSoonRoute = AppComingSoonRouteImport.update({
+  id: '/coming-soon',
+  path: '/coming-soon',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAiRoute = AppAiRouteImport.update({
   id: '/ai',
   path: '/ai',
@@ -93,6 +99,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/app/ai': typeof AppAiRoute
+  '/app/coming-soon': typeof AppComingSoonRoute
   '/app/contracts': typeof AppContractsRoute
   '/app/crm': typeof AppCrmRoute
   '/app/dashboard': typeof AppDashboardRoute
@@ -108,6 +115,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/app/ai': typeof AppAiRoute
+  '/app/coming-soon': typeof AppComingSoonRoute
   '/app/contracts': typeof AppContractsRoute
   '/app/crm': typeof AppCrmRoute
   '/app/dashboard': typeof AppDashboardRoute
@@ -124,6 +132,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/app/ai': typeof AppAiRoute
+  '/app/coming-soon': typeof AppComingSoonRoute
   '/app/contracts': typeof AppContractsRoute
   '/app/crm': typeof AppCrmRoute
   '/app/dashboard': typeof AppDashboardRoute
@@ -141,6 +150,7 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/app/ai'
+    | '/app/coming-soon'
     | '/app/contracts'
     | '/app/crm'
     | '/app/dashboard'
@@ -156,6 +166,7 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/app/ai'
+    | '/app/coming-soon'
     | '/app/contracts'
     | '/app/crm'
     | '/app/dashboard'
@@ -171,6 +182,7 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/app/ai'
+    | '/app/coming-soon'
     | '/app/contracts'
     | '/app/crm'
     | '/app/dashboard'
@@ -267,6 +279,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppContractsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/coming-soon': {
+      id: '/app/coming-soon'
+      path: '/coming-soon'
+      fullPath: '/app/coming-soon'
+      preLoaderRoute: typeof AppComingSoonRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/ai': {
       id: '/app/ai'
       path: '/ai'
@@ -298,6 +317,7 @@ const AppPropertiesRouteWithChildren = AppPropertiesRoute._addFileChildren(
 
 interface AppRouteChildren {
   AppAiRoute: typeof AppAiRoute
+  AppComingSoonRoute: typeof AppComingSoonRoute
   AppContractsRoute: typeof AppContractsRoute
   AppCrmRoute: typeof AppCrmRoute
   AppDashboardRoute: typeof AppDashboardRoute
@@ -311,6 +331,7 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppAiRoute: AppAiRoute,
+  AppComingSoonRoute: AppComingSoonRoute,
   AppContractsRoute: AppContractsRoute,
   AppCrmRoute: AppCrmRoute,
   AppDashboardRoute: AppDashboardRoute,
@@ -331,3 +352,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
