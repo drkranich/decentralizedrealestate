@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Bot, Lightbulb, Activity, UserCheck, Sparkles } from "lucide-react";
+import { useBrand } from "@/components/brand/BrandProvider";
 
 const features = [
   { icon: Bot, title: "AI Assistant", desc: "24/7 conversational concierge for tenants, owners and investors." },
@@ -9,6 +10,7 @@ const features = [
 ];
 
 export function AI() {
+  const brand = useBrand();
   return (
     <section id="ai" className="relative overflow-hidden py-24">
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-transparent via-skyblue/5 to-transparent" />
@@ -21,7 +23,7 @@ export function AI() {
               Powered by AI
             </div>
             <h2 className="mt-4 font-display text-4xl font-bold md:text-5xl">Intelligence at <span className="gradient-text">every layer</span></h2>
-            <p className="mt-4 text-muted-foreground">Property OS embeds proprietary models across pricing, risk, recommendation and operations — so the platform learns and improves with every transaction.</p>
+            <p className="mt-4 text-muted-foreground">{brand.name} embeds proprietary models across pricing, risk, recommendation and operations — so the platform learns and improves with every transaction.</p>
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
               {features.map((f, i) => (
@@ -54,7 +56,7 @@ export function AI() {
                   <Bot className="h-5 w-5 text-white" />
                 </div>
                 <div>
-                  <div className="font-semibold">PropertyOS AI</div>
+                  <div className="font-semibold">{brand.name} AI</div>
                   <div className="text-xs text-muted-foreground">Online · Global concierge</div>
                 </div>
               </div>
