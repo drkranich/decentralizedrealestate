@@ -26,9 +26,9 @@ const occupancy = [
 ];
 
 const split = [
-  { name: "Short stay", v: 48, c: "oklch(var(--emerald))" },
-  { name: "Long stay", v: 32, c: "oklch(var(--skyblue))" },
-  { name: "Tokenized", v: 20, c: "oklch(var(--emerald-glow))" },
+  { name: "Short stay", v: 48, c: "var(--emerald)" },
+  { name: "Long stay", v: 32, c: "var(--skyblue)" },
+  { name: "Tokenized", v: 20, c: "var(--emerald-glow)" },
 ];
 
 const roiTrend = Array.from({ length: 12 }, (_, i) => ({
@@ -110,19 +110,19 @@ function Dashboard() {
               <AreaChart data={revenue}>
                 <defs>
                   <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="oklch(var(--emerald))" stopOpacity={0.4} />
-                    <stop offset="100%" stopColor="oklch(var(--emerald))" stopOpacity={0} />
+                    <stop offset="0%" stopColor="var(--emerald)" stopOpacity={0.4} />
+                    <stop offset="100%" stopColor="var(--emerald)" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="g2" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="oklch(var(--skyblue))" stopOpacity={0.3} />
-                    <stop offset="100%" stopColor="oklch(var(--skyblue))" stopOpacity={0} />
+                    <stop offset="0%" stopColor="var(--skyblue)" stopOpacity={0.3} />
+                    <stop offset="100%" stopColor="var(--skyblue)" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <XAxis dataKey="month" tickLine={false} axisLine={false} fontSize={11} stroke="currentColor" opacity={0.4} />
                 <YAxis tickLine={false} axisLine={false} fontSize={11} stroke="currentColor" opacity={0.4} />
                 <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid var(--border)", background: "var(--card)" }} />
-                <Area type="monotone" dataKey="rev" stroke="oklch(var(--emerald))" strokeWidth={2.5} fill="url(#g1)" />
-                <Area type="monotone" dataKey="exp" stroke="oklch(var(--skyblue))" strokeWidth={2.5} fill="url(#g2)" />
+                <Area type="monotone" dataKey="rev" stroke="var(--emerald)" strokeWidth={2.5} fill="url(#g1)" />
+                <Area type="monotone" dataKey="exp" stroke="var(--skyblue)" strokeWidth={2.5} fill="url(#g2)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -163,7 +163,7 @@ function Dashboard() {
                 <XAxis dataKey="name" tickLine={false} axisLine={false} fontSize={11} stroke="currentColor" opacity={0.5} />
                 <YAxis tickLine={false} axisLine={false} fontSize={11} stroke="currentColor" opacity={0.5} />
                 <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid var(--border)", background: "var(--card)" }} />
-                <Bar dataKey="v" fill="oklch(var(--emerald))" radius={[8, 8, 0, 0]} />
+                <Bar dataKey="v" fill="var(--emerald)" radius={[8, 8, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -209,7 +209,7 @@ function Dashboard() {
                 <XAxis dataKey="m" tickLine={false} axisLine={false} fontSize={11} stroke="currentColor" opacity={0.4} />
                 <YAxis tickLine={false} axisLine={false} fontSize={11} stroke="currentColor" opacity={0.4} unit="%" />
                 <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid var(--border)", background: "var(--card)" }} />
-                <Line type="monotone" dataKey="roi" stroke="oklch(var(--emerald))" strokeWidth={3} dot={{ r: 3, fill: "oklch(var(--emerald))" }} />
+                <Line type="monotone" dataKey="roi" stroke="var(--emerald)" strokeWidth={3} dot={{ r: 3, fill: "var(--emerald)" }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
