@@ -35,7 +35,7 @@ function Properties() {
 
       <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="Properties" value={String(total)} icon={Building2} />
-        <StatCard label="Monthly income" value={`€${monthly.toLocaleString()}`} change="+8.4%" icon={DollarSign} />
+        <StatCard label="Monthly income" value={`€${monthly.toLocaleString("en-US")}`} change="+8.4%" icon={DollarSign} />
         <StatCard label="Avg ROI" value={`${avgRoi}%`} change="+0.6 pts" icon={TrendingUp} accent="skyblue" />
         <StatCard label="Avg occupancy" value={`${avgOcc}%`} icon={Percent} accent="skyblue" />
       </div>
@@ -77,7 +77,7 @@ function Properties() {
                   <MoreHorizontal className="h-4 w-4" />
                 </div>
                 <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between">
-                  <div className="rounded-xl glass-strong px-2.5 py-1 text-[10px] font-semibold">€{p.monthlyIncome.toLocaleString()}/mo</div>
+                  <div className="rounded-xl glass-strong px-2.5 py-1 text-[10px] font-semibold">€{p.monthlyIncome.toLocaleString("en-US")}/mo</div>
                   <div className="rounded-xl glass-strong px-2.5 py-1 text-[10px] font-semibold text-emerald">ROI {p.roi}%</div>
                 </div>
               </div>
@@ -131,7 +131,7 @@ function Properties() {
                   <td className="px-5 py-4">
                     <Badge variant={p.status === "Active" ? "emerald" : p.status === "Maintenance" ? "warn" : "muted"}>{p.status}</Badge>
                   </td>
-                  <td className="px-5 py-4 text-right font-semibold">€{p.monthlyIncome.toLocaleString()}</td>
+                  <td className="px-5 py-4 text-right font-semibold">€{p.monthlyIncome.toLocaleString("en-US")}</td>
                   <td className="px-5 py-4 text-right text-emerald font-semibold">{p.roi}%</td>
                   <td className="px-5 py-4 text-right">{p.occupancy}%</td>
                 </tr>

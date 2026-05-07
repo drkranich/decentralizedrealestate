@@ -307,7 +307,7 @@ function PropertyDetails() {
         <div className="space-y-4">
           <Card>
             <div className="text-xs uppercase tracking-wide text-muted-foreground">This month</div>
-            <div className="mt-2 font-display text-3xl font-bold">€{property.monthlyIncome.toLocaleString()}</div>
+            <div className="mt-2 font-display text-3xl font-bold">€{property.monthlyIncome.toLocaleString("en-US")}</div>
             <div className="text-xs text-emerald">+8.4% vs last month</div>
             <div className="mt-4 grid grid-cols-2 gap-3 border-t border-border/50 pt-4 text-center">
               <div>
