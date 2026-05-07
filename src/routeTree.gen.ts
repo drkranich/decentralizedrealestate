@@ -11,7 +11,10 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppSmartPricingRouteImport } from './routes/app.smart-pricing'
 import { Route as AppSettingsRouteImport } from './routes/app.settings'
+import { Route as AppPropertiesCalendarRouteImport } from './routes/app.properties-calendar'
+import { Route as AppPropertiesAnalyticsRouteImport } from './routes/app.properties-analytics'
 import { Route as AppPropertiesRouteImport } from './routes/app.properties'
 import { Route as AppOwnerRouteImport } from './routes/app.owner'
 import { Route as AppMarketplaceRouteImport } from './routes/app.marketplace'
@@ -34,9 +37,24 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppSmartPricingRoute = AppSmartPricingRouteImport.update({
+  id: '/smart-pricing',
+  path: '/smart-pricing',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppSettingsRoute = AppSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPropertiesCalendarRoute = AppPropertiesCalendarRouteImport.update({
+  id: '/properties-calendar',
+  path: '/properties-calendar',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPropertiesAnalyticsRoute = AppPropertiesAnalyticsRouteImport.update({
+  id: '/properties-analytics',
+  path: '/properties-analytics',
   getParentRoute: () => AppRoute,
 } as any)
 const AppPropertiesRoute = AppPropertiesRouteImport.update({
@@ -108,7 +126,10 @@ export interface FileRoutesByFullPath {
   '/app/marketplace': typeof AppMarketplaceRoute
   '/app/owner': typeof AppOwnerRoute
   '/app/properties': typeof AppPropertiesRouteWithChildren
+  '/app/properties-analytics': typeof AppPropertiesAnalyticsRoute
+  '/app/properties-calendar': typeof AppPropertiesCalendarRoute
   '/app/settings': typeof AppSettingsRoute
+  '/app/smart-pricing': typeof AppSmartPricingRoute
   '/app/properties/$id': typeof AppPropertiesIdRoute
 }
 export interface FileRoutesByTo {
@@ -124,7 +145,10 @@ export interface FileRoutesByTo {
   '/app/marketplace': typeof AppMarketplaceRoute
   '/app/owner': typeof AppOwnerRoute
   '/app/properties': typeof AppPropertiesRouteWithChildren
+  '/app/properties-analytics': typeof AppPropertiesAnalyticsRoute
+  '/app/properties-calendar': typeof AppPropertiesCalendarRoute
   '/app/settings': typeof AppSettingsRoute
+  '/app/smart-pricing': typeof AppSmartPricingRoute
   '/app/properties/$id': typeof AppPropertiesIdRoute
 }
 export interface FileRoutesById {
@@ -141,7 +165,10 @@ export interface FileRoutesById {
   '/app/marketplace': typeof AppMarketplaceRoute
   '/app/owner': typeof AppOwnerRoute
   '/app/properties': typeof AppPropertiesRouteWithChildren
+  '/app/properties-analytics': typeof AppPropertiesAnalyticsRoute
+  '/app/properties-calendar': typeof AppPropertiesCalendarRoute
   '/app/settings': typeof AppSettingsRoute
+  '/app/smart-pricing': typeof AppSmartPricingRoute
   '/app/properties/$id': typeof AppPropertiesIdRoute
 }
 export interface FileRouteTypes {
@@ -159,7 +186,10 @@ export interface FileRouteTypes {
     | '/app/marketplace'
     | '/app/owner'
     | '/app/properties'
+    | '/app/properties-analytics'
+    | '/app/properties-calendar'
     | '/app/settings'
+    | '/app/smart-pricing'
     | '/app/properties/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -175,7 +205,10 @@ export interface FileRouteTypes {
     | '/app/marketplace'
     | '/app/owner'
     | '/app/properties'
+    | '/app/properties-analytics'
+    | '/app/properties-calendar'
     | '/app/settings'
+    | '/app/smart-pricing'
     | '/app/properties/$id'
   id:
     | '__root__'
@@ -191,7 +224,10 @@ export interface FileRouteTypes {
     | '/app/marketplace'
     | '/app/owner'
     | '/app/properties'
+    | '/app/properties-analytics'
+    | '/app/properties-calendar'
     | '/app/settings'
+    | '/app/smart-pricing'
     | '/app/properties/$id'
   fileRoutesById: FileRoutesById
 }
@@ -216,11 +252,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/smart-pricing': {
+      id: '/app/smart-pricing'
+      path: '/smart-pricing'
+      fullPath: '/app/smart-pricing'
+      preLoaderRoute: typeof AppSmartPricingRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/settings': {
       id: '/app/settings'
       path: '/settings'
       fullPath: '/app/settings'
       preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/properties-calendar': {
+      id: '/app/properties-calendar'
+      path: '/properties-calendar'
+      fullPath: '/app/properties-calendar'
+      preLoaderRoute: typeof AppPropertiesCalendarRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/properties-analytics': {
+      id: '/app/properties-analytics'
+      path: '/properties-analytics'
+      fullPath: '/app/properties-analytics'
+      preLoaderRoute: typeof AppPropertiesAnalyticsRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/properties': {
@@ -326,7 +383,10 @@ interface AppRouteChildren {
   AppMarketplaceRoute: typeof AppMarketplaceRoute
   AppOwnerRoute: typeof AppOwnerRoute
   AppPropertiesRoute: typeof AppPropertiesRouteWithChildren
+  AppPropertiesAnalyticsRoute: typeof AppPropertiesAnalyticsRoute
+  AppPropertiesCalendarRoute: typeof AppPropertiesCalendarRoute
   AppSettingsRoute: typeof AppSettingsRoute
+  AppSmartPricingRoute: typeof AppSmartPricingRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -340,7 +400,10 @@ const AppRouteChildren: AppRouteChildren = {
   AppMarketplaceRoute: AppMarketplaceRoute,
   AppOwnerRoute: AppOwnerRoute,
   AppPropertiesRoute: AppPropertiesRouteWithChildren,
+  AppPropertiesAnalyticsRoute: AppPropertiesAnalyticsRoute,
+  AppPropertiesCalendarRoute: AppPropertiesCalendarRoute,
   AppSettingsRoute: AppSettingsRoute,
+  AppSmartPricingRoute: AppSmartPricingRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
