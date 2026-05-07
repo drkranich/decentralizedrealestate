@@ -79,7 +79,7 @@ function fmt(v: number, ccy: string) {
   const r = fxRates[ccy];
   const val = v * r.rate;
   if (ccy === "BTC" || ccy === "ETH") return `${r.sym}${val.toFixed(4)}`;
-  return `${r.sym}${val.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
+  return `${r.sym}${Math.round(val).toLocaleString("en-US")}`;
 }
 
 const tickerData = [
