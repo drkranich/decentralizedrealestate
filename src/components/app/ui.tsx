@@ -1,39 +1,28 @@
-// Shared UI primitives for app pages — glassmorphism + subtle motion,
-// driven by the brand tokens in src/config/brand.ts / src/styles.css.
+// Shared UI primitives for app pages — glassmorphism + subtle CSS-only motion
+// (no framer-motion here: pure CSS keyframes so entrance animations never
+// depend on client JS hydration timing), driven by src/config/brand.ts.
 import { ReactNode } from "react";
-import { motion } from "framer-motion";
 
 export function PageHeader({ title, subtitle, children }: { title: string; subtitle?: string; children?: ReactNode }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: -8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
-      className="mb-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center"
-    >
+    <div className="animate-fade-in-down mb-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
       <div>
         <h1 className="font-display text-3xl font-bold tracking-tight md:text-4xl">{title}</h1>
         {subtitle && <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>}
       </div>
       <div className="flex flex-wrap gap-2">{children}</div>
-    </motion.div>
+    </div>
   );
 }
 
 export function StatCard({
   label, value, change, icon: Icon, accent = "emerald", delay = 0,
 }: { label: string; value: string; change?: string; icon: any; accent?: "emerald" | "skyblue"; delay?: number }) {
-  const accentClass =
-    accent === "emerald" ? "bg-emerald/15 text-emerald"
-    : "bg-skyblue/15 text-skyblue";
+  const accentClass = accent === "emerald" ? "bg-emerald/15 text-emerald" : "bg-skyblue/15 text-skyblue";
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 14 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.45, ease: "easeOut", delay }}
-      whileHover={{ y: -3 }}
-      className="group relative overflow-hidden rounded-3xl border border-white/10 bg-card/60 p-5 shadow-soft backdrop-blur-xl transition-colors duration-300 hover:border-emerald/30 hover:shadow-elegant"
+    <div
+      className="animate-fade-in-up group relative overflow-hidden rounded-3xl border border-white/10 bg-card/60 p-5 shadow-soft backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-emerald/30 hover:shadow-elegant"
+      style={{ animationDelay: `${delay}s` }}
     >
       <div className="pointer-events-none absolute inset-0 bg-glass-tint opacity-70" />
       <div className="relative">
@@ -46,22 +35,16 @@ export function StatCard({
         <div className="mt-3 font-display text-3xl font-bold">{value}</div>
         {change && <div className="mt-1 text-xs font-medium text-emerald">{change}</div>}
       </div>
-    </motion.div>
+    </div>
   );
 }
 
 export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 14 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.45, ease: "easeOut" }}
-      className={`group relative overflow-hidden rounded-3xl border border-white/10 bg-card/60 p-6 shadow-soft backdrop-blur-xl transition-all duration-300 hover:border-emerald/20 hover:shadow-elegant ${className}`}
-    >
+    <div className={`animate-fade-in-up group relative overflow-hidden rounded-3xl border border-white/10 bg-card/60 p-6 shadow-soft backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-emerald/20 hover:shadow-elegant ${className}`}>
       <div className="pointer-events-none absolute inset-0 bg-glass-tint opacity-60" />
       <div className="relative">{children}</div>
-    </motion.div>
+    </div>
   );
 }
 
