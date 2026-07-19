@@ -5,6 +5,7 @@ import { PageHeader, Card, SectionTitle, Badge, DemoDataBadge } from "@/componen
 import { ProfileCard } from "@/components/app/ProfileCard";
 import { AddressCard } from "@/components/app/AddressCard";
 import { PlanCard } from "@/components/app/PlanCard";
+import { RegionalCard } from "@/components/app/RegionalCard";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/settings")({
@@ -99,16 +100,7 @@ function Settings() {
 
           {tab === "billing" && <PlanCard />}
 
-          {tab === "regional" && (
-            <Card>
-              <SectionTitle title="Language & currency" />
-              <div className="grid gap-4 md:grid-cols-3">
-                <Field label="Language" value="English" />
-                <Field label="Currency" value="EUR (€)" />
-                <Field label="Timezone" value="Europe/Lisbon" />
-              </div>
-            </Card>
-          )}
+          {tab === "regional" && <RegionalCard />}
 
           {tab === "api" && (
             <Card>
@@ -126,19 +118,6 @@ function Settings() {
         </div>
       </div>
     </>
-  );
-}
-
-function Field({ label, value, readOnly }: { label: string; value: string; readOnly?: boolean }) {
-  return (
-    <div>
-      <label className="text-xs font-medium text-muted-foreground">{label}</label>
-      <input
-        defaultValue={value}
-        readOnly={readOnly}
-        className={`mt-1 w-full rounded-xl border border-border bg-secondary/40 p-2.5 text-sm ${readOnly ? "opacity-70" : ""}`}
-      />
-    </div>
   );
 }
 

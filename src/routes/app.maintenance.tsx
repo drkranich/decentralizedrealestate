@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Wrench, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader, Card, Badge } from "@/components/app/ui";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { useAuthUser, useUserRole } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 
@@ -147,16 +148,17 @@ function Maintenance() {
                   </div>
                 </div>
                 {role === "owner" ? (
-                  <select
-                    value={r.status}
-                    onChange={(e) => updateStatus(r.id, e.target.value)}
-                    className="rounded-full border border-white/10 bg-secondary/50 px-3 py-1 text-xs"
-                  >
-                    <option value="open">Aberto</option>
-                    <option value="in_progress">Em andamento</option>
-                    <option value="resolved">Resolvido</option>
-                    <option value="cancelled">Cancelado</option>
-                  </select>
+                  <Select value={r.status} onValueChange={(v) => updateStatus(r.id, v)}>
+                    <SelectTrigger className="h-auto w-auto gap-2 rounded-full border-white/10 bg-secondary/50 px-3 py-1 text-xs">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="open">Aberto</SelectItem>
+                      <SelectItem value="in_progress">Em andamento</SelectItem>
+                      <SelectItem value="resolved">Resolvido</SelectItem>
+                      <SelectItem value="cancelled">Cancelado</SelectItem>
+                    </SelectContent>
+                  </Select>
                 ) : (
                   <Badge variant={r.status === "resolved" ? "emerald" : "muted"}>{r.status}</Badge>
                 )}

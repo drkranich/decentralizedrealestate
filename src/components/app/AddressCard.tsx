@@ -5,6 +5,7 @@ import { useAuthUser } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import { COUNTRIES, LANGUAGES, CURRENCIES, countryFlagEmoji } from "@/lib/geo-data";
 import { WorldMapPicker } from "@/components/app/WorldMapPicker";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 
 type AddressState = {
   street: string;
@@ -156,60 +157,66 @@ export function AddressCard() {
         </div>
         <div>
           <label className={labelClass}>País</label>
-          <select value={data.country_code} onChange={(e) => set("country_code", e.target.value)} className={selectClass}>
-            <option value="">Selecione…</option>
-            {COUNTRIES.map((c) => (
-              <option key={c.code} value={c.code}>
-                {countryFlagEmoji(c.code)} {c.name}
-              </option>
-            ))}
-          </select>
+          <Select value={data.country_code || undefined} onValueChange={(v) => set("country_code", v)}>
+            <SelectTrigger className="mt-1">
+              <SelectValue placeholder="Selecione…" />
+            </SelectTrigger>
+            <SelectContent className="max-h-72">
+              {COUNTRIES.map((c) => (
+                <SelectItem key={c.code} value={c.code}>
+                  {countryFlagEmoji(c.code)} {c.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
       <div className="mt-8 grid gap-4 md:grid-cols-3">
         <div>
           <label className={labelClass}>Idioma preferido</label>
-          <select
-            value={data.preferred_language}
-            onChange={(e) => set("preferred_language", e.target.value)}
-            className={selectClass}
-          >
-            <option value="">Selecione…</option>
-            {LANGUAGES.map((l) => (
-              <option key={l.code} value={l.code}>
-                {l.name}
-              </option>
-            ))}
-          </select>
+          <Select value={data.preferred_language || undefined} onValueChange={(v) => set("preferred_language", v)}>
+            <SelectTrigger className="mt-1">
+              <SelectValue placeholder="Selecione…" />
+            </SelectTrigger>
+            <SelectContent className="max-h-72">
+              {LANGUAGES.map((l) => (
+                <SelectItem key={l.code} value={l.code}>
+                  {l.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <div>
           <label className={labelClass}>Fuso horário preferido</label>
-          <select
-            value={data.preferred_timezone}
-            onChange={(e) => set("preferred_timezone", e.target.value)}
-            className={selectClass}
-          >
-            {timezones.map((tz) => (
-              <option key={tz} value={tz}>
-                {tz.replace(/_/g, " ")}
-              </option>
-            ))}
-          </select>
+          <Select value={data.preferred_timezone || undefined} onValueChange={(v) => set("preferred_timezone", v)}>
+            <SelectTrigger className="mt-1">
+              <SelectValue placeholder="Selecione…" />
+            </SelectTrigger>
+            <SelectContent className="max-h-72">
+              {timezones.map((tz) => (
+                <SelectItem key={tz} value={tz}>
+                  {tz.replace(/_/g, " ")}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <div>
           <label className={labelClass}>Moeda preferida</label>
-          <select
-            value={data.preferred_currency}
-            onChange={(e) => set("preferred_currency", e.target.value)}
-            className={selectClass}
-          >
-            {CURRENCIES.map((c) => (
-              <option key={c.code} value={c.code}>
-                {c.label}
-              </option>
-            ))}
-          </select>
+          <Select value={data.preferred_currency || undefined} onValueChange={(v) => set("preferred_currency", v)}>
+            <SelectTrigger className="mt-1">
+              <SelectValue placeholder="Selecione…" />
+            </SelectTrigger>
+            <SelectContent className="max-h-72">
+              {CURRENCIES.map((c) => (
+                <SelectItem key={c.code} value={c.code}>
+                  {c.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
