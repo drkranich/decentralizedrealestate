@@ -177,7 +177,7 @@ function Properties() {
                 </div>
                 {p.price != null && (
                   <div className="absolute bottom-3 left-3 rounded-xl glass-strong px-2.5 py-1 text-[10px] font-semibold">
-                    €{Number(p.price).toLocaleString("en-US")}/mo
+                    €{Number(p.price).toLocaleString("en-US")}{p.listing_type === "venda" ? "" : "/mo"}
                   </div>
                 )}
               </div>

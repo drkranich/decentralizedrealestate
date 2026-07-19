@@ -119,7 +119,7 @@ function PropertyDetails() {
             {property.price != null && (
               <div className="text-right">
                 <div className="font-display text-3xl font-bold">€{Number(property.price).toLocaleString("en-US")}</div>
-                <div className="text-xs text-muted-foreground">/ month</div>
+                <div className="text-xs text-muted-foreground">{property.listing_type === "venda" ? "preço de venda" : "/ mês"}</div>
               </div>
             )}
           </div>

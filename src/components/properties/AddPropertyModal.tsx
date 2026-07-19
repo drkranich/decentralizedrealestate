@@ -32,10 +32,7 @@ const emptyForm = {
   formattedAddress: "",
   lat: "",
   lng: "",
-  nightly: "",
-  monthly: "",
-  minStay: "1",
-  cleaningFee: "",
+  price: "",
 };
 
 export function AddPropertyModal({ open, onClose }: Props) {
@@ -151,7 +148,7 @@ export function AddPropertyModal({ open, onClose }: Props) {
         return;
       }
 
-      const priceValue = form.monthly || form.nightly;
+      const priceValue = form.price;
       const { data: propertyRow, error: insertError } = await supabase
         .from("properties")
         .insert({
@@ -173,9 +170,6 @@ export function AddPropertyModal({ open, onClose }: Props) {
           formatted_address: form.formattedAddress || form.addressQuery || null,
           latitude: form.lat ? Number(form.lat) : null,
           longitude: form.lng ? Number(form.lng) : null,
-          nightly_rate: form.nightly ? Number(String(form.nightly).replace(/[^\d.]/g, "")) || null : null,
-          min_stay_nights: form.minStay ? Number(form.minStay) || null : null,
-          cleaning_fee: form.cleaningFee ? Number(String(form.cleaningFee).replace(/[^\d.]/g, "")) || null : null,
         })
         .select("id")
         .single();
@@ -205,8 +199,10 @@ export function AddPropertyModal({ open, onClose }: Props) {
       toast.success("Imóvel publicado com sucesso.");
       reset();
       onClose();
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Não foi possível publicar o imóvel.");
+    } catch (err: any) {
+      const message = err?.message || err?.error_description || err?.details || "Não foi possível publicar o imóvel.";
+      toast.error(message);
+      console.error("publish property failed:", err);
     } finally {
       setPublishing(false);
     }
@@ -360,12 +356,19 @@ export function AddPropertyModal({ open, onClose }: Props) {
 
           {step === 3 && (
             <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-3">
-                <Field label="Nightly rate"><input value={form.nightly} onChange={(e) => set("nightly", e.target.value)} placeholder="€145" className="input" /></Field>
-                <Field label="Monthly rate"><input value={form.monthly} onChange={(e) => set("monthly", e.target.value)} placeholder="€2,450" className="input" /></Field>
-                <Field label="Min stay (nights)"><input value={form.minStay} onChange={(e) => set("minStay", e.target.value)} className="input" /></Field>
-                <Field label="Cleaning fee"><input value={form.cleaningFee} onChange={(e) => set("cleaningFee", e.target.value)} placeholder="€60" className="input" /></Field>
-              </div>
+              <Field label={form.listingType === "venda" ? "Preço de venda" : "Preço do aluguel (mensal)"}>
+                <input
+                  value={form.price}
+                  onChange={(e) => set("price", e.target.value)}
+                  placeholder={form.listingType === "venda" ? "€320,000" : "€2,450"}
+                  className="input"
+                />
+              </Field>
+              <p className="text-xs text-muted-foreground">
+                {form.listingType === "venda"
+                  ? "Valor único de venda do imóvel."
+                  : "Valor único do aluguel mensal — sem diária, sem taxa de limpeza."}
+              </p>
               <div className="rounded-2xl border border-dashed border-skyblue/30 bg-skyblue/5 p-4">
                 <div className="flex items-center gap-2 text-xs font-semibold text-skyblue"><Sparkles className="h-3.5 w-3.5" /> Estimativa de ROI por IA</div>
                 <div className="mt-1 text-sm text-muted-foreground">
