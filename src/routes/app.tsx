@@ -1,6 +1,12 @@
-import { createFileRoute, Outlet, redirect, useNavigate } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Outlet,
+  redirect,
+  useNavigate,
+  useRouterState,
+} from "@tanstack/react-router";
 import { useEffect } from "react";
-import { Bell, LogOut } from "lucide-react";
+import { Bell, LogOut, Search } from "lucide-react";
 import { toast } from "sonner";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { UserSidebar } from "@/components/app/UserSidebar";
@@ -12,6 +18,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/lib/supabase";
 import { useAuthUser, useUserRole, useAvatarUrl, initials } from "@/lib/auth";
+import {
+  getFirstAllowedPath,
+  isPathAllowedForRole,
+  useRolePermissions,
+} from "@/lib/rolePermissions";
+import { SaasCommandMenu } from "@/components/app/SaasCommandMenu";
 
 export const Route = createFileRoute("/app")({
   beforeLoad: async () => {
@@ -47,6 +59,8 @@ function UserLayout() {
   const navigate = useNavigate();
   const { user, loading: authLoading, signOut } = useAuthUser();
   const { role, loading: roleLoading } = useUserRole();
+  const { permissions, loading: permissionsLoading } = useRolePermissions();
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
   const avatarUrl = useAvatarUrl();
   const displayName = (user?.user_metadata?.name as string | undefined) ?? user?.email ?? "";
 
@@ -59,15 +73,19 @@ function UserLayout() {
     if (roleLoading) return;
     if (role === "admin") {
       navigate({ to: "/admin/dashboard", replace: true });
+      return;
     }
-  }, [authLoading, navigate, role, roleLoading, user]);
+    if (!permissionsLoading && role && !isPathAllowedForRole(role, pathname, permissions)) {
+      navigate({ to: getFirstAllowedPath(role, "app", permissions), replace: true });
+    }
+  }, [authLoading, navigate, permissions, permissionsLoading, pathname, role, roleLoading, user]);
 
   const handleSignOut = async () => {
     await signOut();
     navigate({ to: "/login" });
   };
 
-  if (authLoading || roleLoading || !user || role === "admin") {
+  if (authLoading || roleLoading || permissionsLoading || !user || role === "admin") {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="rounded-2xl border border-glass-border bg-card/70 px-6 py-4 text-sm text-muted-foreground shadow-soft backdrop-blur-xl">
@@ -91,6 +109,25 @@ function UserLayout() {
         <div className="relative z-10 flex min-w-0 flex-1 flex-col">
           <header className="sticky top-0 z-20 flex h-16 items-center justify-end gap-3 border-b border-glass-border bg-background/70 px-4 backdrop-blur-xl md:px-6">
             <SidebarTrigger className="mr-auto" />
+            {role && (
+              <SaasCommandMenu
+                role={role}
+                permissions={permissions}
+                trigger={(open) => (
+                  <button
+                    type="button"
+                    onClick={open}
+                    className="flex items-center gap-2 rounded-full border border-glass-border bg-secondary/40 px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                  >
+                    <Search className="h-4 w-4" />
+                    <span className="hidden sm:inline">Procurar</span>
+                    <kbd className="hidden rounded bg-background px-1.5 py-0.5 text-[10px] text-muted-foreground md:inline">
+                      ⌘K
+                    </kbd>
+                  </button>
+                )}
+              />
+            )}
             <button
               onClick={() => toast.info("Nenhuma notificação real no momento.")}
               className="relative flex h-9 w-9 items-center justify-center rounded-full transition-colors hover:bg-secondary"
@@ -107,7 +144,13 @@ function UserLayout() {
                   )}
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuContent
+                align="end"
+                side="bottom"
+                sideOffset={10}
+                avoidCollisions={false}
+                className="w-56 bg-card/95 text-foreground"
+              >
                 <div className="px-2 py-1.5 text-xs text-muted-foreground truncate">
                   {user?.email}
                 </div>

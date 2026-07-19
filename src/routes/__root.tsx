@@ -100,11 +100,36 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" suppressHydrationWarning>
       <head>
         <HeadContent />
+        <script
+          data-seravie-translate-guard=""
+          dangerouslySetInnerHTML={{
+            __html: `
+(() => {
+  if (window.__seravieTranslateGuardInstalled || typeof Node === "undefined") return;
+  window.__seravieTranslateGuardInstalled = true;
+
+  const removeChild = Node.prototype.removeChild;
+  Node.prototype.removeChild = function guardedRemoveChild(child) {
+    if (child && child.parentNode !== this) return child;
+    return removeChild.call(this, child);
+  };
+
+  const insertBefore = Node.prototype.insertBefore;
+  Node.prototype.insertBefore = function guardedInsertBefore(newNode, referenceNode) {
+    if (referenceNode && referenceNode.parentNode !== this) {
+      return this.appendChild(newNode);
+    }
+    return insertBefore.call(this, newNode, referenceNode);
+  };
+})();
+            `,
+          }}
+        />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         {children}
         <Scripts />
       </body>

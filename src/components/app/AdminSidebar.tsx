@@ -1,19 +1,55 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
-  LayoutDashboard, Building2, Coins, ShoppingBag, FileText, CreditCard, BarChart3,
-  MessageSquare, Calendar, Sparkles, Wrench, Brush,
-  TrendingUp, ArrowLeftRight, Banknote, FileBarChart, Layers,
-  Boxes, Lightbulb, ShieldCheck, Truck, Workflow, Bot, Bell,
-  Webhook, Users, UserCheck, ClipboardList, KeyRound, ScrollText,
-  Settings, Lock, Search, ChevronDown, LayoutTemplate,
+  LayoutDashboard,
+  Building2,
+  Coins,
+  ShoppingBag,
+  FileText,
+  CreditCard,
+  BarChart3,
+  MessageSquare,
+  Calendar,
+  Sparkles,
+  Wrench,
+  Brush,
+  TrendingUp,
+  ArrowLeftRight,
+  Banknote,
+  FileBarChart,
+  Layers,
+  Boxes,
+  Lightbulb,
+  ShieldCheck,
+  Truck,
+  Workflow,
+  Bot,
+  Bell,
+  Webhook,
+  Users,
+  UserCheck,
+  ClipboardList,
+  KeyRound,
+  ScrollText,
+  Settings,
+  Lock,
+  Search,
+  ChevronDown,
+  LayoutTemplate,
+  type LucideIcon,
 } from "lucide-react";
 import {
-  Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
-  SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar,
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
-import {
-  Collapsible, CollapsibleContent, CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Logo, LogoMark } from "@/components/brand/Logo";
 import { useBrand } from "@/components/brand/BrandProvider";
 import { cn } from "@/lib/utils";
@@ -21,9 +57,17 @@ import { useEffect, useState } from "react";
 import { useAuthUser } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
+import { isPathAllowedForRole, useRolePermissions } from "@/lib/rolePermissions";
+import { SAAS_COMMAND_OPEN_EVENT } from "@/components/app/SaasCommandMenu";
 
 // ===== Sidebar configuration (modular, easy to extend) =====
-type Item = { title: string; icon: any; to?: string; search?: Record<string, string>; section: string };
+type Item = {
+  title: string;
+  icon: LucideIcon;
+  to?: string;
+  search?: Record<string, string>;
+  section: string;
+};
 type Group = { label: string; items: Item[] };
 
 const groups: Group[] = [
@@ -44,35 +88,95 @@ const groups: Group[] = [
   {
     label: "Property Management",
     items: [
-      { title: "All Properties", icon: Building2, to: "/admin/properties", section: "Property Management" },
-      { title: "Smart Pricing", icon: Sparkles, to: "/admin/smart-pricing", section: "Property Management" },
-      { title: "Maintenance", icon: Wrench, to: "/admin/maintenance", section: "Property Management" },
+      {
+        title: "All Properties",
+        icon: Building2,
+        to: "/admin/properties",
+        section: "Property Management",
+      },
+      {
+        title: "Smart Pricing",
+        icon: Sparkles,
+        to: "/admin/smart-pricing",
+        section: "Property Management",
+      },
+      {
+        title: "Maintenance",
+        icon: Wrench,
+        to: "/admin/maintenance",
+        section: "Property Management",
+      },
     ],
   },
   {
     label: "Financial",
     items: [
       { title: "Revenue", icon: TrendingUp, to: "/admin/finance", section: "Financial" },
-      { title: "Transactions", icon: ArrowLeftRight, to: "/admin/transactions", section: "Financial" },
+      {
+        title: "Transactions",
+        icon: ArrowLeftRight,
+        to: "/admin/transactions",
+        section: "Financial",
+      },
       { title: "Payouts", icon: Banknote, to: "/admin/payouts", section: "Financial" },
-      { title: "Investor Reports", icon: FileBarChart, to: "/admin/investor-reports", section: "Financial" },
+      {
+        title: "Investor Reports",
+        icon: FileBarChart,
+        to: "/admin/investor-reports",
+        section: "Financial",
+      },
     ],
   },
   {
     label: "Investors",
     items: [
-      { title: "Fractional Ownership", icon: Layers, to: "/admin/fractional-ownership", section: "Investors" },
+      {
+        title: "Fractional Ownership",
+        icon: Layers,
+        to: "/admin/fractional-ownership",
+        section: "Investors",
+      },
       { title: "Portfolio", icon: Boxes, to: "/admin/portfolio", section: "Investors" },
     ],
   },
   {
     label: "Services",
     items: [
-      { title: "Cleaning", icon: Brush, to: "/admin/marketplace", search: { cat: "cleaning" }, section: "Services" },
-      { title: "Repairs", icon: Wrench, to: "/admin/marketplace", search: { cat: "repairs" }, section: "Services" },
-      { title: "Interior Design", icon: Lightbulb, to: "/admin/marketplace", search: { cat: "design" }, section: "Services" },
-      { title: "Insurance", icon: ShieldCheck, to: "/admin/marketplace", search: { cat: "insurance" }, section: "Services" },
-      { title: "Moving Services", icon: Truck, to: "/admin/marketplace", search: { cat: "movers" }, section: "Services" },
+      {
+        title: "Cleaning",
+        icon: Brush,
+        to: "/admin/marketplace",
+        search: { cat: "cleaning" },
+        section: "Services",
+      },
+      {
+        title: "Repairs",
+        icon: Wrench,
+        to: "/admin/marketplace",
+        search: { cat: "repairs" },
+        section: "Services",
+      },
+      {
+        title: "Interior Design",
+        icon: Lightbulb,
+        to: "/admin/marketplace",
+        search: { cat: "design" },
+        section: "Services",
+      },
+      {
+        title: "Insurance",
+        icon: ShieldCheck,
+        to: "/admin/marketplace",
+        search: { cat: "insurance" },
+        section: "Services",
+      },
+      {
+        title: "Moving Services",
+        icon: Truck,
+        to: "/admin/marketplace",
+        search: { cat: "movers" },
+        section: "Services",
+      },
     ],
   },
   {
@@ -97,7 +201,13 @@ const groups: Group[] = [
     items: [
       { title: "Users", icon: Users, to: "/admin/users", section: "Admin" },
       { title: "Permissions", icon: KeyRound, to: "/admin/permissions", section: "Admin" },
-      { title: "Security", icon: Lock, to: "/admin/settings", search: { tab: "security" }, section: "Admin" },
+      {
+        title: "Security",
+        icon: Lock,
+        to: "/admin/settings",
+        search: { tab: "security" },
+        section: "Admin",
+      },
       { title: "Logs", icon: ScrollText, to: "/admin/logs", section: "Admin" },
       { title: "CMS (página pública)", icon: LayoutTemplate, to: "/admin/cms", section: "Admin" },
       { title: "Settings", icon: Settings, to: "/admin/settings", section: "Admin" },
@@ -105,12 +215,20 @@ const groups: Group[] = [
   },
 ];
 
-function ItemLink({ item, active, collapsed }: { item: Item; active: boolean; collapsed: boolean }) {
+function ItemLink({
+  item,
+  active,
+  collapsed,
+}: {
+  item: Item;
+  active: boolean;
+  collapsed: boolean;
+}) {
   const className = cn(
     "group relative flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors duration-150",
     active
       ? "bg-glass-fill-strong text-emerald backdrop-blur-sm"
-      : "text-muted-foreground hover:bg-glass-fill hover:text-foreground"
+      : "text-muted-foreground hover:bg-glass-fill hover:text-foreground",
   );
   const content = (
     <>
@@ -124,7 +242,7 @@ function ItemLink({ item, active, collapsed }: { item: Item; active: boolean; co
 
   if (item.to) {
     return (
-      <Link to={item.to} search={item.search as any} className={className}>
+      <Link to={item.to} search={item.search as never} className={className}>
         {content}
       </Link>
     );
@@ -146,6 +264,7 @@ export function AdminSidebar() {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const brand = useBrand();
   const { user } = useAuthUser();
+  const { permissions } = useRolePermissions();
   const [propertyCount, setPropertyCount] = useState<number | null>(null);
 
   useEffect(() => {
@@ -155,17 +274,35 @@ export function AdminSidebar() {
       .then(({ count }) => setPropertyCount(count ?? 0));
   }, []);
 
-  const ownerLabel = (user?.user_metadata?.name as string | undefined) || user?.email || "Sua conta";
+  const ownerLabel =
+    (user?.user_metadata?.name as string | undefined) || user?.email || "Sua conta";
+  const requestCommandMenu = () => window.dispatchEvent(new Event(SAAS_COMMAND_OPEN_EVENT));
+  const visibleGroups = groups
+    .map((group) => ({
+      ...group,
+      items: group.items.filter((item) =>
+        item.to ? isPathAllowedForRole("admin", item.to, permissions) : true,
+      ),
+    }))
+    .filter((group) => group.items.length > 0);
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-glass-border bg-sidebar/70 backdrop-blur-xl">
+    <Sidebar
+      collapsible="icon"
+      className="border-r border-glass-border bg-sidebar/70 backdrop-blur-xl"
+    >
       <SidebarHeader className="border-b border-glass-border">
         <div className="flex items-center gap-2 px-2 py-2">
           {collapsed ? <LogoMark size="md" /> : <Logo />}
         </div>
         {!collapsed && (
           <div className="px-2 pb-2">
-            <button onClick={() => toast.info("Ainda há apenas um workspace disponível para a sua conta.")} className="flex w-full items-center justify-between rounded-xl border border-border bg-secondary/50 px-2.5 py-2 text-xs hover:bg-secondary">
+            <button
+              onClick={() =>
+                toast.info("Ainda há apenas um workspace disponível para a sua conta.")
+              }
+              className="flex w-full items-center justify-between rounded-xl border border-border bg-secondary/50 px-2.5 py-2 text-xs hover:bg-secondary"
+            >
               <div className="flex items-center gap-2 min-w-0">
                 <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-emerald text-[10px] font-bold text-white">
                   {brand.shortName}
@@ -173,26 +310,33 @@ export function AdminSidebar() {
                 <div className="text-left min-w-0">
                   <div className="truncate text-xs font-semibold">{ownerLabel}</div>
                   <div className="text-[10px] text-muted-foreground">
-                    {propertyCount === null ? "…" : `${propertyCount} imóve${propertyCount === 1 ? "l" : "is"}`}
+                    {propertyCount === null
+                      ? "…"
+                      : `${propertyCount} imóve${propertyCount === 1 ? "l" : "is"}`}
                   </div>
                 </div>
               </div>
               <ChevronDown className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
             </button>
-            <div className="mt-2 flex items-center gap-2 rounded-xl border border-border bg-secondary/30 px-2.5 py-1.5">
+            <button
+              type="button"
+              onClick={requestCommandMenu}
+              className="mt-2 flex w-full items-center gap-2 rounded-xl border border-border bg-secondary/30 px-2.5 py-1.5 text-left hover:bg-secondary/50"
+            >
               <Search className="h-3.5 w-3.5 text-muted-foreground" />
-              <input
-                placeholder="Search…"
-                className="w-full bg-transparent text-xs placeholder:text-muted-foreground focus:outline-none"
-              />
-              <kbd className="rounded bg-background px-1 py-0.5 text-[9px] text-muted-foreground">⌘K</kbd>
-            </div>
+              <span className="min-w-0 flex-1 truncate text-xs text-muted-foreground">
+                Procurar...
+              </span>
+              <kbd className="rounded bg-background px-1 py-0.5 text-[9px] text-muted-foreground">
+                ⌘K
+              </kbd>
+            </button>
           </div>
         )}
       </SidebarHeader>
 
       <SidebarContent className="gap-0">
-        {groups.map((group) => {
+        {visibleGroups.map((group) => {
           const hasActive = group.items.some((i) => i.to && path === i.to);
           // Collapsible only when expanded; in icon mode, render flat list.
           if (collapsed) {
@@ -202,7 +346,11 @@ export function AdminSidebar() {
                   <SidebarMenu>
                     {group.items.map((item) => (
                       <SidebarMenuItem key={item.title}>
-                        <SidebarMenuButton asChild tooltip={item.title} isActive={!!item.to && path === item.to}>
+                        <SidebarMenuButton
+                          asChild
+                          tooltip={item.title}
+                          isActive={!!item.to && path === item.to}
+                        >
                           <ItemLink item={item} active={!!item.to && path === item.to} collapsed />
                         </SidebarMenuButton>
                       </SidebarMenuItem>
@@ -213,7 +361,11 @@ export function AdminSidebar() {
             );
           }
           return (
-            <Collapsible key={group.label} defaultOpen={hasActive || group.label === "Main"} className="group/collapsible">
+            <Collapsible
+              key={group.label}
+              defaultOpen={hasActive || group.label === "Main"}
+              className="group/collapsible"
+            >
               <SidebarGroup>
                 <SidebarGroupLabel asChild>
                   <CollapsibleTrigger className="flex w-full items-center justify-between text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 hover:text-foreground">
@@ -227,7 +379,11 @@ export function AdminSidebar() {
                       {group.items.map((item) => (
                         <SidebarMenuItem key={item.title}>
                           <SidebarMenuButton asChild isActive={!!item.to && path === item.to}>
-                            <ItemLink item={item} active={!!item.to && path === item.to} collapsed={false} />
+                            <ItemLink
+                              item={item}
+                              active={!!item.to && path === item.to}
+                              collapsed={false}
+                            />
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                       ))}
@@ -242,8 +398,15 @@ export function AdminSidebar() {
         {!collapsed && (
           <div className="m-3 rounded-2xl bg-emerald/15 p-4">
             <div className="font-display text-sm font-semibold">Upgrade to Pro</div>
-            <div className="mt-1 text-xs text-muted-foreground">Unlimited AI pricing & contracts.</div>
-            <button onClick={() => toast.info("Planos pagos ainda não estão conectados a cobrança real.")} className="mt-3 w-full rounded-full bg-foreground py-2 text-xs font-semibold text-background">Upgrade</button>
+            <div className="mt-1 text-xs text-muted-foreground">
+              Unlimited AI pricing & contracts.
+            </div>
+            <button
+              onClick={() => toast.info("Planos pagos ainda não estão conectados a cobrança real.")}
+              className="mt-3 w-full rounded-full bg-foreground py-2 text-xs font-semibold text-background"
+            >
+              Upgrade
+            </button>
           </div>
         )}
       </SidebarContent>

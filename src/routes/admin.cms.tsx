@@ -1,22 +1,26 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import {
+  Archive,
   ExternalLink,
   FileText,
   ImageIcon,
   Loader2,
   Newspaper,
   Plus,
+  RotateCcw,
   Save,
   Trash2,
 } from "lucide-react";
 import { toast } from "sonner";
-import { PageHeader, Card, SectionTitle } from "@/components/app/ui";
+import { PageHeader, Card, SectionTitle, Badge } from "@/components/app/ui";
 import {
   type BlogPost,
   defaultBlogPosts,
+  getPublicPageStatus,
   parseBlogPosts,
   publicPageDefaults,
+  publicPageStatusLabels,
   serializeBlogPosts,
 } from "@/components/landing/publicContent";
 import { supabase } from "@/lib/supabase";
@@ -210,6 +214,27 @@ function AdminCms() {
   };
 
   const save = (sectionKey: string) => saveContent(sectionKey, values?.[sectionKey] ?? {});
+
+  const setPageStatus = async (
+    sectionKey: string,
+    current: SiteContentValue,
+    status: "published" | "archived" | "deleted",
+  ) => {
+    const next: SiteContentValue = { ...current, status };
+    if (status === "published") {
+      delete next.archived_at;
+      delete next.deleted_at;
+    }
+    if (status === "archived") {
+      next.archived_at = new Date().toISOString();
+      delete next.deleted_at;
+    }
+    if (status === "deleted") {
+      next.deleted_at = new Date().toISOString();
+      delete next.archived_at;
+    }
+    return saveContent(sectionKey, next);
+  };
 
   const uploadHeroImage = async (file: File) => {
     if (!file.type.startsWith("image/")) {
@@ -422,12 +447,25 @@ function AdminCms() {
           {publicPageDefaults.map((page) => {
             const sectionKey = `page_${page.key}`;
             const current = { ...page.defaults, ...(values[sectionKey] ?? {}) };
+            const status = getPublicPageStatus(current);
+            const pageSaving = saving === sectionKey;
             return (
               <Card key={page.key}>
                 <SectionTitle
                   title={page.menuTitle}
                   action={
                     <div className="flex flex-wrap gap-2">
+                      <Badge
+                        variant={
+                          status === "published"
+                            ? "emerald"
+                            : status === "archived"
+                              ? "muted"
+                              : "warn"
+                        }
+                      >
+                        {publicPageStatusLabels[status]}
+                      </Badge>
                       <a
                         href={page.path}
                         target="_blank"
@@ -436,9 +474,42 @@ function AdminCms() {
                       >
                         <ExternalLink className="h-3.5 w-3.5" /> Abrir
                       </a>
+                      {status !== "published" && (
+                        <StatusButton
+                          label="Restaurar"
+                          icon={RotateCcw}
+                          disabled={pageSaving}
+                          onClick={() => setPageStatus(sectionKey, current, "published")}
+                        />
+                      )}
+                      {status !== "archived" && (
+                        <StatusButton
+                          label="Arquivar"
+                          icon={Archive}
+                          disabled={pageSaving}
+                          onClick={() => setPageStatus(sectionKey, current, "archived")}
+                        />
+                      )}
+                      {status !== "deleted" && (
+                        <StatusButton
+                          label="Excluir"
+                          icon={Trash2}
+                          danger
+                          disabled={pageSaving}
+                          onClick={() => {
+                            if (
+                              window.confirm(
+                                `Excluir a página "${page.menuTitle}" da área pública? O conteúdo ficará salvo para restauração.`,
+                              )
+                            ) {
+                              setPageStatus(sectionKey, current, "deleted");
+                            }
+                          }}
+                        />
+                      )}
                       <SaveButton
                         onClick={() => saveContent(sectionKey, current)}
-                        loading={saving === sectionKey}
+                        loading={pageSaving}
                       />
                     </div>
                   }
@@ -568,6 +639,36 @@ function SaveButton({ onClick, loading }: { onClick: () => void; loading: boolea
         <Save className="h-3.5 w-3.5" />
       )}
       Salvar
+    </button>
+  );
+}
+
+function StatusButton({
+  label,
+  icon: Icon,
+  onClick,
+  disabled,
+  danger,
+}: {
+  label: string;
+  icon: typeof Save;
+  onClick: () => void;
+  disabled?: boolean;
+  danger?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={`flex items-center gap-2 rounded-full border border-glass-border px-3 py-1.5 text-xs font-medium disabled:opacity-50 ${
+        danger
+          ? "bg-glass-fill text-destructive hover:bg-destructive/10"
+          : "bg-glass-fill text-muted-foreground hover:bg-secondary hover:text-foreground"
+      }`}
+    >
+      <Icon className="h-3.5 w-3.5" />
+      {label}
     </button>
   );
 }

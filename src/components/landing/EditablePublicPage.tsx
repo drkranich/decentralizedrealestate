@@ -3,6 +3,7 @@ import { PublicPage } from "@/components/landing/PublicPage";
 import {
   defaultBlogPosts,
   getPublicPageDefaults,
+  getPublicPageStatus,
   parseBlogPosts,
   serializeBlogPosts,
 } from "@/components/landing/publicContent";
@@ -11,6 +12,18 @@ import { usePublicContent } from "@/lib/siteContent";
 export function EditablePublicPage({ pageKey }: { pageKey: string }) {
   const page = getPublicPageDefaults(pageKey);
   const content = usePublicContent(`page_${page.key}`, page.defaults);
+  const status = getPublicPageStatus(content);
+
+  if (status !== "published") {
+    return (
+      <PublicPage
+        title={status === "archived" ? "Página arquivada" : "Página indisponível"}
+        subtitle="Este conteúdo foi retirado da publicação pelo CMS da página pública."
+      >
+        <p>Volte para a página inicial ou acesse outra área pública da Seravie Heritage.</p>
+      </PublicPage>
+    );
+  }
 
   return (
     <PublicPage title={content.title} subtitle={content.subtitle}>

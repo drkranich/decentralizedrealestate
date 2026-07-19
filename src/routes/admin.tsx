@@ -1,5 +1,11 @@
-import { createFileRoute, Outlet, redirect, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import {
+  createFileRoute,
+  Outlet,
+  redirect,
+  useNavigate,
+  useRouterState,
+} from "@tanstack/react-router";
+import { useEffect } from "react";
 import { toast } from "sonner";
 import { Bell, Search, Plus, LogOut } from "lucide-react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -12,6 +18,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/lib/supabase";
 import { useAuthUser, useUserRole, useAvatarUrl, initials } from "@/lib/auth";
+import {
+  getFirstAllowedPath,
+  isPathAllowedForRole,
+  useRolePermissions,
+} from "@/lib/rolePermissions";
+import { SaasCommandMenu } from "@/components/app/SaasCommandMenu";
 
 export const Route = createFileRoute("/admin")({
   beforeLoad: async () => {
@@ -50,9 +62,10 @@ function AppLayout() {
   const navigate = useNavigate();
   const { user, loading: authLoading, signOut } = useAuthUser();
   const { role, loading: roleLoading } = useUserRole();
+  const { permissions, loading: permissionsLoading } = useRolePermissions();
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
   const avatarUrl = useAvatarUrl();
   const displayName = (user?.user_metadata?.name as string | undefined) ?? user?.email ?? "";
-  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     if (authLoading) return;
@@ -63,20 +76,19 @@ function AppLayout() {
     if (roleLoading) return;
     if (role !== "admin") {
       navigate({ to: "/app/dashboard", replace: true });
+      return;
     }
-  }, [authLoading, navigate, role, roleLoading, user]);
-
-  const runSearch = () => {
-    if (!searchQuery.trim()) return;
-    navigate({ to: "/admin/properties", search: { q: searchQuery.trim() } });
-  };
+    if (!permissionsLoading && !isPathAllowedForRole(role, pathname, permissions)) {
+      navigate({ to: getFirstAllowedPath(role, "admin", permissions), replace: true });
+    }
+  }, [authLoading, navigate, permissions, permissionsLoading, pathname, role, roleLoading, user]);
 
   const handleSignOut = async () => {
     await signOut();
     navigate({ to: "/login" });
   };
 
-  if (authLoading || roleLoading || !user || role !== "admin") {
+  if (authLoading || roleLoading || permissionsLoading || !user || role !== "admin") {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="rounded-2xl border border-glass-border bg-card/70 px-6 py-4 text-sm text-muted-foreground shadow-soft backdrop-blur-xl">
@@ -101,19 +113,23 @@ function AppLayout() {
         <div className="relative z-10 flex min-w-0 flex-1 flex-col">
           <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-glass-border bg-background/70 px-4 backdrop-blur-xl md:px-6">
             <SidebarTrigger />
-            <div className="flex flex-1 items-center gap-2 rounded-full border border-glass-border bg-secondary/40 px-4 py-2 max-w-md backdrop-blur-sm">
-              <Search className="h-4 w-4 text-muted-foreground" />
-              <input
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && runSearch()}
-                className="w-full bg-transparent text-sm placeholder:text-muted-foreground focus:outline-none"
-                placeholder="Search properties… (Enter)"
-              />
-              <kbd className="hidden rounded bg-background px-1.5 py-0.5 text-[10px] text-muted-foreground md:inline">
-                ⌘K
-              </kbd>
-            </div>
+            <SaasCommandMenu
+              role="admin"
+              permissions={permissions}
+              trigger={(open) => (
+                <button
+                  type="button"
+                  onClick={open}
+                  className="flex max-w-md flex-1 items-center gap-2 rounded-full border border-glass-border bg-secondary/40 px-4 py-2 text-left text-sm text-muted-foreground backdrop-blur-sm transition-colors hover:bg-secondary hover:text-foreground"
+                >
+                  <Search className="h-4 w-4 shrink-0" />
+                  <span className="truncate">Procurar no SaaS...</span>
+                  <kbd className="ml-auto hidden rounded bg-background px-1.5 py-0.5 text-[10px] text-muted-foreground md:inline">
+                    ⌘K
+                  </kbd>
+                </button>
+              )}
+            />
             <button
               onClick={() => navigate({ to: "/admin/properties", search: { add: "1" } })}
               className="hidden items-center gap-2 rounded-full bg-emerald px-4 py-2 text-sm font-medium text-white shadow-glow transition-transform hover:scale-105 md:flex"
@@ -136,7 +152,13 @@ function AppLayout() {
                   )}
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuContent
+                align="end"
+                side="bottom"
+                sideOffset={10}
+                avoidCollisions={false}
+                className="w-56 bg-card/95 text-foreground"
+              >
                 <div className="px-2 py-1.5 text-xs text-muted-foreground truncate">
                   {user?.email}
                 </div>

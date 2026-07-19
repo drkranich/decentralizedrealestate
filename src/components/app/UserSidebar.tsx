@@ -1,17 +1,37 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
-  LayoutDashboard, Building2, Calendar, TrendingUp, FileText, Wrench,
-  CreditCard, MessageSquare, LogOut, UserRound, Coins, ScrollText,
+  LayoutDashboard,
+  Building2,
+  Calendar,
+  TrendingUp,
+  FileText,
+  Wrench,
+  CreditCard,
+  MessageSquare,
+  LogOut,
+  UserRound,
+  Coins,
+  ScrollText,
+  type LucideIcon,
 } from "lucide-react";
 import {
-  Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
-  SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar,
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { Logo, LogoMark } from "@/components/brand/Logo";
 import { useAuthUser, useAvatarUrl, initials } from "@/lib/auth";
 import type { UserRole } from "@/lib/auth";
+import { isPathAllowedForRole, useRolePermissions } from "@/lib/rolePermissions";
 
-type Item = { title: string; icon: any; to: string };
+type Item = { title: string; icon: LucideIcon; to: string };
 
 const ownerItems: Item[] = [
   { title: "Dashboard", icon: LayoutDashboard, to: "/app/dashboard" },
@@ -46,12 +66,21 @@ export function UserSidebar({ role }: { role: UserRole | null }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const { user, signOut } = useAuthUser();
   const avatarUrl = useAvatarUrl();
-  const items = role === "owner" ? ownerItems : role === "investor" ? investorItems : tenantItems;
+  const { permissions } = useRolePermissions();
+  const baseItems =
+    role === "owner" ? ownerItems : role === "investor" ? investorItems : tenantItems;
+  const items = role
+    ? baseItems.filter((item) => isPathAllowedForRole(role, item.to, permissions))
+    : baseItems;
   const displayName = (user?.user_metadata?.name as string | undefined) ?? user?.email ?? "";
-  const roleLabel = role === "owner" ? "Dono de imóvel" : role === "investor" ? "Investidor" : "Inquilino";
+  const roleLabel =
+    role === "owner" ? "Dono de imóvel" : role === "investor" ? "Investidor" : "Inquilino";
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-glass-border bg-sidebar/70 backdrop-blur-xl">
+    <Sidebar
+      collapsible="icon"
+      className="border-r border-glass-border bg-sidebar/70 backdrop-blur-xl"
+    >
       <SidebarHeader className="border-b border-glass-border">
         <div className="flex items-center gap-2 px-2 py-2">
           {collapsed ? <LogoMark size="md" /> : <Logo />}
@@ -60,7 +89,11 @@ export function UserSidebar({ role }: { role: UserRole | null }) {
           <div className="px-2 pb-2">
             <div className="flex items-center gap-2 rounded-xl border border-border bg-secondary/50 px-2.5 py-2 text-xs">
               <div className="flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden rounded-md bg-emerald text-[10px] font-bold text-white">
-                {avatarUrl ? <img src={avatarUrl} alt="" className="h-full w-full object-cover" /> : initials(displayName)}
+                {avatarUrl ? (
+                  <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
+                ) : (
+                  initials(displayName)
+                )}
               </div>
               <div className="min-w-0 text-left">
                 <div className="truncate text-xs font-semibold">{displayName}</div>

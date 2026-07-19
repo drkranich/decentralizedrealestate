@@ -9,6 +9,14 @@ export type PublicPageDefaults = {
   };
 };
 
+export type PublicPageStatus = "published" | "archived" | "deleted";
+
+export const publicPageStatusLabels: Record<PublicPageStatus, string> = {
+  published: "Publicada",
+  archived: "Arquivada",
+  deleted: "Excluída",
+};
+
 export type BlogPost = {
   id: string;
   title: string;
@@ -321,6 +329,11 @@ export const defaultBlogPosts: BlogPost[] = [
 
 export function getPublicPageDefaults(key: string) {
   return publicPageDefaults.find((page) => page.key === key) ?? publicPageDefaults[0];
+}
+
+export function getPublicPageStatus(data: { status?: string }): PublicPageStatus {
+  if (data.status === "archived" || data.status === "deleted") return data.status;
+  return "published";
 }
 
 export function parseBlogPosts(raw: string | undefined): BlogPost[] {
