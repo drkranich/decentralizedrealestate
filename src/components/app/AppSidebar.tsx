@@ -147,8 +147,8 @@ export function AppSidebar() {
   const brand = useBrand();
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-border">
-      <SidebarHeader className="border-b border-border">
+    <Sidebar collapsible="icon" className="border-r border-white/10 bg-sidebar/70 backdrop-blur-xl">
+      <SidebarHeader className="border-b border-white/10">
         <div className="flex items-center gap-2 px-2 py-2">
           {collapsed ? <LogoMark size="md" /> : <Logo />}
         </div>

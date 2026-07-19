@@ -167,3 +167,17 @@
   to { transform: translateX(-50%); }
 }
 .animate-marquee { animation: marquee 40s linear infinite; }
+
+/* Ambient background blobs behind glass panels (app shell) */
+@keyframes drift-slow {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(40px, 30px) scale(1.08); }
+}
+.animate-drift-slow { animation: drift-slow 18s ease-in-out infinite; }
+
+@keyframes drift-slower {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-35px, 25px) scale(1.05); }
+}
+.animate-drift-slower { animation: drift-slower 24s ease-in-out infinite; }
+

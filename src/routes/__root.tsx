@@ -58,12 +58,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:description", content: "Decentralized real estate platform for investing, hosting, and managing properties worldwide. Tokenized ownership, AI pricing, automated operations." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { title: "SERAVIE" },
-      { property: "og:title", content: "SERAVIE" },
-      { name: "twitter:title", content: "SERAVIE" },
+      { name: "twitter:title", content: `${defaultBrand.name} — ${defaultBrand.tagline}` },
       { name: "twitter:description", content: "Decentralized real estate platform for investing, hosting, and managing properties worldwide. Tokenized ownership, AI pricing, automated operations." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/d8dfaf10-2d8f-4010-b6b1-db583940ca4c/id-preview-ecd5ed80--a5a2fd30-0ea2-4942-bc45-ba2cb0f23b36.lovable.app-1778164513165.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/d8dfaf10-2d8f-4010-b6b1-db583940ca4c/id-preview-ecd5ed80--a5a2fd30-0ea2-4942-bc45-ba2cb0f23b36.lovable.app-1778164513165.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },

@@ -1,35 +1,69 @@
-// Shared UI primitives for app pages
+// Shared UI primitives for app pages — glassmorphism + subtle motion,
+// driven by the brand tokens in src/config/brand.ts / src/styles.css.
 import { ReactNode } from "react";
+import { motion } from "framer-motion";
 
 export function PageHeader({ title, subtitle, children }: { title: string; subtitle?: string; children?: ReactNode }) {
   return (
-    <div className="mb-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+    <motion.div
+      initial={{ opacity: 0, y: -8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      className="mb-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center"
+    >
       <div>
         <h1 className="font-display text-3xl font-bold tracking-tight md:text-4xl">{title}</h1>
         {subtitle && <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>}
       </div>
       <div className="flex flex-wrap gap-2">{children}</div>
-    </div>
+    </motion.div>
   );
 }
 
-export function StatCard({ label, value, change, icon: Icon, accent = "emerald" }: { label: string; value: string; change?: string; icon: any; accent?: "emerald" | "skyblue" }) {
+export function StatCard({
+  label, value, change, icon: Icon, accent = "emerald", delay = 0,
+}: { label: string; value: string; change?: string; icon: any; accent?: "emerald" | "skyblue" | "gold"; delay?: number }) {
+  const accentClass =
+    accent === "emerald" ? "from-emerald/15 to-emerald-glow/15 text-emerald"
+    : accent === "gold" ? "from-gold/20 to-emerald/10 text-gold"
+    : "from-skyblue/15 to-emerald/15 text-skyblue";
   return (
-    <div className="rounded-3xl border border-border bg-card p-5 shadow-soft transition-all hover:shadow-elegant">
-      <div className="flex items-center justify-between">
-        <span className="text-xs uppercase tracking-wide text-muted-foreground">{label}</span>
-        <div className={`flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br ${accent === "emerald" ? "from-emerald/15 to-emerald-glow/15" : "from-skyblue/15 to-emerald/15"}`}>
-          <Icon className={`h-4 w-4 ${accent === "emerald" ? "text-emerald" : "text-skyblue"}`} />
+    <motion.div
+      initial={{ opacity: 0, y: 14 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.45, ease: "easeOut", delay }}
+      whileHover={{ y: -3 }}
+      className="group relative overflow-hidden rounded-3xl border border-white/10 bg-card/60 p-5 shadow-soft backdrop-blur-xl transition-colors duration-300 hover:border-emerald/30 hover:shadow-elegant"
+    >
+      <div className="pointer-events-none absolute inset-0 opacity-70" style={{ backgroundImage: "var(--gradient-glass)" }} />
+      <div className="relative">
+        <div className="flex items-center justify-between">
+          <span className="text-xs uppercase tracking-wide text-muted-foreground">{label}</span>
+          <div className={`flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br transition-transform duration-300 group-hover:scale-110 ${accentClass}`}>
+            <Icon className="h-4 w-4" />
+          </div>
         </div>
+        <div className="mt-3 font-display text-3xl font-bold">{value}</div>
+        {change && <div className="mt-1 text-xs font-medium text-emerald">{change}</div>}
       </div>
-      <div className="mt-3 font-display text-3xl font-bold">{value}</div>
-      {change && <div className="mt-1 text-xs font-medium text-emerald">{change}</div>}
-    </div>
+    </motion.div>
   );
 }
 
 export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <div className={`rounded-3xl border border-border bg-card p-6 shadow-soft ${className}`}>{children}</div>;
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 14 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.45, ease: "easeOut" }}
+      className={`group relative overflow-hidden rounded-3xl border border-white/10 bg-card/60 p-6 shadow-soft backdrop-blur-xl transition-all duration-300 hover:border-emerald/20 hover:shadow-elegant ${className}`}
+    >
+      <div className="pointer-events-none absolute inset-0 opacity-60" style={{ backgroundImage: "var(--gradient-glass)" }} />
+      <div className="relative">{children}</div>
+    </motion.div>
+  );
 }
 
 export function SectionTitle({ title, action }: { title: string; action?: ReactNode }) {
@@ -41,13 +75,18 @@ export function SectionTitle({ title, action }: { title: string; action?: ReactN
   );
 }
 
-export function Badge({ children, variant = "default" }: { children: ReactNode; variant?: "default" | "emerald" | "blue" | "warn" | "muted" }) {
+export function Badge({ children, variant = "default" }: { children: ReactNode; variant?: "default" | "emerald" | "blue" | "gold" | "warn" | "muted" }) {
   const map = {
-    default: "bg-secondary text-foreground",
-    emerald: "bg-emerald/10 text-emerald",
-    blue: "bg-skyblue/15 text-skyblue",
-    warn: "bg-yellow-500/15 text-yellow-600 dark:text-yellow-400",
-    muted: "bg-muted text-muted-foreground",
+    default: "bg-secondary/70 text-foreground backdrop-blur-sm",
+    emerald: "bg-emerald/10 text-emerald backdrop-blur-sm",
+    blue: "bg-skyblue/15 text-skyblue backdrop-blur-sm",
+    gold: "bg-gold/15 text-gold backdrop-blur-sm",
+    warn: "bg-destructive/15 text-destructive backdrop-blur-sm",
+    muted: "bg-muted/70 text-muted-foreground backdrop-blur-sm",
   };
-  return <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${map[variant]}`}>{children}</span>;
+  return (
+    <span className={`inline-flex items-center rounded-full border border-white/10 px-2.5 py-0.5 text-xs font-medium transition-colors ${map[variant]}`}>
+      {children}
+    </span>
+  );
 }
