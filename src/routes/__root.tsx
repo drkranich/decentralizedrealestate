@@ -23,7 +23,10 @@ function NotFoundComponent() {
           The page you're looking for doesn't exist.
         </p>
         <div className="mt-6">
-          <Link to="/" className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:opacity-90">
+          <Link
+            to="/"
+            className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:opacity-90"
+          >
             Back home
           </Link>
         </div>
@@ -40,7 +43,13 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
       <div className="max-w-md text-center">
         <h1 className="text-xl font-semibold">Something went wrong</h1>
         <p className="mt-2 text-sm text-muted-foreground">{error.message}</p>
-        <button onClick={() => { router.invalidate(); reset(); }} className="mt-6 inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground">
+        <button
+          onClick={() => {
+            router.invalidate();
+            reset();
+          }}
+          className="mt-6 inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground"
+        >
           Try again
         </button>
       </div>
@@ -54,14 +63,26 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "google", content: "notranslate" },
-      { title: `${defaultBrand.name} — ${defaultBrand.tagline}` },
-      { name: "description", content: "Decentralized real estate platform for investing, hosting, and managing properties worldwide. Tokenized ownership, AI pricing, automated operations." },
-      { property: "og:title", content: `${defaultBrand.name} — ${defaultBrand.tagline}` },
-      { property: "og:description", content: "Decentralized real estate platform for investing, hosting, and managing properties worldwide. Tokenized ownership, AI pricing, automated operations." },
+      { title: `${defaultBrand.name} - ${defaultBrand.tagline}` },
+      {
+        name: "description",
+        content:
+          "Seravie Heritage connects owners, investors and entrepreneurs in a global real estate platform for buying, selling, investing, managing and tokenizing real assets.",
+      },
+      { property: "og:title", content: `${defaultBrand.name} - ${defaultBrand.tagline}` },
+      {
+        property: "og:description",
+        content:
+          "Global real estate platform for traditional property transactions, tokenized assets, secondary markets and real estate management.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: `${defaultBrand.name} — ${defaultBrand.tagline}` },
-      { name: "twitter:description", content: "Decentralized real estate platform for investing, hosting, and managing properties worldwide. Tokenized ownership, AI pricing, automated operations." },
+      { name: "twitter:title", content: `${defaultBrand.name} - ${defaultBrand.tagline}` },
+      {
+        name: "twitter:description",
+        content:
+          "Buy, sell, invest, manage and tokenize real estate through a global digital platform.",
+      },
     ],
     links: [
       { rel: "stylesheet", href: appCss },

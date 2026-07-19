@@ -1,26 +1,29 @@
 import * as Icons from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Logo } from "@/components/brand/Logo";
 import { useBrand } from "@/components/brand/BrandProvider";
 import { usePublicContent } from "@/lib/siteContent";
 
+const iconMap = Icons as unknown as Record<string, LucideIcon>;
+
 const cols = [
   {
-    title: "Product",
+    title: "Plataforma",
     links: [
-      { label: "Properties", href: "/#properties" },
-      { label: "Invest", href: "/#invest" },
-      { label: "Manage", href: "/#manage" },
-      { label: "Marketplace", href: "/#marketplace" },
-      { label: "AI", href: "/#ai" },
-      { label: "Pricing", to: "/pricing" },
+      { label: "Marketplace", href: "/#platform" },
+      { label: "Tokenizacao", href: "/#token" },
+      { label: "Investimentos", href: "/#invest" },
+      { label: "Mercado secundario", href: "/#exchange" },
+      { label: "Gestao patrimonial", href: "/#infrastructure" },
+      { label: "Internacional", href: "/#international" },
     ],
   },
   {
-    title: "Developers",
+    title: "Infraestrutura",
     links: [
       { label: "API", to: "/api" },
-      { label: "Documentation", to: "/docs" },
+      { label: "Documentacao", to: "/docs" },
       { label: "SDKs", to: "/sdks" },
       { label: "Webhooks", to: "/webhooks" },
       { label: "Status", to: "/status" },
@@ -28,10 +31,10 @@ const cols = [
     ],
   },
   {
-    title: "Company",
+    title: "Empresa",
     links: [
-      { label: "About", to: "/about" },
-      { label: "Careers", to: "/careers" },
+      { label: "Sobre", to: "/about" },
+      { label: "Carreiras", to: "/careers" },
       { label: "Blog", to: "/blog" },
       { label: "Press", to: "/press" },
       { label: "Investor relations", to: "/investor-relations" },
@@ -52,9 +55,10 @@ const cols = [
 ];
 
 const footerCtaDefaults = {
-  heading_prefix: "Ready to operate real estate",
-  heading_emphasis: "like a global tech company?",
-  subheading: "Join 84,000+ owners, hosts and investors using Property OS.",
+  heading_prefix: "Construa patrimonio imobiliario",
+  heading_emphasis: "com infraestrutura digital.",
+  subheading:
+    "A Seravie Heritage conecta ativos reais, capital global e tecnologia para a proxima geracao do mercado imobiliario.",
 };
 
 export function Footer() {
@@ -66,12 +70,21 @@ export function Footer() {
         <div className="rounded-[2rem] bg-skyblue/5 p-10 md:p-14">
           <div className="grid items-center gap-8 lg:grid-cols-2">
             <div>
-              <h3 className="font-display text-3xl font-bold md:text-4xl">{c.heading_prefix} <span className="text-emerald">{c.heading_emphasis}</span></h3>
+              <h3 className="font-display text-3xl font-bold md:text-4xl">
+                {c.heading_prefix} <span className="text-emerald">{c.heading_emphasis}</span>
+              </h3>
               <p className="mt-3 text-muted-foreground">{c.subheading}</p>
             </div>
             <div className="flex flex-wrap gap-3 lg:justify-end">
-              <Link to="/signup" className="rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background hover:opacity-90">Start free</Link>
-              <a href="mailto:contato@decentralizedrealestate.com" className="rounded-full glass px-6 py-3 text-sm font-medium">Talk to sales</a>
+              <Link
+                to="/signup"
+                className="rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background hover:opacity-90"
+              >
+                Criar conta
+              </Link>
+              <Link to="/login" className="rounded-full glass px-6 py-3 text-sm font-medium">
+                Acessar plataforma
+              </Link>
             </div>
           </div>
         </div>
@@ -82,9 +95,14 @@ export function Footer() {
             <p className="mt-4 max-w-xs text-sm text-muted-foreground">{brand.tagline}</p>
             <div className="mt-5 flex gap-2">
               {brand.social.map((s) => {
-                const I = (Icons as any)[s.icon] ?? Icons.Link;
+                const I = iconMap[s.icon] ?? Icons.Link;
                 return (
-                  <a key={s.label} href={s.href} aria-label={s.label} className="flex h-9 w-9 items-center justify-center rounded-full border border-border hover:bg-secondary">
+                  <a
+                    key={s.label}
+                    href={s.href}
+                    aria-label={s.label}
+                    className="flex h-9 w-9 items-center justify-center rounded-full border border-border hover:bg-secondary"
+                  >
                     <I className="h-4 w-4" />
                   </a>
                 );
@@ -98,9 +116,19 @@ export function Footer() {
                 {c.links.map((l) => (
                   <li key={l.label}>
                     {"to" in l ? (
-                      <Link to={l.to} className="text-sm text-muted-foreground hover:text-foreground">{l.label}</Link>
+                      <Link
+                        to={l.to}
+                        className="text-sm text-muted-foreground hover:text-foreground"
+                      >
+                        {l.label}
+                      </Link>
                     ) : (
-                      <a href={l.href} className="text-sm text-muted-foreground hover:text-foreground">{l.label}</a>
+                      <a
+                        href={l.href}
+                        className="text-sm text-muted-foreground hover:text-foreground"
+                      >
+                        {l.label}
+                      </a>
                     )}
                   </li>
                 ))}
@@ -112,7 +140,9 @@ export function Footer() {
         <div className="mt-12 flex flex-col items-start justify-between gap-3 border-t border-border pt-6 text-xs text-muted-foreground md:flex-row md:items-center">
           <div>{brand.legal.copyright}</div>
           <div className="flex gap-4">
-            {brand.legal.certifications.map((c) => <span key={c}>{c}</span>)}
+            {brand.legal.certifications.map((c) => (
+              <span key={c}>{c}</span>
+            ))}
           </div>
         </div>
       </div>
