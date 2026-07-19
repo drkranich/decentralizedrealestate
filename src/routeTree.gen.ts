@@ -9,87 +9,362 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AppSmartPricingRouteImport } from './routes/app.smart-pricing'
-import { Route as AppSettingsRouteImport } from './routes/app.settings'
-import { Route as AppPropertiesCalendarRouteImport } from './routes/app.properties-calendar'
-import { Route as AppPropertiesAnalyticsRouteImport } from './routes/app.properties-analytics'
-import { Route as AppPropertiesRouteImport } from './routes/app.properties'
-import { Route as AppOwnerRouteImport } from './routes/app.owner'
-import { Route as AppMarketplaceRouteImport } from './routes/app.marketplace'
-import { Route as AppInvestorRouteImport } from './routes/app.investor'
-import { Route as AppFinanceRouteImport } from './routes/app.finance'
-import { Route as AppDashboardRouteImport } from './routes/app.dashboard'
-import { Route as AppCrmRouteImport } from './routes/app.crm'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as ApiRouteImport } from './routes/api'
+import { Route as AppRouteImport } from './routes/app'
+import { Route as BlogRouteImport } from './routes/blog'
+import { Route as CareersRouteImport } from './routes/careers'
+import { Route as ChangelogRouteImport } from './routes/changelog'
+import { Route as ComplianceRouteImport } from './routes/compliance'
+import { Route as CookiesRouteImport } from './routes/cookies'
+import { Route as DocsRouteImport } from './routes/docs'
+import { Route as InvestorRelationsRouteImport } from './routes/investor-relations'
+import { Route as LicensesRouteImport } from './routes/licenses'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as PressRouteImport } from './routes/press'
+import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as SdksRouteImport } from './routes/sdks'
+import { Route as SecurityRouteImport } from './routes/security'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as StatusRouteImport } from './routes/status'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as WebhooksRouteImport } from './routes/webhooks'
+import { Route as WhiteLabelRouteImport } from './routes/white-label'
+import { Route as AdminAiRouteImport } from './routes/admin.ai'
+import { Route as AdminCmsRouteImport } from './routes/admin.cms'
+import { Route as AdminComingSoonRouteImport } from './routes/admin.coming-soon'
+import { Route as AdminContractsRouteImport } from './routes/admin.contracts'
+import { Route as AdminCrmRouteImport } from './routes/admin.crm'
+import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
+import { Route as AdminFinanceRouteImport } from './routes/admin.finance'
+import { Route as AdminFollowUpRouteImport } from './routes/admin.follow-up'
+import { Route as AdminFractionalOwnershipRouteImport } from './routes/admin.fractional-ownership'
+import { Route as AdminInvestorRouteImport } from './routes/admin.investor'
+import { Route as AdminInvestorReportsRouteImport } from './routes/admin.investor-reports'
+import { Route as AdminLogsRouteImport } from './routes/admin.logs'
+import { Route as AdminMaintenanceRouteImport } from './routes/admin.maintenance'
+import { Route as AdminMarketplaceRouteImport } from './routes/admin.marketplace'
+import { Route as AdminMessagesRouteImport } from './routes/admin.messages'
+import { Route as AdminNotificationsRouteImport } from './routes/admin.notifications'
+import { Route as AdminOwnerRouteImport } from './routes/admin.owner'
+import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
+import { Route as AdminPayoutsRouteImport } from './routes/admin.payouts'
+import { Route as AdminPermissionsRouteImport } from './routes/admin.permissions'
+import { Route as AdminPortfolioRouteImport } from './routes/admin.portfolio'
+import { Route as AdminPropertiesRouteImport } from './routes/admin.properties'
+import { Route as AdminPropertiesAnalyticsRouteImport } from './routes/admin.properties-analytics'
+import { Route as AdminPropertiesCalendarRouteImport } from './routes/admin.properties-calendar'
+import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
+import { Route as AdminSmartPricingRouteImport } from './routes/admin.smart-pricing'
+import { Route as AdminTenantScoringRouteImport } from './routes/admin.tenant-scoring'
+import { Route as AdminTransactionsRouteImport } from './routes/admin.transactions'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as AdminWebhooksRouteImport } from './routes/admin.webhooks'
+import { Route as AdminWorkflowsRouteImport } from './routes/admin.workflows'
+import { Route as AppCalendarRouteImport } from './routes/app.calendar'
+import { Route as AppContractRouteImport } from './routes/app.contract'
 import { Route as AppContractsRouteImport } from './routes/app.contracts'
-import { Route as AppComingSoonRouteImport } from './routes/app.coming-soon'
-import { Route as AppAiRouteImport } from './routes/app.ai'
-import { Route as AppPropertiesIdRouteImport } from './routes/app.properties.$id'
+import { Route as AppDashboardRouteImport } from './routes/app.dashboard'
+import { Route as AppFinanceRouteImport } from './routes/app.finance'
+import { Route as AppInvestorDocumentsRouteImport } from './routes/app.investor-documents'
+import { Route as AppInvestorEarningsRouteImport } from './routes/app.investor-earnings'
+import { Route as AppInvestorPortfolioRouteImport } from './routes/app.investor-portfolio'
+import { Route as AppMaintenanceRouteImport } from './routes/app.maintenance'
+import { Route as AppMessagesRouteImport } from './routes/app.messages'
+import { Route as AppPaymentsRouteImport } from './routes/app.payments'
+import { Route as AppProfileRouteImport } from './routes/app.profile'
+import { Route as AppPropertiesRouteImport } from './routes/app.properties'
+import { Route as ListingIdRouteImport } from './routes/listing.$id'
+import { Route as AdminPropertiesIdRouteImport } from './routes/admin.properties.$id'
 
-const AppRoute = AppRouteImport.update({
-  id: '/app',
-  path: '/app',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppSmartPricingRoute = AppSmartPricingRouteImport.update({
-  id: '/smart-pricing',
-  path: '/smart-pricing',
-  getParentRoute: () => AppRoute,
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AppSettingsRoute = AppSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => AppRoute,
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AppPropertiesCalendarRoute = AppPropertiesCalendarRouteImport.update({
-  id: '/properties-calendar',
-  path: '/properties-calendar',
-  getParentRoute: () => AppRoute,
+const ApiRoute = ApiRouteImport.update({
+  id: '/api',
+  path: '/api',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AppPropertiesAnalyticsRoute = AppPropertiesAnalyticsRouteImport.update({
-  id: '/properties-analytics',
-  path: '/properties-analytics',
-  getParentRoute: () => AppRoute,
+const AppRoute = AppRouteImport.update({
+  id: '/app',
+  path: '/app',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AppPropertiesRoute = AppPropertiesRouteImport.update({
-  id: '/properties',
-  path: '/properties',
-  getParentRoute: () => AppRoute,
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AppOwnerRoute = AppOwnerRouteImport.update({
-  id: '/owner',
-  path: '/owner',
-  getParentRoute: () => AppRoute,
+const CareersRoute = CareersRouteImport.update({
+  id: '/careers',
+  path: '/careers',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AppMarketplaceRoute = AppMarketplaceRouteImport.update({
-  id: '/marketplace',
-  path: '/marketplace',
-  getParentRoute: () => AppRoute,
+const ChangelogRoute = ChangelogRouteImport.update({
+  id: '/changelog',
+  path: '/changelog',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AppInvestorRoute = AppInvestorRouteImport.update({
-  id: '/investor',
-  path: '/investor',
-  getParentRoute: () => AppRoute,
+const ComplianceRoute = ComplianceRouteImport.update({
+  id: '/compliance',
+  path: '/compliance',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AppFinanceRoute = AppFinanceRouteImport.update({
-  id: '/finance',
-  path: '/finance',
-  getParentRoute: () => AppRoute,
+const CookiesRoute = CookiesRouteImport.update({
+  id: '/cookies',
+  path: '/cookies',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AppDashboardRoute = AppDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => AppRoute,
+const DocsRoute = DocsRouteImport.update({
+  id: '/docs',
+  path: '/docs',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AppCrmRoute = AppCrmRouteImport.update({
+const InvestorRelationsRoute = InvestorRelationsRouteImport.update({
+  id: '/investor-relations',
+  path: '/investor-relations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LicensesRoute = LicensesRouteImport.update({
+  id: '/licenses',
+  path: '/licenses',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PressRoute = PressRouteImport.update({
+  id: '/press',
+  path: '/press',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SdksRoute = SdksRouteImport.update({
+  id: '/sdks',
+  path: '/sdks',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SecurityRoute = SecurityRouteImport.update({
+  id: '/security',
+  path: '/security',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StatusRoute = StatusRouteImport.update({
+  id: '/status',
+  path: '/status',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WebhooksRoute = WebhooksRouteImport.update({
+  id: '/webhooks',
+  path: '/webhooks',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WhiteLabelRoute = WhiteLabelRouteImport.update({
+  id: '/white-label',
+  path: '/white-label',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminAiRoute = AdminAiRouteImport.update({
+  id: '/ai',
+  path: '/ai',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCmsRoute = AdminCmsRouteImport.update({
+  id: '/cms',
+  path: '/cms',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminComingSoonRoute = AdminComingSoonRouteImport.update({
+  id: '/coming-soon',
+  path: '/coming-soon',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminContractsRoute = AdminContractsRouteImport.update({
+  id: '/contracts',
+  path: '/contracts',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCrmRoute = AdminCrmRouteImport.update({
   id: '/crm',
   path: '/crm',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminDashboardRoute = AdminDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminFinanceRoute = AdminFinanceRouteImport.update({
+  id: '/finance',
+  path: '/finance',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminFollowUpRoute = AdminFollowUpRouteImport.update({
+  id: '/follow-up',
+  path: '/follow-up',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminFractionalOwnershipRoute =
+  AdminFractionalOwnershipRouteImport.update({
+    id: '/fractional-ownership',
+    path: '/fractional-ownership',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminInvestorRoute = AdminInvestorRouteImport.update({
+  id: '/investor',
+  path: '/investor',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminInvestorReportsRoute = AdminInvestorReportsRouteImport.update({
+  id: '/investor-reports',
+  path: '/investor-reports',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLogsRoute = AdminLogsRouteImport.update({
+  id: '/logs',
+  path: '/logs',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminMaintenanceRoute = AdminMaintenanceRouteImport.update({
+  id: '/maintenance',
+  path: '/maintenance',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminMarketplaceRoute = AdminMarketplaceRouteImport.update({
+  id: '/marketplace',
+  path: '/marketplace',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminMessagesRoute = AdminMessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminNotificationsRoute = AdminNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminOwnerRoute = AdminOwnerRouteImport.update({
+  id: '/owner',
+  path: '/owner',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPaymentsRoute = AdminPaymentsRouteImport.update({
+  id: '/payments',
+  path: '/payments',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPayoutsRoute = AdminPayoutsRouteImport.update({
+  id: '/payouts',
+  path: '/payouts',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPermissionsRoute = AdminPermissionsRouteImport.update({
+  id: '/permissions',
+  path: '/permissions',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPortfolioRoute = AdminPortfolioRouteImport.update({
+  id: '/portfolio',
+  path: '/portfolio',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPropertiesRoute = AdminPropertiesRouteImport.update({
+  id: '/properties',
+  path: '/properties',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPropertiesAnalyticsRoute =
+  AdminPropertiesAnalyticsRouteImport.update({
+    id: '/properties-analytics',
+    path: '/properties-analytics',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminPropertiesCalendarRoute = AdminPropertiesCalendarRouteImport.update({
+  id: '/properties-calendar',
+  path: '/properties-calendar',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSmartPricingRoute = AdminSmartPricingRouteImport.update({
+  id: '/smart-pricing',
+  path: '/smart-pricing',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminTenantScoringRoute = AdminTenantScoringRouteImport.update({
+  id: '/tenant-scoring',
+  path: '/tenant-scoring',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminTransactionsRoute = AdminTransactionsRouteImport.update({
+  id: '/transactions',
+  path: '/transactions',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminWebhooksRoute = AdminWebhooksRouteImport.update({
+  id: '/webhooks',
+  path: '/webhooks',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminWorkflowsRoute = AdminWorkflowsRouteImport.update({
+  id: '/workflows',
+  path: '/workflows',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AppCalendarRoute = AppCalendarRouteImport.update({
+  id: '/calendar',
+  path: '/calendar',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppContractRoute = AppContractRouteImport.update({
+  id: '/contract',
+  path: '/contract',
   getParentRoute: () => AppRoute,
 } as any)
 const AppContractsRoute = AppContractsRouteImport.update({
@@ -97,154 +372,533 @@ const AppContractsRoute = AppContractsRouteImport.update({
   path: '/contracts',
   getParentRoute: () => AppRoute,
 } as any)
-const AppComingSoonRoute = AppComingSoonRouteImport.update({
-  id: '/coming-soon',
-  path: '/coming-soon',
+const AppDashboardRoute = AppDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => AppRoute,
 } as any)
-const AppAiRoute = AppAiRouteImport.update({
-  id: '/ai',
-  path: '/ai',
+const AppFinanceRoute = AppFinanceRouteImport.update({
+  id: '/finance',
+  path: '/finance',
   getParentRoute: () => AppRoute,
 } as any)
-const AppPropertiesIdRoute = AppPropertiesIdRouteImport.update({
+const AppInvestorDocumentsRoute = AppInvestorDocumentsRouteImport.update({
+  id: '/investor-documents',
+  path: '/investor-documents',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppInvestorEarningsRoute = AppInvestorEarningsRouteImport.update({
+  id: '/investor-earnings',
+  path: '/investor-earnings',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppInvestorPortfolioRoute = AppInvestorPortfolioRouteImport.update({
+  id: '/investor-portfolio',
+  path: '/investor-portfolio',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMaintenanceRoute = AppMaintenanceRouteImport.update({
+  id: '/maintenance',
+  path: '/maintenance',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMessagesRoute = AppMessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPaymentsRoute = AppPaymentsRouteImport.update({
+  id: '/payments',
+  path: '/payments',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProfileRoute = AppProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPropertiesRoute = AppPropertiesRouteImport.update({
+  id: '/properties',
+  path: '/properties',
+  getParentRoute: () => AppRoute,
+} as any)
+const ListingIdRoute = ListingIdRouteImport.update({
+  id: '/listing/$id',
+  path: '/listing/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminPropertiesIdRoute = AdminPropertiesIdRouteImport.update({
   id: '/$id',
   path: '/$id',
-  getParentRoute: () => AppPropertiesRoute,
+  getParentRoute: () => AdminPropertiesRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/api': typeof ApiRoute
   '/app': typeof AppRouteWithChildren
-  '/app/ai': typeof AppAiRoute
-  '/app/coming-soon': typeof AppComingSoonRoute
+  '/blog': typeof BlogRoute
+  '/careers': typeof CareersRoute
+  '/changelog': typeof ChangelogRoute
+  '/compliance': typeof ComplianceRoute
+  '/cookies': typeof CookiesRoute
+  '/docs': typeof DocsRoute
+  '/investor-relations': typeof InvestorRelationsRoute
+  '/licenses': typeof LicensesRoute
+  '/login': typeof LoginRoute
+  '/press': typeof PressRoute
+  '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
+  '/sdks': typeof SdksRoute
+  '/security': typeof SecurityRoute
+  '/signup': typeof SignupRoute
+  '/status': typeof StatusRoute
+  '/terms': typeof TermsRoute
+  '/webhooks': typeof WebhooksRoute
+  '/white-label': typeof WhiteLabelRoute
+  '/admin/ai': typeof AdminAiRoute
+  '/admin/cms': typeof AdminCmsRoute
+  '/admin/coming-soon': typeof AdminComingSoonRoute
+  '/admin/contracts': typeof AdminContractsRoute
+  '/admin/crm': typeof AdminCrmRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/finance': typeof AdminFinanceRoute
+  '/admin/follow-up': typeof AdminFollowUpRoute
+  '/admin/fractional-ownership': typeof AdminFractionalOwnershipRoute
+  '/admin/investor': typeof AdminInvestorRoute
+  '/admin/investor-reports': typeof AdminInvestorReportsRoute
+  '/admin/logs': typeof AdminLogsRoute
+  '/admin/maintenance': typeof AdminMaintenanceRoute
+  '/admin/marketplace': typeof AdminMarketplaceRoute
+  '/admin/messages': typeof AdminMessagesRoute
+  '/admin/notifications': typeof AdminNotificationsRoute
+  '/admin/owner': typeof AdminOwnerRoute
+  '/admin/payments': typeof AdminPaymentsRoute
+  '/admin/payouts': typeof AdminPayoutsRoute
+  '/admin/permissions': typeof AdminPermissionsRoute
+  '/admin/portfolio': typeof AdminPortfolioRoute
+  '/admin/properties': typeof AdminPropertiesRouteWithChildren
+  '/admin/properties-analytics': typeof AdminPropertiesAnalyticsRoute
+  '/admin/properties-calendar': typeof AdminPropertiesCalendarRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/smart-pricing': typeof AdminSmartPricingRoute
+  '/admin/tenant-scoring': typeof AdminTenantScoringRoute
+  '/admin/transactions': typeof AdminTransactionsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/admin/webhooks': typeof AdminWebhooksRoute
+  '/admin/workflows': typeof AdminWorkflowsRoute
+  '/app/calendar': typeof AppCalendarRoute
+  '/app/contract': typeof AppContractRoute
   '/app/contracts': typeof AppContractsRoute
-  '/app/crm': typeof AppCrmRoute
   '/app/dashboard': typeof AppDashboardRoute
   '/app/finance': typeof AppFinanceRoute
-  '/app/investor': typeof AppInvestorRoute
-  '/app/marketplace': typeof AppMarketplaceRoute
-  '/app/owner': typeof AppOwnerRoute
-  '/app/properties': typeof AppPropertiesRouteWithChildren
-  '/app/properties-analytics': typeof AppPropertiesAnalyticsRoute
-  '/app/properties-calendar': typeof AppPropertiesCalendarRoute
-  '/app/settings': typeof AppSettingsRoute
-  '/app/smart-pricing': typeof AppSmartPricingRoute
-  '/app/properties/$id': typeof AppPropertiesIdRoute
+  '/app/investor-documents': typeof AppInvestorDocumentsRoute
+  '/app/investor-earnings': typeof AppInvestorEarningsRoute
+  '/app/investor-portfolio': typeof AppInvestorPortfolioRoute
+  '/app/maintenance': typeof AppMaintenanceRoute
+  '/app/messages': typeof AppMessagesRoute
+  '/app/payments': typeof AppPaymentsRoute
+  '/app/profile': typeof AppProfileRoute
+  '/app/properties': typeof AppPropertiesRoute
+  '/listing/$id': typeof ListingIdRoute
+  '/admin/properties/$id': typeof AdminPropertiesIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/api': typeof ApiRoute
   '/app': typeof AppRouteWithChildren
-  '/app/ai': typeof AppAiRoute
-  '/app/coming-soon': typeof AppComingSoonRoute
+  '/blog': typeof BlogRoute
+  '/careers': typeof CareersRoute
+  '/changelog': typeof ChangelogRoute
+  '/compliance': typeof ComplianceRoute
+  '/cookies': typeof CookiesRoute
+  '/docs': typeof DocsRoute
+  '/investor-relations': typeof InvestorRelationsRoute
+  '/licenses': typeof LicensesRoute
+  '/login': typeof LoginRoute
+  '/press': typeof PressRoute
+  '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
+  '/sdks': typeof SdksRoute
+  '/security': typeof SecurityRoute
+  '/signup': typeof SignupRoute
+  '/status': typeof StatusRoute
+  '/terms': typeof TermsRoute
+  '/webhooks': typeof WebhooksRoute
+  '/white-label': typeof WhiteLabelRoute
+  '/admin/ai': typeof AdminAiRoute
+  '/admin/cms': typeof AdminCmsRoute
+  '/admin/coming-soon': typeof AdminComingSoonRoute
+  '/admin/contracts': typeof AdminContractsRoute
+  '/admin/crm': typeof AdminCrmRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/finance': typeof AdminFinanceRoute
+  '/admin/follow-up': typeof AdminFollowUpRoute
+  '/admin/fractional-ownership': typeof AdminFractionalOwnershipRoute
+  '/admin/investor': typeof AdminInvestorRoute
+  '/admin/investor-reports': typeof AdminInvestorReportsRoute
+  '/admin/logs': typeof AdminLogsRoute
+  '/admin/maintenance': typeof AdminMaintenanceRoute
+  '/admin/marketplace': typeof AdminMarketplaceRoute
+  '/admin/messages': typeof AdminMessagesRoute
+  '/admin/notifications': typeof AdminNotificationsRoute
+  '/admin/owner': typeof AdminOwnerRoute
+  '/admin/payments': typeof AdminPaymentsRoute
+  '/admin/payouts': typeof AdminPayoutsRoute
+  '/admin/permissions': typeof AdminPermissionsRoute
+  '/admin/portfolio': typeof AdminPortfolioRoute
+  '/admin/properties': typeof AdminPropertiesRouteWithChildren
+  '/admin/properties-analytics': typeof AdminPropertiesAnalyticsRoute
+  '/admin/properties-calendar': typeof AdminPropertiesCalendarRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/smart-pricing': typeof AdminSmartPricingRoute
+  '/admin/tenant-scoring': typeof AdminTenantScoringRoute
+  '/admin/transactions': typeof AdminTransactionsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/admin/webhooks': typeof AdminWebhooksRoute
+  '/admin/workflows': typeof AdminWorkflowsRoute
+  '/app/calendar': typeof AppCalendarRoute
+  '/app/contract': typeof AppContractRoute
   '/app/contracts': typeof AppContractsRoute
-  '/app/crm': typeof AppCrmRoute
   '/app/dashboard': typeof AppDashboardRoute
   '/app/finance': typeof AppFinanceRoute
-  '/app/investor': typeof AppInvestorRoute
-  '/app/marketplace': typeof AppMarketplaceRoute
-  '/app/owner': typeof AppOwnerRoute
-  '/app/properties': typeof AppPropertiesRouteWithChildren
-  '/app/properties-analytics': typeof AppPropertiesAnalyticsRoute
-  '/app/properties-calendar': typeof AppPropertiesCalendarRoute
-  '/app/settings': typeof AppSettingsRoute
-  '/app/smart-pricing': typeof AppSmartPricingRoute
-  '/app/properties/$id': typeof AppPropertiesIdRoute
+  '/app/investor-documents': typeof AppInvestorDocumentsRoute
+  '/app/investor-earnings': typeof AppInvestorEarningsRoute
+  '/app/investor-portfolio': typeof AppInvestorPortfolioRoute
+  '/app/maintenance': typeof AppMaintenanceRoute
+  '/app/messages': typeof AppMessagesRoute
+  '/app/payments': typeof AppPaymentsRoute
+  '/app/profile': typeof AppProfileRoute
+  '/app/properties': typeof AppPropertiesRoute
+  '/listing/$id': typeof ListingIdRoute
+  '/admin/properties/$id': typeof AdminPropertiesIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/api': typeof ApiRoute
   '/app': typeof AppRouteWithChildren
-  '/app/ai': typeof AppAiRoute
-  '/app/coming-soon': typeof AppComingSoonRoute
+  '/blog': typeof BlogRoute
+  '/careers': typeof CareersRoute
+  '/changelog': typeof ChangelogRoute
+  '/compliance': typeof ComplianceRoute
+  '/cookies': typeof CookiesRoute
+  '/docs': typeof DocsRoute
+  '/investor-relations': typeof InvestorRelationsRoute
+  '/licenses': typeof LicensesRoute
+  '/login': typeof LoginRoute
+  '/press': typeof PressRoute
+  '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
+  '/sdks': typeof SdksRoute
+  '/security': typeof SecurityRoute
+  '/signup': typeof SignupRoute
+  '/status': typeof StatusRoute
+  '/terms': typeof TermsRoute
+  '/webhooks': typeof WebhooksRoute
+  '/white-label': typeof WhiteLabelRoute
+  '/admin/ai': typeof AdminAiRoute
+  '/admin/cms': typeof AdminCmsRoute
+  '/admin/coming-soon': typeof AdminComingSoonRoute
+  '/admin/contracts': typeof AdminContractsRoute
+  '/admin/crm': typeof AdminCrmRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/finance': typeof AdminFinanceRoute
+  '/admin/follow-up': typeof AdminFollowUpRoute
+  '/admin/fractional-ownership': typeof AdminFractionalOwnershipRoute
+  '/admin/investor': typeof AdminInvestorRoute
+  '/admin/investor-reports': typeof AdminInvestorReportsRoute
+  '/admin/logs': typeof AdminLogsRoute
+  '/admin/maintenance': typeof AdminMaintenanceRoute
+  '/admin/marketplace': typeof AdminMarketplaceRoute
+  '/admin/messages': typeof AdminMessagesRoute
+  '/admin/notifications': typeof AdminNotificationsRoute
+  '/admin/owner': typeof AdminOwnerRoute
+  '/admin/payments': typeof AdminPaymentsRoute
+  '/admin/payouts': typeof AdminPayoutsRoute
+  '/admin/permissions': typeof AdminPermissionsRoute
+  '/admin/portfolio': typeof AdminPortfolioRoute
+  '/admin/properties': typeof AdminPropertiesRouteWithChildren
+  '/admin/properties-analytics': typeof AdminPropertiesAnalyticsRoute
+  '/admin/properties-calendar': typeof AdminPropertiesCalendarRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/smart-pricing': typeof AdminSmartPricingRoute
+  '/admin/tenant-scoring': typeof AdminTenantScoringRoute
+  '/admin/transactions': typeof AdminTransactionsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/admin/webhooks': typeof AdminWebhooksRoute
+  '/admin/workflows': typeof AdminWorkflowsRoute
+  '/app/calendar': typeof AppCalendarRoute
+  '/app/contract': typeof AppContractRoute
   '/app/contracts': typeof AppContractsRoute
-  '/app/crm': typeof AppCrmRoute
   '/app/dashboard': typeof AppDashboardRoute
   '/app/finance': typeof AppFinanceRoute
-  '/app/investor': typeof AppInvestorRoute
-  '/app/marketplace': typeof AppMarketplaceRoute
-  '/app/owner': typeof AppOwnerRoute
-  '/app/properties': typeof AppPropertiesRouteWithChildren
-  '/app/properties-analytics': typeof AppPropertiesAnalyticsRoute
-  '/app/properties-calendar': typeof AppPropertiesCalendarRoute
-  '/app/settings': typeof AppSettingsRoute
-  '/app/smart-pricing': typeof AppSmartPricingRoute
-  '/app/properties/$id': typeof AppPropertiesIdRoute
+  '/app/investor-documents': typeof AppInvestorDocumentsRoute
+  '/app/investor-earnings': typeof AppInvestorEarningsRoute
+  '/app/investor-portfolio': typeof AppInvestorPortfolioRoute
+  '/app/maintenance': typeof AppMaintenanceRoute
+  '/app/messages': typeof AppMessagesRoute
+  '/app/payments': typeof AppPaymentsRoute
+  '/app/profile': typeof AppProfileRoute
+  '/app/properties': typeof AppPropertiesRoute
+  '/listing/$id': typeof ListingIdRoute
+  '/admin/properties/$id': typeof AdminPropertiesIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
+    | '/admin'
+    | '/api'
     | '/app'
-    | '/app/ai'
-    | '/app/coming-soon'
+    | '/blog'
+    | '/careers'
+    | '/changelog'
+    | '/compliance'
+    | '/cookies'
+    | '/docs'
+    | '/investor-relations'
+    | '/licenses'
+    | '/login'
+    | '/press'
+    | '/pricing'
+    | '/privacy'
+    | '/sdks'
+    | '/security'
+    | '/signup'
+    | '/status'
+    | '/terms'
+    | '/webhooks'
+    | '/white-label'
+    | '/admin/ai'
+    | '/admin/cms'
+    | '/admin/coming-soon'
+    | '/admin/contracts'
+    | '/admin/crm'
+    | '/admin/dashboard'
+    | '/admin/finance'
+    | '/admin/follow-up'
+    | '/admin/fractional-ownership'
+    | '/admin/investor'
+    | '/admin/investor-reports'
+    | '/admin/logs'
+    | '/admin/maintenance'
+    | '/admin/marketplace'
+    | '/admin/messages'
+    | '/admin/notifications'
+    | '/admin/owner'
+    | '/admin/payments'
+    | '/admin/payouts'
+    | '/admin/permissions'
+    | '/admin/portfolio'
+    | '/admin/properties'
+    | '/admin/properties-analytics'
+    | '/admin/properties-calendar'
+    | '/admin/settings'
+    | '/admin/smart-pricing'
+    | '/admin/tenant-scoring'
+    | '/admin/transactions'
+    | '/admin/users'
+    | '/admin/webhooks'
+    | '/admin/workflows'
+    | '/app/calendar'
+    | '/app/contract'
     | '/app/contracts'
-    | '/app/crm'
     | '/app/dashboard'
     | '/app/finance'
-    | '/app/investor'
-    | '/app/marketplace'
-    | '/app/owner'
+    | '/app/investor-documents'
+    | '/app/investor-earnings'
+    | '/app/investor-portfolio'
+    | '/app/maintenance'
+    | '/app/messages'
+    | '/app/payments'
+    | '/app/profile'
     | '/app/properties'
-    | '/app/properties-analytics'
-    | '/app/properties-calendar'
-    | '/app/settings'
-    | '/app/smart-pricing'
-    | '/app/properties/$id'
+    | '/listing/$id'
+    | '/admin/properties/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
+    | '/admin'
+    | '/api'
     | '/app'
-    | '/app/ai'
-    | '/app/coming-soon'
+    | '/blog'
+    | '/careers'
+    | '/changelog'
+    | '/compliance'
+    | '/cookies'
+    | '/docs'
+    | '/investor-relations'
+    | '/licenses'
+    | '/login'
+    | '/press'
+    | '/pricing'
+    | '/privacy'
+    | '/sdks'
+    | '/security'
+    | '/signup'
+    | '/status'
+    | '/terms'
+    | '/webhooks'
+    | '/white-label'
+    | '/admin/ai'
+    | '/admin/cms'
+    | '/admin/coming-soon'
+    | '/admin/contracts'
+    | '/admin/crm'
+    | '/admin/dashboard'
+    | '/admin/finance'
+    | '/admin/follow-up'
+    | '/admin/fractional-ownership'
+    | '/admin/investor'
+    | '/admin/investor-reports'
+    | '/admin/logs'
+    | '/admin/maintenance'
+    | '/admin/marketplace'
+    | '/admin/messages'
+    | '/admin/notifications'
+    | '/admin/owner'
+    | '/admin/payments'
+    | '/admin/payouts'
+    | '/admin/permissions'
+    | '/admin/portfolio'
+    | '/admin/properties'
+    | '/admin/properties-analytics'
+    | '/admin/properties-calendar'
+    | '/admin/settings'
+    | '/admin/smart-pricing'
+    | '/admin/tenant-scoring'
+    | '/admin/transactions'
+    | '/admin/users'
+    | '/admin/webhooks'
+    | '/admin/workflows'
+    | '/app/calendar'
+    | '/app/contract'
     | '/app/contracts'
-    | '/app/crm'
     | '/app/dashboard'
     | '/app/finance'
-    | '/app/investor'
-    | '/app/marketplace'
-    | '/app/owner'
+    | '/app/investor-documents'
+    | '/app/investor-earnings'
+    | '/app/investor-portfolio'
+    | '/app/maintenance'
+    | '/app/messages'
+    | '/app/payments'
+    | '/app/profile'
     | '/app/properties'
-    | '/app/properties-analytics'
-    | '/app/properties-calendar'
-    | '/app/settings'
-    | '/app/smart-pricing'
-    | '/app/properties/$id'
+    | '/listing/$id'
+    | '/admin/properties/$id'
   id:
     | '__root__'
     | '/'
+    | '/about'
+    | '/admin'
+    | '/api'
     | '/app'
-    | '/app/ai'
-    | '/app/coming-soon'
+    | '/blog'
+    | '/careers'
+    | '/changelog'
+    | '/compliance'
+    | '/cookies'
+    | '/docs'
+    | '/investor-relations'
+    | '/licenses'
+    | '/login'
+    | '/press'
+    | '/pricing'
+    | '/privacy'
+    | '/sdks'
+    | '/security'
+    | '/signup'
+    | '/status'
+    | '/terms'
+    | '/webhooks'
+    | '/white-label'
+    | '/admin/ai'
+    | '/admin/cms'
+    | '/admin/coming-soon'
+    | '/admin/contracts'
+    | '/admin/crm'
+    | '/admin/dashboard'
+    | '/admin/finance'
+    | '/admin/follow-up'
+    | '/admin/fractional-ownership'
+    | '/admin/investor'
+    | '/admin/investor-reports'
+    | '/admin/logs'
+    | '/admin/maintenance'
+    | '/admin/marketplace'
+    | '/admin/messages'
+    | '/admin/notifications'
+    | '/admin/owner'
+    | '/admin/payments'
+    | '/admin/payouts'
+    | '/admin/permissions'
+    | '/admin/portfolio'
+    | '/admin/properties'
+    | '/admin/properties-analytics'
+    | '/admin/properties-calendar'
+    | '/admin/settings'
+    | '/admin/smart-pricing'
+    | '/admin/tenant-scoring'
+    | '/admin/transactions'
+    | '/admin/users'
+    | '/admin/webhooks'
+    | '/admin/workflows'
+    | '/app/calendar'
+    | '/app/contract'
     | '/app/contracts'
-    | '/app/crm'
     | '/app/dashboard'
     | '/app/finance'
-    | '/app/investor'
-    | '/app/marketplace'
-    | '/app/owner'
+    | '/app/investor-documents'
+    | '/app/investor-earnings'
+    | '/app/investor-portfolio'
+    | '/app/maintenance'
+    | '/app/messages'
+    | '/app/payments'
+    | '/app/profile'
     | '/app/properties'
-    | '/app/properties-analytics'
-    | '/app/properties-calendar'
-    | '/app/settings'
-    | '/app/smart-pricing'
-    | '/app/properties/$id'
+    | '/listing/$id'
+    | '/admin/properties/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  AdminRoute: typeof AdminRouteWithChildren
+  ApiRoute: typeof ApiRoute
   AppRoute: typeof AppRouteWithChildren
+  BlogRoute: typeof BlogRoute
+  CareersRoute: typeof CareersRoute
+  ChangelogRoute: typeof ChangelogRoute
+  ComplianceRoute: typeof ComplianceRoute
+  CookiesRoute: typeof CookiesRoute
+  DocsRoute: typeof DocsRoute
+  InvestorRelationsRoute: typeof InvestorRelationsRoute
+  LicensesRoute: typeof LicensesRoute
+  LoginRoute: typeof LoginRoute
+  PressRoute: typeof PressRoute
+  PricingRoute: typeof PricingRoute
+  PrivacyRoute: typeof PrivacyRoute
+  SdksRoute: typeof SdksRoute
+  SecurityRoute: typeof SecurityRoute
+  SignupRoute: typeof SignupRoute
+  StatusRoute: typeof StatusRoute
+  TermsRoute: typeof TermsRoute
+  WebhooksRoute: typeof WebhooksRoute
+  WhiteLabelRoute: typeof WhiteLabelRoute
+  ListingIdRoute: typeof ListingIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/app': {
-      id: '/app'
-      path: '/app'
-      fullPath: '/app'
-      preLoaderRoute: typeof AppRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -252,81 +906,396 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/app/smart-pricing': {
-      id: '/app/smart-pricing'
-      path: '/smart-pricing'
-      fullPath: '/app/smart-pricing'
-      preLoaderRoute: typeof AppSmartPricingRouteImport
-      parentRoute: typeof AppRoute
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/app/settings': {
-      id: '/app/settings'
-      path: '/settings'
-      fullPath: '/app/settings'
-      preLoaderRoute: typeof AppSettingsRouteImport
-      parentRoute: typeof AppRoute
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/app/properties-calendar': {
-      id: '/app/properties-calendar'
-      path: '/properties-calendar'
-      fullPath: '/app/properties-calendar'
-      preLoaderRoute: typeof AppPropertiesCalendarRouteImport
-      parentRoute: typeof AppRoute
+    '/api': {
+      id: '/api'
+      path: '/api'
+      fullPath: '/api'
+      preLoaderRoute: typeof ApiRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/app/properties-analytics': {
-      id: '/app/properties-analytics'
-      path: '/properties-analytics'
-      fullPath: '/app/properties-analytics'
-      preLoaderRoute: typeof AppPropertiesAnalyticsRouteImport
-      parentRoute: typeof AppRoute
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/app/properties': {
-      id: '/app/properties'
-      path: '/properties'
-      fullPath: '/app/properties'
-      preLoaderRoute: typeof AppPropertiesRouteImport
-      parentRoute: typeof AppRoute
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/app/owner': {
-      id: '/app/owner'
-      path: '/owner'
-      fullPath: '/app/owner'
-      preLoaderRoute: typeof AppOwnerRouteImport
-      parentRoute: typeof AppRoute
+    '/careers': {
+      id: '/careers'
+      path: '/careers'
+      fullPath: '/careers'
+      preLoaderRoute: typeof CareersRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/app/marketplace': {
-      id: '/app/marketplace'
-      path: '/marketplace'
-      fullPath: '/app/marketplace'
-      preLoaderRoute: typeof AppMarketplaceRouteImport
-      parentRoute: typeof AppRoute
+    '/changelog': {
+      id: '/changelog'
+      path: '/changelog'
+      fullPath: '/changelog'
+      preLoaderRoute: typeof ChangelogRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/app/investor': {
-      id: '/app/investor'
-      path: '/investor'
-      fullPath: '/app/investor'
-      preLoaderRoute: typeof AppInvestorRouteImport
-      parentRoute: typeof AppRoute
+    '/compliance': {
+      id: '/compliance'
+      path: '/compliance'
+      fullPath: '/compliance'
+      preLoaderRoute: typeof ComplianceRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/app/finance': {
-      id: '/app/finance'
-      path: '/finance'
-      fullPath: '/app/finance'
-      preLoaderRoute: typeof AppFinanceRouteImport
-      parentRoute: typeof AppRoute
+    '/cookies': {
+      id: '/cookies'
+      path: '/cookies'
+      fullPath: '/cookies'
+      preLoaderRoute: typeof CookiesRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/app/dashboard': {
-      id: '/app/dashboard'
-      path: '/dashboard'
-      fullPath: '/app/dashboard'
-      preLoaderRoute: typeof AppDashboardRouteImport
-      parentRoute: typeof AppRoute
+    '/docs': {
+      id: '/docs'
+      path: '/docs'
+      fullPath: '/docs'
+      preLoaderRoute: typeof DocsRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/app/crm': {
-      id: '/app/crm'
+    '/investor-relations': {
+      id: '/investor-relations'
+      path: '/investor-relations'
+      fullPath: '/investor-relations'
+      preLoaderRoute: typeof InvestorRelationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/licenses': {
+      id: '/licenses'
+      path: '/licenses'
+      fullPath: '/licenses'
+      preLoaderRoute: typeof LicensesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/press': {
+      id: '/press'
+      path: '/press'
+      fullPath: '/press'
+      preLoaderRoute: typeof PressRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sdks': {
+      id: '/sdks'
+      path: '/sdks'
+      fullPath: '/sdks'
+      preLoaderRoute: typeof SdksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/security': {
+      id: '/security'
+      path: '/security'
+      fullPath: '/security'
+      preLoaderRoute: typeof SecurityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/status': {
+      id: '/status'
+      path: '/status'
+      fullPath: '/status'
+      preLoaderRoute: typeof StatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/webhooks': {
+      id: '/webhooks'
+      path: '/webhooks'
+      fullPath: '/webhooks'
+      preLoaderRoute: typeof WebhooksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/white-label': {
+      id: '/white-label'
+      path: '/white-label'
+      fullPath: '/white-label'
+      preLoaderRoute: typeof WhiteLabelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/ai': {
+      id: '/admin/ai'
+      path: '/ai'
+      fullPath: '/admin/ai'
+      preLoaderRoute: typeof AdminAiRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/cms': {
+      id: '/admin/cms'
+      path: '/cms'
+      fullPath: '/admin/cms'
+      preLoaderRoute: typeof AdminCmsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/coming-soon': {
+      id: '/admin/coming-soon'
+      path: '/coming-soon'
+      fullPath: '/admin/coming-soon'
+      preLoaderRoute: typeof AdminComingSoonRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/contracts': {
+      id: '/admin/contracts'
+      path: '/contracts'
+      fullPath: '/admin/contracts'
+      preLoaderRoute: typeof AdminContractsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/crm': {
+      id: '/admin/crm'
       path: '/crm'
-      fullPath: '/app/crm'
-      preLoaderRoute: typeof AppCrmRouteImport
+      fullPath: '/admin/crm'
+      preLoaderRoute: typeof AdminCrmRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/dashboard': {
+      id: '/admin/dashboard'
+      path: '/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AdminDashboardRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/finance': {
+      id: '/admin/finance'
+      path: '/finance'
+      fullPath: '/admin/finance'
+      preLoaderRoute: typeof AdminFinanceRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/follow-up': {
+      id: '/admin/follow-up'
+      path: '/follow-up'
+      fullPath: '/admin/follow-up'
+      preLoaderRoute: typeof AdminFollowUpRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/fractional-ownership': {
+      id: '/admin/fractional-ownership'
+      path: '/fractional-ownership'
+      fullPath: '/admin/fractional-ownership'
+      preLoaderRoute: typeof AdminFractionalOwnershipRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/investor': {
+      id: '/admin/investor'
+      path: '/investor'
+      fullPath: '/admin/investor'
+      preLoaderRoute: typeof AdminInvestorRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/investor-reports': {
+      id: '/admin/investor-reports'
+      path: '/investor-reports'
+      fullPath: '/admin/investor-reports'
+      preLoaderRoute: typeof AdminInvestorReportsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/logs': {
+      id: '/admin/logs'
+      path: '/logs'
+      fullPath: '/admin/logs'
+      preLoaderRoute: typeof AdminLogsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/maintenance': {
+      id: '/admin/maintenance'
+      path: '/maintenance'
+      fullPath: '/admin/maintenance'
+      preLoaderRoute: typeof AdminMaintenanceRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/marketplace': {
+      id: '/admin/marketplace'
+      path: '/marketplace'
+      fullPath: '/admin/marketplace'
+      preLoaderRoute: typeof AdminMarketplaceRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/messages': {
+      id: '/admin/messages'
+      path: '/messages'
+      fullPath: '/admin/messages'
+      preLoaderRoute: typeof AdminMessagesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/notifications': {
+      id: '/admin/notifications'
+      path: '/notifications'
+      fullPath: '/admin/notifications'
+      preLoaderRoute: typeof AdminNotificationsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/owner': {
+      id: '/admin/owner'
+      path: '/owner'
+      fullPath: '/admin/owner'
+      preLoaderRoute: typeof AdminOwnerRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/payments': {
+      id: '/admin/payments'
+      path: '/payments'
+      fullPath: '/admin/payments'
+      preLoaderRoute: typeof AdminPaymentsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/payouts': {
+      id: '/admin/payouts'
+      path: '/payouts'
+      fullPath: '/admin/payouts'
+      preLoaderRoute: typeof AdminPayoutsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/permissions': {
+      id: '/admin/permissions'
+      path: '/permissions'
+      fullPath: '/admin/permissions'
+      preLoaderRoute: typeof AdminPermissionsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/portfolio': {
+      id: '/admin/portfolio'
+      path: '/portfolio'
+      fullPath: '/admin/portfolio'
+      preLoaderRoute: typeof AdminPortfolioRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/properties': {
+      id: '/admin/properties'
+      path: '/properties'
+      fullPath: '/admin/properties'
+      preLoaderRoute: typeof AdminPropertiesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/properties-analytics': {
+      id: '/admin/properties-analytics'
+      path: '/properties-analytics'
+      fullPath: '/admin/properties-analytics'
+      preLoaderRoute: typeof AdminPropertiesAnalyticsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/properties-calendar': {
+      id: '/admin/properties-calendar'
+      path: '/properties-calendar'
+      fullPath: '/admin/properties-calendar'
+      preLoaderRoute: typeof AdminPropertiesCalendarRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/smart-pricing': {
+      id: '/admin/smart-pricing'
+      path: '/smart-pricing'
+      fullPath: '/admin/smart-pricing'
+      preLoaderRoute: typeof AdminSmartPricingRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/tenant-scoring': {
+      id: '/admin/tenant-scoring'
+      path: '/tenant-scoring'
+      fullPath: '/admin/tenant-scoring'
+      preLoaderRoute: typeof AdminTenantScoringRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/transactions': {
+      id: '/admin/transactions'
+      path: '/transactions'
+      fullPath: '/admin/transactions'
+      preLoaderRoute: typeof AdminTransactionsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/webhooks': {
+      id: '/admin/webhooks'
+      path: '/webhooks'
+      fullPath: '/admin/webhooks'
+      preLoaderRoute: typeof AdminWebhooksRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/workflows': {
+      id: '/admin/workflows'
+      path: '/workflows'
+      fullPath: '/admin/workflows'
+      preLoaderRoute: typeof AdminWorkflowsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/app/calendar': {
+      id: '/app/calendar'
+      path: '/calendar'
+      fullPath: '/app/calendar'
+      preLoaderRoute: typeof AppCalendarRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/contract': {
+      id: '/app/contract'
+      path: '/contract'
+      fullPath: '/app/contract'
+      preLoaderRoute: typeof AppContractRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/contracts': {
@@ -336,82 +1305,246 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppContractsRouteImport
       parentRoute: typeof AppRoute
     }
-    '/app/coming-soon': {
-      id: '/app/coming-soon'
-      path: '/coming-soon'
-      fullPath: '/app/coming-soon'
-      preLoaderRoute: typeof AppComingSoonRouteImport
+    '/app/dashboard': {
+      id: '/app/dashboard'
+      path: '/dashboard'
+      fullPath: '/app/dashboard'
+      preLoaderRoute: typeof AppDashboardRouteImport
       parentRoute: typeof AppRoute
     }
-    '/app/ai': {
-      id: '/app/ai'
-      path: '/ai'
-      fullPath: '/app/ai'
-      preLoaderRoute: typeof AppAiRouteImport
+    '/app/finance': {
+      id: '/app/finance'
+      path: '/finance'
+      fullPath: '/app/finance'
+      preLoaderRoute: typeof AppFinanceRouteImport
       parentRoute: typeof AppRoute
     }
-    '/app/properties/$id': {
-      id: '/app/properties/$id'
+    '/app/investor-documents': {
+      id: '/app/investor-documents'
+      path: '/investor-documents'
+      fullPath: '/app/investor-documents'
+      preLoaderRoute: typeof AppInvestorDocumentsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/investor-earnings': {
+      id: '/app/investor-earnings'
+      path: '/investor-earnings'
+      fullPath: '/app/investor-earnings'
+      preLoaderRoute: typeof AppInvestorEarningsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/investor-portfolio': {
+      id: '/app/investor-portfolio'
+      path: '/investor-portfolio'
+      fullPath: '/app/investor-portfolio'
+      preLoaderRoute: typeof AppInvestorPortfolioRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/maintenance': {
+      id: '/app/maintenance'
+      path: '/maintenance'
+      fullPath: '/app/maintenance'
+      preLoaderRoute: typeof AppMaintenanceRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/messages': {
+      id: '/app/messages'
+      path: '/messages'
+      fullPath: '/app/messages'
+      preLoaderRoute: typeof AppMessagesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/payments': {
+      id: '/app/payments'
+      path: '/payments'
+      fullPath: '/app/payments'
+      preLoaderRoute: typeof AppPaymentsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/profile': {
+      id: '/app/profile'
+      path: '/profile'
+      fullPath: '/app/profile'
+      preLoaderRoute: typeof AppProfileRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/properties': {
+      id: '/app/properties'
+      path: '/properties'
+      fullPath: '/app/properties'
+      preLoaderRoute: typeof AppPropertiesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/listing/$id': {
+      id: '/listing/$id'
+      path: '/listing/$id'
+      fullPath: '/listing/$id'
+      preLoaderRoute: typeof ListingIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/properties/$id': {
+      id: '/admin/properties/$id'
       path: '/$id'
-      fullPath: '/app/properties/$id'
-      preLoaderRoute: typeof AppPropertiesIdRouteImport
-      parentRoute: typeof AppPropertiesRoute
+      fullPath: '/admin/properties/$id'
+      preLoaderRoute: typeof AdminPropertiesIdRouteImport
+      parentRoute: typeof AdminPropertiesRoute
     }
   }
 }
 
-interface AppPropertiesRouteChildren {
-  AppPropertiesIdRoute: typeof AppPropertiesIdRoute
+interface AdminPropertiesRouteChildren {
+  AdminPropertiesIdRoute: typeof AdminPropertiesIdRoute
 }
 
-const AppPropertiesRouteChildren: AppPropertiesRouteChildren = {
-  AppPropertiesIdRoute: AppPropertiesIdRoute,
+const AdminPropertiesRouteChildren: AdminPropertiesRouteChildren = {
+  AdminPropertiesIdRoute: AdminPropertiesIdRoute,
 }
 
-const AppPropertiesRouteWithChildren = AppPropertiesRoute._addFileChildren(
-  AppPropertiesRouteChildren,
+const AdminPropertiesRouteWithChildren = AdminPropertiesRoute._addFileChildren(
+  AdminPropertiesRouteChildren,
 )
 
+interface AdminRouteChildren {
+  AdminAiRoute: typeof AdminAiRoute
+  AdminCmsRoute: typeof AdminCmsRoute
+  AdminComingSoonRoute: typeof AdminComingSoonRoute
+  AdminContractsRoute: typeof AdminContractsRoute
+  AdminCrmRoute: typeof AdminCrmRoute
+  AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminFinanceRoute: typeof AdminFinanceRoute
+  AdminFollowUpRoute: typeof AdminFollowUpRoute
+  AdminFractionalOwnershipRoute: typeof AdminFractionalOwnershipRoute
+  AdminInvestorRoute: typeof AdminInvestorRoute
+  AdminInvestorReportsRoute: typeof AdminInvestorReportsRoute
+  AdminLogsRoute: typeof AdminLogsRoute
+  AdminMaintenanceRoute: typeof AdminMaintenanceRoute
+  AdminMarketplaceRoute: typeof AdminMarketplaceRoute
+  AdminMessagesRoute: typeof AdminMessagesRoute
+  AdminNotificationsRoute: typeof AdminNotificationsRoute
+  AdminOwnerRoute: typeof AdminOwnerRoute
+  AdminPaymentsRoute: typeof AdminPaymentsRoute
+  AdminPayoutsRoute: typeof AdminPayoutsRoute
+  AdminPermissionsRoute: typeof AdminPermissionsRoute
+  AdminPortfolioRoute: typeof AdminPortfolioRoute
+  AdminPropertiesRoute: typeof AdminPropertiesRouteWithChildren
+  AdminPropertiesAnalyticsRoute: typeof AdminPropertiesAnalyticsRoute
+  AdminPropertiesCalendarRoute: typeof AdminPropertiesCalendarRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminSmartPricingRoute: typeof AdminSmartPricingRoute
+  AdminTenantScoringRoute: typeof AdminTenantScoringRoute
+  AdminTransactionsRoute: typeof AdminTransactionsRoute
+  AdminUsersRoute: typeof AdminUsersRoute
+  AdminWebhooksRoute: typeof AdminWebhooksRoute
+  AdminWorkflowsRoute: typeof AdminWorkflowsRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminAiRoute: AdminAiRoute,
+  AdminCmsRoute: AdminCmsRoute,
+  AdminComingSoonRoute: AdminComingSoonRoute,
+  AdminContractsRoute: AdminContractsRoute,
+  AdminCrmRoute: AdminCrmRoute,
+  AdminDashboardRoute: AdminDashboardRoute,
+  AdminFinanceRoute: AdminFinanceRoute,
+  AdminFollowUpRoute: AdminFollowUpRoute,
+  AdminFractionalOwnershipRoute: AdminFractionalOwnershipRoute,
+  AdminInvestorRoute: AdminInvestorRoute,
+  AdminInvestorReportsRoute: AdminInvestorReportsRoute,
+  AdminLogsRoute: AdminLogsRoute,
+  AdminMaintenanceRoute: AdminMaintenanceRoute,
+  AdminMarketplaceRoute: AdminMarketplaceRoute,
+  AdminMessagesRoute: AdminMessagesRoute,
+  AdminNotificationsRoute: AdminNotificationsRoute,
+  AdminOwnerRoute: AdminOwnerRoute,
+  AdminPaymentsRoute: AdminPaymentsRoute,
+  AdminPayoutsRoute: AdminPayoutsRoute,
+  AdminPermissionsRoute: AdminPermissionsRoute,
+  AdminPortfolioRoute: AdminPortfolioRoute,
+  AdminPropertiesRoute: AdminPropertiesRouteWithChildren,
+  AdminPropertiesAnalyticsRoute: AdminPropertiesAnalyticsRoute,
+  AdminPropertiesCalendarRoute: AdminPropertiesCalendarRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
+  AdminSmartPricingRoute: AdminSmartPricingRoute,
+  AdminTenantScoringRoute: AdminTenantScoringRoute,
+  AdminTransactionsRoute: AdminTransactionsRoute,
+  AdminUsersRoute: AdminUsersRoute,
+  AdminWebhooksRoute: AdminWebhooksRoute,
+  AdminWorkflowsRoute: AdminWorkflowsRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 interface AppRouteChildren {
-  AppAiRoute: typeof AppAiRoute
-  AppComingSoonRoute: typeof AppComingSoonRoute
+  AppCalendarRoute: typeof AppCalendarRoute
+  AppContractRoute: typeof AppContractRoute
   AppContractsRoute: typeof AppContractsRoute
-  AppCrmRoute: typeof AppCrmRoute
   AppDashboardRoute: typeof AppDashboardRoute
   AppFinanceRoute: typeof AppFinanceRoute
-  AppInvestorRoute: typeof AppInvestorRoute
-  AppMarketplaceRoute: typeof AppMarketplaceRoute
-  AppOwnerRoute: typeof AppOwnerRoute
-  AppPropertiesRoute: typeof AppPropertiesRouteWithChildren
-  AppPropertiesAnalyticsRoute: typeof AppPropertiesAnalyticsRoute
-  AppPropertiesCalendarRoute: typeof AppPropertiesCalendarRoute
-  AppSettingsRoute: typeof AppSettingsRoute
-  AppSmartPricingRoute: typeof AppSmartPricingRoute
+  AppInvestorDocumentsRoute: typeof AppInvestorDocumentsRoute
+  AppInvestorEarningsRoute: typeof AppInvestorEarningsRoute
+  AppInvestorPortfolioRoute: typeof AppInvestorPortfolioRoute
+  AppMaintenanceRoute: typeof AppMaintenanceRoute
+  AppMessagesRoute: typeof AppMessagesRoute
+  AppPaymentsRoute: typeof AppPaymentsRoute
+  AppProfileRoute: typeof AppProfileRoute
+  AppPropertiesRoute: typeof AppPropertiesRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
-  AppAiRoute: AppAiRoute,
-  AppComingSoonRoute: AppComingSoonRoute,
+  AppCalendarRoute: AppCalendarRoute,
+  AppContractRoute: AppContractRoute,
   AppContractsRoute: AppContractsRoute,
-  AppCrmRoute: AppCrmRoute,
   AppDashboardRoute: AppDashboardRoute,
   AppFinanceRoute: AppFinanceRoute,
-  AppInvestorRoute: AppInvestorRoute,
-  AppMarketplaceRoute: AppMarketplaceRoute,
-  AppOwnerRoute: AppOwnerRoute,
-  AppPropertiesRoute: AppPropertiesRouteWithChildren,
-  AppPropertiesAnalyticsRoute: AppPropertiesAnalyticsRoute,
-  AppPropertiesCalendarRoute: AppPropertiesCalendarRoute,
-  AppSettingsRoute: AppSettingsRoute,
-  AppSmartPricingRoute: AppSmartPricingRoute,
+  AppInvestorDocumentsRoute: AppInvestorDocumentsRoute,
+  AppInvestorEarningsRoute: AppInvestorEarningsRoute,
+  AppInvestorPortfolioRoute: AppInvestorPortfolioRoute,
+  AppMaintenanceRoute: AppMaintenanceRoute,
+  AppMessagesRoute: AppMessagesRoute,
+  AppPaymentsRoute: AppPaymentsRoute,
+  AppProfileRoute: AppProfileRoute,
+  AppPropertiesRoute: AppPropertiesRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  AdminRoute: AdminRouteWithChildren,
+  ApiRoute: ApiRoute,
   AppRoute: AppRouteWithChildren,
+  BlogRoute: BlogRoute,
+  CareersRoute: CareersRoute,
+  ChangelogRoute: ChangelogRoute,
+  ComplianceRoute: ComplianceRoute,
+  CookiesRoute: CookiesRoute,
+  DocsRoute: DocsRoute,
+  InvestorRelationsRoute: InvestorRelationsRoute,
+  LicensesRoute: LicensesRoute,
+  LoginRoute: LoginRoute,
+  PressRoute: PressRoute,
+  PricingRoute: PricingRoute,
+  PrivacyRoute: PrivacyRoute,
+  SdksRoute: SdksRoute,
+  SecurityRoute: SecurityRoute,
+  SignupRoute: SignupRoute,
+  StatusRoute: StatusRoute,
+  TermsRoute: TermsRoute,
+  WebhooksRoute: WebhooksRoute,
+  WhiteLabelRoute: WhiteLabelRoute,
+  ListingIdRoute: ListingIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

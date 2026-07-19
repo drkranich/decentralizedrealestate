@@ -1,14 +1,24 @@
 import { createFileRoute, Outlet, redirect, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { Bell, LogOut } from "lucide-react";
 import { toast } from "sonner";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { UserSidebar } from "@/components/app/UserSidebar";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { supabase } from "@/lib/supabase";
 import { useAuthUser, useUserRole, useAvatarUrl, initials } from "@/lib/auth";
 
 export const Route = createFileRoute("/app")({
   beforeLoad: async () => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
     let session = null;
     try {
       const { data } = await supabase.auth.getSession();
@@ -35,15 +45,37 @@ export const Route = createFileRoute("/app")({
 
 function UserLayout() {
   const navigate = useNavigate();
-  const { user, signOut } = useAuthUser();
-  const { role } = useUserRole();
+  const { user, loading: authLoading, signOut } = useAuthUser();
+  const { role, loading: roleLoading } = useUserRole();
   const avatarUrl = useAvatarUrl();
   const displayName = (user?.user_metadata?.name as string | undefined) ?? user?.email ?? "";
+
+  useEffect(() => {
+    if (authLoading) return;
+    if (!user) {
+      navigate({ to: "/login", replace: true });
+      return;
+    }
+    if (roleLoading) return;
+    if (role === "admin") {
+      navigate({ to: "/admin/dashboard", replace: true });
+    }
+  }, [authLoading, navigate, role, roleLoading, user]);
 
   const handleSignOut = async () => {
     await signOut();
     navigate({ to: "/login" });
   };
+
+  if (authLoading || roleLoading || !user || role === "admin") {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="rounded-2xl border border-glass-border bg-card/70 px-6 py-4 text-sm text-muted-foreground shadow-soft backdrop-blur-xl">
+          Restaurando sessao segura...
+        </div>
+      </div>
+    );
+  }
 
   return (
     <SidebarProvider>
@@ -68,12 +100,21 @@ function UserLayout() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-skyblue text-xs font-bold text-white">
-                  {avatarUrl ? <img src={avatarUrl} alt="" className="h-full w-full object-cover" /> : initials(displayName)}
+                  {avatarUrl ? (
+                    <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
+                  ) : (
+                    initials(displayName)
+                  )}
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
-                <div className="px-2 py-1.5 text-xs text-muted-foreground truncate">{user?.email}</div>
-                <DropdownMenuItem onClick={handleSignOut} className="text-destructive focus:text-destructive">
+                <div className="px-2 py-1.5 text-xs text-muted-foreground truncate">
+                  {user?.email}
+                </div>
+                <DropdownMenuItem
+                  onClick={handleSignOut}
+                  className="text-destructive focus:text-destructive"
+                >
                   <LogOut className="mr-2 h-4 w-4" /> Sair
                 </DropdownMenuItem>
               </DropdownMenuContent>
