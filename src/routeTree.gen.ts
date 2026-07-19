@@ -21,6 +21,7 @@ import { Route as ComplianceRouteImport } from './routes/compliance'
 import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as DocsRouteImport } from './routes/docs'
 import { Route as InvestorRelationsRouteImport } from './routes/investor-relations'
+import { Route as LegaltechInfrastructureRouteImport } from './routes/legaltech-infrastructure'
 import { Route as LicensesRouteImport } from './routes/licenses'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as PressRouteImport } from './routes/press'
@@ -44,6 +45,7 @@ import { Route as AdminFollowUpRouteImport } from './routes/admin.follow-up'
 import { Route as AdminFractionalOwnershipRouteImport } from './routes/admin.fractional-ownership'
 import { Route as AdminInvestorRouteImport } from './routes/admin.investor'
 import { Route as AdminInvestorReportsRouteImport } from './routes/admin.investor-reports'
+import { Route as AdminLegalComplianceRouteImport } from './routes/admin.legal-compliance'
 import { Route as AdminLogsRouteImport } from './routes/admin.logs'
 import { Route as AdminMaintenanceRouteImport } from './routes/admin.maintenance'
 import { Route as AdminMarketplaceRouteImport } from './routes/admin.marketplace'
@@ -138,6 +140,11 @@ const DocsRoute = DocsRouteImport.update({
 const InvestorRelationsRoute = InvestorRelationsRouteImport.update({
   id: '/investor-relations',
   path: '/investor-relations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegaltechInfrastructureRoute = LegaltechInfrastructureRouteImport.update({
+  id: '/legaltech-infrastructure',
+  path: '/legaltech-infrastructure',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LicensesRoute = LicensesRouteImport.update({
@@ -254,6 +261,11 @@ const AdminInvestorRoute = AdminInvestorRouteImport.update({
 const AdminInvestorReportsRoute = AdminInvestorReportsRouteImport.update({
   id: '/investor-reports',
   path: '/investor-reports',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLegalComplianceRoute = AdminLegalComplianceRouteImport.update({
+  id: '/legal-compliance',
+  path: '/legal-compliance',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminLogsRoute = AdminLogsRouteImport.update({
@@ -446,6 +458,7 @@ export interface FileRoutesByFullPath {
   '/cookies': typeof CookiesRoute
   '/docs': typeof DocsRoute
   '/investor-relations': typeof InvestorRelationsRoute
+  '/legaltech-infrastructure': typeof LegaltechInfrastructureRoute
   '/licenses': typeof LicensesRoute
   '/login': typeof LoginRoute
   '/press': typeof PressRoute
@@ -469,6 +482,7 @@ export interface FileRoutesByFullPath {
   '/admin/fractional-ownership': typeof AdminFractionalOwnershipRoute
   '/admin/investor': typeof AdminInvestorRoute
   '/admin/investor-reports': typeof AdminInvestorReportsRoute
+  '/admin/legal-compliance': typeof AdminLegalComplianceRoute
   '/admin/logs': typeof AdminLogsRoute
   '/admin/maintenance': typeof AdminMaintenanceRoute
   '/admin/marketplace': typeof AdminMarketplaceRoute
@@ -518,6 +532,7 @@ export interface FileRoutesByTo {
   '/cookies': typeof CookiesRoute
   '/docs': typeof DocsRoute
   '/investor-relations': typeof InvestorRelationsRoute
+  '/legaltech-infrastructure': typeof LegaltechInfrastructureRoute
   '/licenses': typeof LicensesRoute
   '/login': typeof LoginRoute
   '/press': typeof PressRoute
@@ -541,6 +556,7 @@ export interface FileRoutesByTo {
   '/admin/fractional-ownership': typeof AdminFractionalOwnershipRoute
   '/admin/investor': typeof AdminInvestorRoute
   '/admin/investor-reports': typeof AdminInvestorReportsRoute
+  '/admin/legal-compliance': typeof AdminLegalComplianceRoute
   '/admin/logs': typeof AdminLogsRoute
   '/admin/maintenance': typeof AdminMaintenanceRoute
   '/admin/marketplace': typeof AdminMarketplaceRoute
@@ -591,6 +607,7 @@ export interface FileRoutesById {
   '/cookies': typeof CookiesRoute
   '/docs': typeof DocsRoute
   '/investor-relations': typeof InvestorRelationsRoute
+  '/legaltech-infrastructure': typeof LegaltechInfrastructureRoute
   '/licenses': typeof LicensesRoute
   '/login': typeof LoginRoute
   '/press': typeof PressRoute
@@ -614,6 +631,7 @@ export interface FileRoutesById {
   '/admin/fractional-ownership': typeof AdminFractionalOwnershipRoute
   '/admin/investor': typeof AdminInvestorRoute
   '/admin/investor-reports': typeof AdminInvestorReportsRoute
+  '/admin/legal-compliance': typeof AdminLegalComplianceRoute
   '/admin/logs': typeof AdminLogsRoute
   '/admin/maintenance': typeof AdminMaintenanceRoute
   '/admin/marketplace': typeof AdminMarketplaceRoute
@@ -665,6 +683,7 @@ export interface FileRouteTypes {
     | '/cookies'
     | '/docs'
     | '/investor-relations'
+    | '/legaltech-infrastructure'
     | '/licenses'
     | '/login'
     | '/press'
@@ -688,6 +707,7 @@ export interface FileRouteTypes {
     | '/admin/fractional-ownership'
     | '/admin/investor'
     | '/admin/investor-reports'
+    | '/admin/legal-compliance'
     | '/admin/logs'
     | '/admin/maintenance'
     | '/admin/marketplace'
@@ -737,6 +757,7 @@ export interface FileRouteTypes {
     | '/cookies'
     | '/docs'
     | '/investor-relations'
+    | '/legaltech-infrastructure'
     | '/licenses'
     | '/login'
     | '/press'
@@ -760,6 +781,7 @@ export interface FileRouteTypes {
     | '/admin/fractional-ownership'
     | '/admin/investor'
     | '/admin/investor-reports'
+    | '/admin/legal-compliance'
     | '/admin/logs'
     | '/admin/maintenance'
     | '/admin/marketplace'
@@ -809,6 +831,7 @@ export interface FileRouteTypes {
     | '/cookies'
     | '/docs'
     | '/investor-relations'
+    | '/legaltech-infrastructure'
     | '/licenses'
     | '/login'
     | '/press'
@@ -832,6 +855,7 @@ export interface FileRouteTypes {
     | '/admin/fractional-ownership'
     | '/admin/investor'
     | '/admin/investor-reports'
+    | '/admin/legal-compliance'
     | '/admin/logs'
     | '/admin/maintenance'
     | '/admin/marketplace'
@@ -882,6 +906,7 @@ export interface RootRouteChildren {
   CookiesRoute: typeof CookiesRoute
   DocsRoute: typeof DocsRoute
   InvestorRelationsRoute: typeof InvestorRelationsRoute
+  LegaltechInfrastructureRoute: typeof LegaltechInfrastructureRoute
   LicensesRoute: typeof LicensesRoute
   LoginRoute: typeof LoginRoute
   PressRoute: typeof PressRoute
@@ -981,6 +1006,13 @@ declare module '@tanstack/react-router' {
       path: '/investor-relations'
       fullPath: '/investor-relations'
       preLoaderRoute: typeof InvestorRelationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legaltech-infrastructure': {
+      id: '/legaltech-infrastructure'
+      path: '/legaltech-infrastructure'
+      fullPath: '/legaltech-infrastructure'
+      preLoaderRoute: typeof LegaltechInfrastructureRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/licenses': {
@@ -1142,6 +1174,13 @@ declare module '@tanstack/react-router' {
       path: '/investor-reports'
       fullPath: '/admin/investor-reports'
       preLoaderRoute: typeof AdminInvestorReportsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/legal-compliance': {
+      id: '/admin/legal-compliance'
+      path: '/legal-compliance'
+      fullPath: '/admin/legal-compliance'
+      preLoaderRoute: typeof AdminLegalComplianceRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/logs': {
@@ -1416,6 +1455,7 @@ interface AdminRouteChildren {
   AdminFractionalOwnershipRoute: typeof AdminFractionalOwnershipRoute
   AdminInvestorRoute: typeof AdminInvestorRoute
   AdminInvestorReportsRoute: typeof AdminInvestorReportsRoute
+  AdminLegalComplianceRoute: typeof AdminLegalComplianceRoute
   AdminLogsRoute: typeof AdminLogsRoute
   AdminMaintenanceRoute: typeof AdminMaintenanceRoute
   AdminMarketplaceRoute: typeof AdminMarketplaceRoute
@@ -1450,6 +1490,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminFractionalOwnershipRoute: AdminFractionalOwnershipRoute,
   AdminInvestorRoute: AdminInvestorRoute,
   AdminInvestorReportsRoute: AdminInvestorReportsRoute,
+  AdminLegalComplianceRoute: AdminLegalComplianceRoute,
   AdminLogsRoute: AdminLogsRoute,
   AdminMaintenanceRoute: AdminMaintenanceRoute,
   AdminMarketplaceRoute: AdminMarketplaceRoute,
@@ -1521,6 +1562,7 @@ const rootRouteChildren: RootRouteChildren = {
   CookiesRoute: CookiesRoute,
   DocsRoute: DocsRoute,
   InvestorRelationsRoute: InvestorRelationsRoute,
+  LegaltechInfrastructureRoute: LegaltechInfrastructureRoute,
   LicensesRoute: LicensesRoute,
   LoginRoute: LoginRoute,
   PressRoute: PressRoute,

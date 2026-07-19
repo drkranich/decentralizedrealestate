@@ -74,6 +74,57 @@ Ainda não abrimos um programa self-service de chaves públicas. Para integraç�
     },
   },
   {
+    key: "legaltech_infrastructure",
+    path: "/legaltech-infrastructure",
+    menuTitle: "LegalTech Infrastructure",
+    defaults: {
+      title: "LegalTech Infrastructure",
+      subtitle:
+        "A camada jurídica, regulatória, documental e de auditoria desenhada para ativos imobiliários globais.",
+      body: `A Seravie Heritage não deve operar como uma imobiliária comum com uma camada superficial de blockchain. A visão correta é uma infraestrutura global que une Real Estate, LegalTech, RegTech, Contract Lifecycle Management, Digital Asset Management, Identity Verification, Compliance, Document Custody e Tokenized Asset Administration.
+
+Esta infraestrutura não promete conformidade jurídica automática. Ela existe para operacionalizar regras aprovadas por responsáveis jurídicos e regulatórios, preservar evidências, bloquear operações sem enquadramento registrado e exigir revisão humana sempre que uma decisão depender de análise externa.
+
+## Princípios
+- Nenhum token deve ser tratado automaticamente como propriedade registral de um imóvel
+- Nenhuma oferta tokenizada deve ser publicada sem classificação jurídica aprovada
+- Nenhum contrato deve ser assinado sem aprovação jurídica
+- Nenhum documento assinado deve ser sobrescrito
+- Nenhuma decisão de compliance deve existir sem regra, versão, evidência e fundamento
+- Nenhuma operação deve avançar sem jurisdição definida
+
+## Módulos estruturantes
+- Heritage Legal & Compliance Cockpit
+- Jurisdiction Rule Packs
+- Legal Token Classification Record
+- Heritage Compliance Engine
+- Compliance Gates
+- Contract Lifecycle Management
+- Heritage Legal Vault
+- KYC, KYB, AML e Sanctions Layer
+- Payments, Escrow e Reconciliation
+- Tokenization Engine
+- Audit & Evidence Service
+
+## Portões de aprovação
+- Elegibilidade do imóvel
+- Elegibilidade do proprietário
+- Elegibilidade jurídica da oferta
+- Elegibilidade do investidor
+- Fechamento
+- Pós-fechamento
+
+## Jurisdições
+A primeira implementação operacional deve priorizar o Brasil. Outras jurisdições podem existir como pacotes configuráveis, mas devem permanecer bloqueadas para operação comercial até receberem análise jurídica local, matriz regulatória, contratos locais, avaliação tributária, parceiros licenciados e regras de KYC, KYB, AML, assinatura, proteção de dados e registro imobiliário.
+
+## Inteligência artificial
+A IA pode auxiliar na extração de campos, classificação de documentos, comparação de versões, organização de evidências e sugestão de riscos. A IA não pode aprovar contrato, emitir parecer definitivo, liberar operação regulada, classificar definitivamente token, dispensar licença, ocultar incerteza ou inventar legislação.
+
+## Direção de implementação
+A implantação deve seguir fases: diagnóstico, arquitetura, modelo jurídico operacional, banco de dados, Legal Vault, Contract Lifecycle Management, Compliance Engine, Tokenization Engine, testes de segurança e documentação operacional.`,
+    },
+  },
+  {
     key: "sdks",
     path: "/sdks",
     menuTitle: "SDKs",

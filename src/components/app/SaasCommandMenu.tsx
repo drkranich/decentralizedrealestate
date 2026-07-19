@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   LayoutTemplate,
   Plus,
+  Scale,
   Search,
   Settings,
   Users,
@@ -46,6 +47,7 @@ const iconByPath: Record<string, typeof Search> = {
   "/admin/properties": Building2,
   "/admin/users": Users,
   "/admin/permissions": KeyRound,
+  "/admin/legal-compliance": Scale,
   "/admin/cms": LayoutTemplate,
   "/admin/settings": Settings,
   "/app/dashboard": LayoutDashboard,
@@ -82,6 +84,16 @@ const adminQuickActions: SearchIntent[] = [
     section: "Ações rápidas",
     path: "/admin/users",
     icon: Users,
+  },
+  {
+    id: "action.admin.legal_compliance",
+    label: "Abrir Legal & Compliance",
+    description: "Ver gates, jurisdições, vault, evidências e decisões regulatórias.",
+    keywords:
+      "legal compliance jurídico regulatório token classificação vault evidências kyc kyb aml",
+    section: "Ações rápidas",
+    path: "/admin/legal-compliance",
+    icon: Scale,
   },
 ];
 

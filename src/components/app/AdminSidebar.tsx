@@ -35,6 +35,7 @@ import {
   Search,
   ChevronDown,
   LayoutTemplate,
+  Scale,
   type LucideIcon,
 } from "lucide-react";
 import {
@@ -201,6 +202,12 @@ const groups: Group[] = [
     items: [
       { title: "Users", icon: Users, to: "/admin/users", section: "Admin" },
       { title: "Permissions", icon: KeyRound, to: "/admin/permissions", section: "Admin" },
+      {
+        title: "Legal & Compliance",
+        icon: Scale,
+        to: "/admin/legal-compliance",
+        section: "Admin",
+      },
       {
         title: "Security",
         icon: Lock,

@@ -24,6 +24,7 @@ const cols = [
     links: [
       { label: "API", to: "/api" },
       { label: "Documentação", to: "/docs" },
+      { label: "LegalTech", to: "/legaltech-infrastructure" },
       { label: "SDKs", to: "/sdks" },
       { label: "Webhooks", to: "/webhooks" },
       { label: "Status", to: "/status" },

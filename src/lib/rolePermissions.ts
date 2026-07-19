@@ -296,6 +296,15 @@ export const permissionRoutes: PermissionRoute[] = [
     lockedFor: ["admin"],
   },
   {
+    id: "admin.legal_compliance",
+    label: "Legal & Compliance",
+    path: "/admin/legal-compliance",
+    area: "admin",
+    section: "Admin",
+    description: "Cockpit jurídico, regulatório, documental, tokenização e evidências.",
+    defaultRoles: ["admin"],
+  },
+  {
     id: "admin.logs",
     label: "Logs",
     path: "/admin/logs",
@@ -467,6 +476,15 @@ export const roleCapabilities: RoleCapability[] = [
     id: "admin.manage_platform",
     label: "Configurar plataforma",
     description: "Marca, CMS, integrações, segurança e preferências globais.",
+    section: "Governança",
+    defaultRoles: ["admin"],
+    availableFor: ["admin"],
+  },
+  {
+    id: "admin.manage_legal_compliance",
+    label: "Gerenciar LegalTech e compliance",
+    description:
+      "Pode configurar jurisdições, gates, classificação jurídica, vault, legal holds e evidências.",
     section: "Governança",
     defaultRoles: ["admin"],
     availableFor: ["admin"],
