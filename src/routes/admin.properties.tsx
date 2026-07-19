@@ -9,6 +9,7 @@ export const Route = createFileRoute("/admin/properties")({
   validateSearch: (s: Record<string, unknown>) => ({
     q: typeof s.q === "string" ? s.q : "",
     add: typeof s.add === "string" ? s.add : "",
+    type: typeof s.type === "string" ? s.type : "",
   }),
   component: Properties,
 });
@@ -77,14 +78,18 @@ function Properties() {
 
   const byStatus = filter === "All" ? rows : rows.filter((p) => (p.status ?? "").toLowerCase() === filter.toLowerCase());
   const byListing = listingFilter === "Todos" ? byStatus : byStatus.filter((p) => p.listing_type === listingFilter.toLowerCase());
-  const filtered = textQuery ? byListing.filter((p) => p.title.toLowerCase().includes(textQuery.toLowerCase())) : byListing;
+  const byStayType = search.type ? byListing.filter((p) => p.property_type === search.type) : byListing;
+  const filtered = textQuery ? byStayType.filter((p) => p.title.toLowerCase().includes(textQuery.toLowerCase())) : byStayType;
   const total = rows.length;
   const available = rows.filter((p) => p.status === "available").length;
   const own = userId ? rows.filter((p) => p.owner_id === userId).length : 0;
 
   return (
     <>
-      <PageHeader title="Properties" subtitle={loading ? "Loading your portfolio…" : `${total} ${total === 1 ? "property" : "properties"} on the platform right now.`}>
+      <PageHeader
+        title={search.type ? `Properties — ${search.type}` : "Properties"}
+        subtitle={loading ? "Loading your portfolio…" : `${filtered.length} ${filtered.length === 1 ? "property" : "properties"}${search.type ? ` (${search.type.toLowerCase()})` : " on the platform right now"}.`}
+      >
         <button
           onClick={() => setShowFilters((v) => !v)}
           className={`flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors ${showFilters ? "border-emerald/40 bg-emerald/10 text-emerald" : "border-glass-border bg-card hover:bg-secondary"}`}

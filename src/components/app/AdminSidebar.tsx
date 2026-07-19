@@ -23,7 +23,7 @@ import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 
 // ===== Sidebar configuration (modular, easy to extend) =====
-type Item = { title: string; icon: any; to?: string; section: string };
+type Item = { title: string; icon: any; to?: string; search?: Record<string, string>; section: string };
 type Group = { label: string; items: Item[] };
 
 const groups: Group[] = [
@@ -35,9 +35,9 @@ const groups: Group[] = [
       { title: "Investments", icon: Coins, to: "/admin/investor", section: "Main" },
       { title: "Marketplace", icon: ShoppingBag, to: "/admin/marketplace", section: "Main" },
       { title: "Contracts", icon: FileText, to: "/admin/contracts", section: "Main" },
-      { title: "Payments", icon: CreditCard, section: "Main" },
+      { title: "Payments", icon: CreditCard, to: "/admin/payments", section: "Main" },
       { title: "Analytics", icon: BarChart3, to: "/admin/properties-analytics", section: "Main" },
-      { title: "Messages", icon: MessageSquare, section: "Main" },
+      { title: "Messages", icon: MessageSquare, to: "/admin/messages", section: "Main" },
       { title: "Calendar", icon: Calendar, to: "/admin/properties-calendar", section: "Main" },
     ],
   },
@@ -45,11 +45,11 @@ const groups: Group[] = [
     label: "Property Management",
     items: [
       { title: "All Properties", icon: Building2, to: "/admin/properties", section: "Property Management" },
-      { title: "Short Stay", icon: Hotel, section: "Property Management" },
-      { title: "Long Stay", icon: Home, section: "Property Management" },
+      { title: "Short Stay", icon: Hotel, to: "/admin/properties", search: { type: "Short stay" }, section: "Property Management" },
+      { title: "Long Stay", icon: Home, to: "/admin/properties", search: { type: "Long stay" }, section: "Property Management" },
       { title: "Smart Pricing", icon: Sparkles, to: "/admin/smart-pricing", section: "Property Management" },
-      { title: "Maintenance", icon: Wrench, section: "Property Management" },
-      { title: "Cleaning", icon: Brush, section: "Property Management" },
+      { title: "Maintenance", icon: Wrench, to: "/admin/maintenance", section: "Property Management" },
+      { title: "Cleaning", icon: Brush, to: "/admin/marketplace", search: { cat: "cleaning" }, section: "Property Management" },
       { title: "Occupancy", icon: BedDouble, to: "/admin/properties-analytics", section: "Property Management" },
     ],
   },
@@ -57,10 +57,10 @@ const groups: Group[] = [
     label: "Financial",
     items: [
       { title: "Revenue", icon: TrendingUp, to: "/admin/finance", section: "Financial" },
-      { title: "Transactions", icon: ArrowLeftRight, section: "Financial" },
+      { title: "Transactions", icon: ArrowLeftRight, to: "/admin/transactions", section: "Financial" },
       { title: "Payouts", icon: Banknote, section: "Financial" },
       { title: "Investor Reports", icon: FileBarChart, section: "Financial" },
-      { title: "ROI Analytics", icon: PieChart, section: "Financial" },
+      { title: "ROI Analytics", icon: PieChart, to: "/admin/investor", section: "Financial" },
     ],
   },
   {
@@ -68,18 +68,18 @@ const groups: Group[] = [
     items: [
       { title: "Fractional Ownership", icon: Layers, section: "Investors" },
       { title: "Tokenized Assets", icon: Coins, to: "/admin/investor", section: "Investors" },
-      { title: "Investment Opportunities", icon: Sparkles, section: "Investors" },
+      { title: "Investment Opportunities", icon: Sparkles, to: "/admin/investor", section: "Investors" },
       { title: "Portfolio", icon: Boxes, section: "Investors" },
     ],
   },
   {
     label: "Services",
     items: [
-      { title: "Cleaning", icon: Brush, section: "Services" },
-      { title: "Repairs", icon: Wrench, section: "Services" },
-      { title: "Interior Design", icon: Lightbulb, section: "Services" },
-      { title: "Insurance", icon: ShieldCheck, section: "Services" },
-      { title: "Moving Services", icon: Truck, section: "Services" },
+      { title: "Cleaning", icon: Brush, to: "/admin/marketplace", search: { cat: "cleaning" }, section: "Services" },
+      { title: "Repairs", icon: Wrench, to: "/admin/marketplace", search: { cat: "repairs" }, section: "Services" },
+      { title: "Interior Design", icon: Lightbulb, to: "/admin/marketplace", search: { cat: "design" }, section: "Services" },
+      { title: "Insurance", icon: ShieldCheck, to: "/admin/marketplace", search: { cat: "insurance" }, section: "Services" },
+      { title: "Moving Services", icon: Truck, to: "/admin/marketplace", search: { cat: "movers" }, section: "Services" },
     ],
   },
   {
@@ -95,7 +95,7 @@ const groups: Group[] = [
     label: "CRM",
     items: [
       { title: "Leads", icon: Users, to: "/admin/crm", section: "CRM" },
-      { title: "Pipeline", icon: GitBranch, section: "CRM" },
+      { title: "Pipeline", icon: GitBranch, to: "/admin/crm", section: "CRM" },
       { title: "Follow-up", icon: ClipboardList, section: "CRM" },
       { title: "Tenant Scoring", icon: UserCheck, section: "CRM" },
     ],
@@ -103,9 +103,9 @@ const groups: Group[] = [
   {
     label: "Admin",
     items: [
-      { title: "Users", icon: Users, section: "Admin" },
+      { title: "Users", icon: Users, to: "/admin/users", section: "Admin" },
       { title: "Permissions", icon: KeyRound, section: "Admin" },
-      { title: "Security", icon: Lock, section: "Admin" },
+      { title: "Security", icon: Lock, to: "/admin/settings", search: { tab: "security" }, section: "Admin" },
       { title: "Logs", icon: ScrollText, section: "Admin" },
       { title: "Settings", icon: Settings, to: "/admin/settings", section: "Admin" },
     ],
@@ -131,7 +131,7 @@ function ItemLink({ item, active, collapsed }: { item: Item; active: boolean; co
 
   if (item.to) {
     return (
-      <Link to={item.to} className={className}>
+      <Link to={item.to} search={item.search as any} className={className}>
         {content}
       </Link>
     );

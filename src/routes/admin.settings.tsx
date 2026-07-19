@@ -10,6 +10,9 @@ import { BrandingCard } from "@/components/app/BrandingCard";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/settings")({
+  validateSearch: (s: Record<string, unknown>) => ({
+    tab: typeof s.tab === "string" ? s.tab : "",
+  }),
   component: Settings,
 });
 
@@ -24,7 +27,8 @@ const tabs = [
 ];
 
 function Settings() {
-  const [tab, setTab] = useState("profile");
+  const search = Route.useSearch();
+  const [tab, setTab] = useState(search.tab || "profile");
 
   return (
     <>

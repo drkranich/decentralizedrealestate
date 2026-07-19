@@ -9,6 +9,9 @@ import { useBrand } from "@/components/brand/BrandProvider";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/marketplace")({
+  validateSearch: (s: Record<string, unknown>) => ({
+    cat: typeof s.cat === "string" ? s.cat : "all",
+  }),
   component: Marketplace,
 });
 
@@ -47,7 +50,8 @@ const messages = [
 
 function Marketplace() {
   const brand = useBrand();
-  const [cat, setCat] = useState("all");
+  const search = Route.useSearch();
+  const [cat, setCat] = useState(search.cat);
   const [q, setQ] = useState("");
 
   const filtered = providers.filter((p) => (cat === "all" || p.cat === cat) && (q === "" || p.name.toLowerCase().includes(q.toLowerCase())));
