@@ -4,6 +4,8 @@ import { Phone, Mail, Filter, Loader2, Search, ChevronRight, ChevronLeft, CheckC
 import { toast } from "sonner";
 import { PageHeader, Card, Badge, StatCard, DemoDataBadge } from "@/components/app/ui";
 import { Users, TrendingUp, Target, Zap } from "lucide-react";
+import { EditLeadModal, type EditableLead } from "@/components/crm/EditLeadModal";
+import { LeadActionsMenu } from "@/components/crm/LeadActionsMenu";
 import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/admin/crm")({
@@ -36,16 +38,19 @@ function CRM() {
   const [q, setQ] = useState("");
   const [dragOverStage, setDragOverStage] = useState<string | null>(null);
   const [draggingId, setDraggingId] = useState<string | null>(null);
+  const [editing, setEditing] = useState<EditableLead | null>(null);
+
+  const load = async () => {
+    const { data } = await supabase
+      .from("leads")
+      .select("id, name, email, phone, status, created_at, properties(title)")
+      .order("created_at", { ascending: false });
+    setLeads((data as unknown as Lead[]) ?? []);
+    setLoading(false);
+  };
 
   useEffect(() => {
-    (async () => {
-      const { data } = await supabase
-        .from("leads")
-        .select("id, name, email, phone, status, created_at, properties(title)")
-        .order("created_at", { ascending: false });
-      setLeads((data as unknown as Lead[]) ?? []);
-      setLoading(false);
-    })();
+    load();
   }, []);
 
   const moveLead = async (leadId: string, newStatus: string) => {
@@ -170,6 +175,14 @@ function CRM() {
                           <div className="text-sm font-semibold truncate">{l.name}</div>
                           <div className="text-[10px] text-muted-foreground truncate">{l.properties?.title ?? "Imóvel removido"}</div>
                         </div>
+                        <span onMouseDown={(e) => e.stopPropagation()} draggable={false}>
+                          <LeadActionsMenu
+                            leadId={l.id}
+                            name={l.name}
+                            onEdit={() => setEditing(l)}
+                            onChanged={load}
+                          />
+                        </span>
                       </div>
                       <div className="mt-2 flex gap-1.5 border-t border-border/50 pt-2">
                         {l.phone && (
@@ -214,6 +227,15 @@ function CRM() {
           ))}
         </div>
       )}
+
+      <EditLeadModal
+        lead={editing}
+        onClose={() => setEditing(null)}
+        onSaved={() => {
+          setEditing(null);
+          load();
+        }}
+      />
     </>
   );
 }

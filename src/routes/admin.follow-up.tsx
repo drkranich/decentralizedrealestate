@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ClipboardList, Loader2, Phone, Mail } from "lucide-react";
 import { PageHeader, Card, Badge, StatCard } from "@/components/app/ui";
+import { EditLeadModal, type EditableLead } from "@/components/crm/EditLeadModal";
+import { LeadActionsMenu } from "@/components/crm/LeadActionsMenu";
 import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/admin/follow-up")({
@@ -24,16 +26,19 @@ function daysSince(iso: string) {
 
 function FollowUp() {
   const [leads, setLeads] = useState<Lead[] | null>(null);
+  const [editing, setEditing] = useState<EditableLead | null>(null);
+
+  const load = async () => {
+    const { data } = await supabase
+      .from("leads")
+      .select("id, name, email, phone, status, created_at, properties(title)")
+      .neq("status", "closed")
+      .order("created_at", { ascending: true });
+    setLeads((data ?? []).map((l: any) => ({ ...l, property_title: l.properties?.title ?? "Imóvel" })));
+  };
 
   useEffect(() => {
-    (async () => {
-      const { data } = await supabase
-        .from("leads")
-        .select("id, name, email, phone, status, created_at, properties(title)")
-        .neq("status", "closed")
-        .order("created_at", { ascending: true });
-      setLeads((data ?? []).map((l: any) => ({ ...l, property_title: l.properties?.title ?? "Imóvel" })));
-    })();
+    load();
   }, []);
 
   if (leads === null) {
@@ -98,6 +103,13 @@ function FollowUp() {
                         <Mail className="h-3.5 w-3.5" />
                       </a>
                     )}
+                    <LeadActionsMenu
+                      leadId={l.id}
+                      name={l.name}
+                      onEdit={() => setEditing(l)}
+                      onChanged={load}
+                      triggerClassName="flex h-8 w-8 items-center justify-center rounded-lg border border-glass-border bg-secondary/40 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                    />
                   </div>
                 </div>
               );
@@ -105,6 +117,15 @@ function FollowUp() {
           </div>
         </Card>
       )}
+
+      <EditLeadModal
+        lead={editing}
+        onClose={() => setEditing(null)}
+        onSaved={() => {
+          setEditing(null);
+          load();
+        }}
+      />
     </>
   );
 }
