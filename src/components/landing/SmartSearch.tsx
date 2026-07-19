@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { MapPin, Globe, Building2, Calendar, Sofa, TrendingUp, Map } from "lucide-react";
+import { usePublicContent } from "@/lib/siteContent";
 
 const filters = [
   { icon: MapPin, label: "City" },
@@ -11,14 +12,21 @@ const filters = [
   { icon: TrendingUp, label: "Investment" },
 ];
 
+const smartSearchDefaults = {
+  heading_prefix: "Smart search,",
+  heading_emphasis: "infinite results",
+  subheading: "Filter across 84 countries, with live map data and AI-curated matches.",
+};
+
 export function SmartSearch() {
+  const c = usePublicContent("smart_search", smartSearchDefaults);
   const [active, setActive] = useState("City");
   return (
     <section className="relative py-24">
       <div className="mx-auto max-w-7xl px-4">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="font-display text-4xl font-bold md:text-5xl">Smart search, <span className="text-emerald">infinite results</span></h2>
-          <p className="mt-4 text-muted-foreground">Filter across 84 countries, with live map data and AI-curated matches.</p>
+          <h2 className="font-display text-4xl font-bold md:text-5xl">{c.heading_prefix} <span className="text-emerald">{c.heading_emphasis}</span></h2>
+          <p className="mt-4 text-muted-foreground">{c.subheading}</p>
         </div>
 
         <div

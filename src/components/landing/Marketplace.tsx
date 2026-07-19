@@ -1,4 +1,5 @@
 import { Sparkles, Wrench, Truck, Palette, Shield, Sofa, Wifi } from "lucide-react";
+import { usePublicContent } from "@/lib/siteContent";
 
 const services = [
   { icon: Sparkles, label: "Cleaning", color: "emerald/30" },
@@ -10,14 +11,22 @@ const services = [
   { icon: Wifi, label: "Internet setup", color: "skyblue/30" },
 ];
 
+const marketplaceDefaults = {
+  eyebrow: "Marketplace",
+  heading_prefix: "A network of",
+  heading_emphasis: "vetted services",
+  subheading: "Book trusted local pros in one tap. Quality guaranteed, in 84 countries.",
+};
+
 export function Marketplace() {
+  const c = usePublicContent("marketplace", marketplaceDefaults);
   return (
     <section id="marketplace" className="py-24">
       <div className="mx-auto max-w-7xl px-4">
         <div className="mx-auto max-w-2xl text-center">
-          <div className="text-sm font-medium text-emerald">Marketplace</div>
-          <h2 className="mt-2 font-display text-4xl font-bold md:text-5xl">A network of <span className="text-emerald">vetted services</span></h2>
-          <p className="mt-4 text-muted-foreground">Book trusted local pros in one tap. Quality guaranteed, in 84 countries.</p>
+          <div className="text-sm font-medium text-emerald">{c.eyebrow}</div>
+          <h2 className="mt-2 font-display text-4xl font-bold md:text-5xl">{c.heading_prefix} <span className="text-emerald">{c.heading_emphasis}</span></h2>
+          <p className="mt-4 text-muted-foreground">{c.subheading}</p>
         </div>
 
         <div className="mt-14 grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">

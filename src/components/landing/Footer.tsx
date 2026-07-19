@@ -2,24 +2,72 @@ import * as Icons from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Logo } from "@/components/brand/Logo";
 import { useBrand } from "@/components/brand/BrandProvider";
+import { usePublicContent } from "@/lib/siteContent";
 
 const cols = [
-  { title: "Product", links: ["Properties", "Invest", "Manage", "Marketplace", "AI", "Pricing"] },
-  { title: "Developers", links: ["API", "Documentation", "SDKs", "Webhooks", "Status", "Changelog"] },
-  { title: "Company", links: ["About", "Careers", "Blog", "Press", "Investor relations", "White-label"] },
-  { title: "Legal", links: ["Terms", "Privacy", "Cookies", "Compliance", "Licenses", "Security"] },
+  {
+    title: "Product",
+    links: [
+      { label: "Properties", href: "/#properties" },
+      { label: "Invest", href: "/#invest" },
+      { label: "Manage", href: "/#manage" },
+      { label: "Marketplace", href: "/#marketplace" },
+      { label: "AI", href: "/#ai" },
+      { label: "Pricing", to: "/pricing" },
+    ],
+  },
+  {
+    title: "Developers",
+    links: [
+      { label: "API", to: "/api" },
+      { label: "Documentation", to: "/docs" },
+      { label: "SDKs", to: "/sdks" },
+      { label: "Webhooks", to: "/webhooks" },
+      { label: "Status", to: "/status" },
+      { label: "Changelog", to: "/changelog" },
+    ],
+  },
+  {
+    title: "Company",
+    links: [
+      { label: "About", to: "/about" },
+      { label: "Careers", to: "/careers" },
+      { label: "Blog", to: "/blog" },
+      { label: "Press", to: "/press" },
+      { label: "Investor relations", to: "/investor-relations" },
+      { label: "White-label", to: "/white-label" },
+    ],
+  },
+  {
+    title: "Legal",
+    links: [
+      { label: "Terms", to: "/terms" },
+      { label: "Privacy", to: "/privacy" },
+      { label: "Cookies", to: "/cookies" },
+      { label: "Compliance", to: "/compliance" },
+      { label: "Licenses", to: "/licenses" },
+      { label: "Security", to: "/security" },
+    ],
+  },
 ];
+
+const footerCtaDefaults = {
+  heading_prefix: "Ready to operate real estate",
+  heading_emphasis: "like a global tech company?",
+  subheading: "Join 84,000+ owners, hosts and investors using Property OS.",
+};
 
 export function Footer() {
   const brand = useBrand();
+  const c = usePublicContent("footer_cta", footerCtaDefaults);
   return (
     <footer id="cta" className="border-t border-border">
       <div className="mx-auto max-w-7xl px-4 py-16">
         <div className="rounded-[2rem] bg-skyblue/5 p-10 md:p-14">
           <div className="grid items-center gap-8 lg:grid-cols-2">
             <div>
-              <h3 className="font-display text-3xl font-bold md:text-4xl">Ready to operate real estate <span className="text-emerald">like a global tech company?</span></h3>
-              <p className="mt-3 text-muted-foreground">Join 84,000+ owners, hosts and investors using {brand.name}.</p>
+              <h3 className="font-display text-3xl font-bold md:text-4xl">{c.heading_prefix} <span className="text-emerald">{c.heading_emphasis}</span></h3>
+              <p className="mt-3 text-muted-foreground">{c.subheading}</p>
             </div>
             <div className="flex flex-wrap gap-3 lg:justify-end">
               <Link to="/signup" className="rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background hover:opacity-90">Start free</Link>
@@ -48,8 +96,12 @@ export function Footer() {
               <div className="font-display text-sm font-semibold">{c.title}</div>
               <ul className="mt-4 space-y-2.5">
                 {c.links.map((l) => (
-                  <li key={l}>
-                    <a href="#" className="text-sm text-muted-foreground hover:text-foreground">{l}</a>
+                  <li key={l.label}>
+                    {"to" in l ? (
+                      <Link to={l.to} className="text-sm text-muted-foreground hover:text-foreground">{l.label}</Link>
+                    ) : (
+                      <a href={l.href} className="text-sm text-muted-foreground hover:text-foreground">{l.label}</a>
+                    )}
                   </li>
                 ))}
               </ul>

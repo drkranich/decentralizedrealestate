@@ -8,7 +8,7 @@ export const Route = createFileRoute("/signup")({
   component: SignupPage,
 });
 
-type Role = "tenant" | "owner";
+type Role = "tenant" | "owner" | "investor";
 
 function SignupPage() {
   const navigate = useNavigate();
@@ -115,14 +115,14 @@ function SignupPage() {
           <div>
             <label className="mb-1 block text-xs font-medium text-muted-foreground">Você é</label>
             <div className="flex gap-2">
-              {(["tenant", "owner"] as Role[]).map((r) => (
+              {(["tenant", "owner", "investor"] as Role[]).map((r) => (
                 <button
                   key={r}
                   type="button"
                   onClick={() => setRole(r)}
                   className={`flex-1 rounded-full px-3.5 py-2 text-sm font-medium transition-colors ${role === r ? "bg-foreground text-background" : "border border-glass-border bg-secondary/40"}`}
                 >
-                  {r === "tenant" ? "Inquilino" : "Proprietário"}
+                  {r === "tenant" ? "Inquilino" : r === "owner" ? "Proprietário" : "Investidor"}
                 </button>
               ))}
             </div>

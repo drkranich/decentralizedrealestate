@@ -5,7 +5,7 @@ import {
   TrendingUp, ArrowLeftRight, Banknote, FileBarChart, Layers,
   Boxes, Lightbulb, ShieldCheck, Truck, Workflow, Bot, Bell,
   Webhook, Users, UserCheck, ClipboardList, KeyRound, ScrollText,
-  Settings, Lock, Search, ChevronDown,
+  Settings, Lock, Search, ChevronDown, LayoutTemplate,
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
@@ -99,6 +99,7 @@ const groups: Group[] = [
       { title: "Permissions", icon: KeyRound, to: "/admin/permissions", section: "Admin" },
       { title: "Security", icon: Lock, to: "/admin/settings", search: { tab: "security" }, section: "Admin" },
       { title: "Logs", icon: ScrollText, to: "/admin/logs", section: "Admin" },
+      { title: "CMS (página pública)", icon: LayoutTemplate, to: "/admin/cms", section: "Admin" },
       { title: "Settings", icon: Settings, to: "/admin/settings", section: "Admin" },
     ],
   },

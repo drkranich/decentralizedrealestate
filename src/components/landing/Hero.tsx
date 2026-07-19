@@ -1,14 +1,36 @@
 import { Search, MapPin, Sparkles, TrendingUp, Globe2, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroImg from "@/assets/hero.jpg";
+import { usePublicContent } from "@/lib/siteContent";
 
-const stats = [
-  { label: "Properties", value: "120K+", icon: Home, position: "top-0 left-0 md:top-4 md:left-8", delay: 0.2 },
-  { label: "Avg ROI", value: "12.8%", icon: TrendingUp, position: "top-0 right-0 md:top-4 md:right-8", delay: 0.6 },
-  { label: "Countries", value: "84", icon: Globe2, position: "bottom-0 left-1/2 -translate-x-1/2", delay: 1 },
+const statIcons = [Home, TrendingUp, Globe2];
+const statPositions = [
+  "top-0 left-0 md:top-4 md:left-8",
+  "top-0 right-0 md:top-4 md:right-8",
+  "bottom-0 left-1/2 -translate-x-1/2",
 ];
+const statDelays = [0.2, 0.6, 1];
+
+const heroDefaults = {
+  badge: "The world's first decentralized real estate OS",
+  headline_prefix: "Own, host & invest in",
+  headline_emphasis: "real estate",
+  headline_suffix: "without borders.",
+  subtitle:
+    "One platform to discover properties, fractional invest in tokenized assets, and automate operations with AI — anywhere on earth.",
+  search_placeholder: "Lisbon, Tokyo, NYC, Bali…",
+  stat1_label: "Properties", stat1_value: "120K+",
+  stat2_label: "Avg ROI", stat2_value: "12.8%",
+  stat3_label: "Countries", stat3_value: "84",
+};
 
 export function Hero() {
+  const c = usePublicContent("hero", heroDefaults);
+  const stats = [
+    { label: c.stat1_label, value: c.stat1_value },
+    { label: c.stat2_label, value: c.stat2_value },
+    { label: c.stat3_label, value: c.stat3_value },
+  ];
   return (
     <section className="relative min-h-screen overflow-hidden pt-28 pb-20">
       <div className="absolute inset-0 -z-10">
@@ -23,21 +45,21 @@ export function Hero() {
             className="inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-xs font-medium"
           >
             <Sparkles className="h-3.5 w-3.5 text-emerald" />
-            <span>The world's first decentralized real estate OS</span>
+            <span>{c.badge}</span>
           </div>
 
           <h1
             className="mt-6 font-display text-5xl font-bold leading-[1.05] tracking-tight md:text-7xl"
           >
-            Own, host & invest in{" "}
-            <span className="text-emerald">real estate</span>{" "}
-            without borders.
+            {c.headline_prefix}{" "}
+            <span className="text-emerald">{c.headline_emphasis}</span>{" "}
+            {c.headline_suffix}
           </h1>
 
           <p
             className="mx-auto mt-6 max-w-2xl text-lg text-foreground/70 md:text-xl"
           >
-            One platform to discover properties, fractional invest in tokenized assets, and automate operations with AI — anywhere on earth.
+            {c.subtitle}
           </p>
 
           <div
@@ -48,7 +70,7 @@ export function Hero() {
                 <MapPin className="h-4 w-4 text-muted-foreground" />
                 <input
                   className="w-full bg-transparent py-2 text-sm placeholder:text-muted-foreground focus:outline-none"
-                  placeholder="Lisbon, Tokyo, NYC, Bali…"
+                  placeholder={c.search_placeholder}
                 />
               </div>
               <Button className="rounded-full bg-emerald px-5 shadow-glow">
@@ -67,15 +89,17 @@ export function Hero() {
 
         {/* Floating stats */}
         <div className="pointer-events-none relative mt-20 hidden h-64 md:block">
-          {stats.map((s) => (
+          {stats.map((s, i) => {
+            const Icon = statIcons[i];
+            return (
             <div
               key={s.label}
-              className={`absolute ${s.position} animate-float`}
-              style={{ animationDelay: `${s.delay}s` }}
+              className={`absolute ${statPositions[i]} animate-float`}
+              style={{ animationDelay: `${statDelays[i]}s` }}
             >
               <div className="flex items-center gap-3 rounded-2xl glass-strong px-5 py-3 shadow-soft">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald/20">
-                  <s.icon className="h-5 w-5 text-emerald" />
+                  <Icon className="h-5 w-5 text-emerald" />
                 </div>
                 <div className="text-left">
                   <div className="text-xs text-muted-foreground">{s.label}</div>
@@ -83,7 +107,8 @@ export function Hero() {
                 </div>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

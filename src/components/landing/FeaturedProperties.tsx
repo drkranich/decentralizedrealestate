@@ -1,5 +1,6 @@
 import { Heart, Star, TrendingUp, Users } from "lucide-react";
 import { useState } from "react";
+import { usePublicContent } from "@/lib/siteContent";
 
 const properties = [
   { city: "Lisbon", country: "Portugal", price: "€2,450", roi: 14.2, income: "€3,200", occ: 92, rating: 4.9, gradient: "emerald/40" },
@@ -10,7 +11,14 @@ const properties = [
   { city: "Bali", country: "Indonesia", price: "$1,250", roi: 17.8, income: "$2,100", occ: 94, rating: 4.9, gradient: "emerald/50" },
 ];
 
+const featuredDefaults = {
+  eyebrow: "Featured",
+  heading: "Premium properties curated globally",
+  subheading: "Hand-picked listings with verified yields, occupancy data, and instant booking.",
+};
+
 export function FeaturedProperties() {
+  const c = usePublicContent("featured_properties", featuredDefaults);
   const [favs, setFavs] = useState<Set<number>>(new Set());
   const toggle = (i: number) => {
     setFavs((s) => {
@@ -25,10 +33,10 @@ export function FeaturedProperties() {
       <div className="mx-auto max-w-7xl px-4">
         <div className="flex flex-col items-end justify-between gap-6 md:flex-row">
           <div>
-            <div className="text-sm font-medium text-emerald">Featured</div>
-            <h2 className="mt-2 font-display text-4xl font-bold md:text-5xl">Premium properties <br />curated globally</h2>
+            <div className="text-sm font-medium text-emerald">{c.eyebrow}</div>
+            <h2 className="mt-2 font-display text-4xl font-bold md:text-5xl">{c.heading}</h2>
           </div>
-          <p className="max-w-md text-muted-foreground">Hand-picked listings with verified yields, occupancy data, and instant booking.</p>
+          <p className="max-w-md text-muted-foreground">{c.subheading}</p>
         </div>
 
         <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">

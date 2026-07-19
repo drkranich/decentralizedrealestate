@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Building2, FileText, Wrench, CreditCard, ArrowRight } from "lucide-react";
+import { Building2, FileText, Wrench, CreditCard, ArrowRight, Coins, TrendingUp } from "lucide-react";
 import { PageHeader, Card, StatCard } from "@/components/app/ui";
 import { useAuthUser, useUserRole } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
@@ -22,9 +22,17 @@ function UserDashboard() {
     <>
       <PageHeader
         title={`Olá, ${displayName.split(" ")[0] || displayName}`}
-        subtitle={role === "owner" ? "Resumo dos seus imóveis" : "Resumo do seu aluguel"}
+        subtitle={
+          role === "owner" ? "Resumo dos seus imóveis" : role === "investor" ? "Resumo do seu portfólio" : "Resumo do seu aluguel"
+        }
       />
-      {role === "owner" ? <OwnerDashboard userId={user?.id ?? null} /> : <TenantDashboard userId={user?.id ?? null} />}
+      {role === "owner" ? (
+        <OwnerDashboard userId={user?.id ?? null} />
+      ) : role === "investor" ? (
+        <InvestorDashboard userId={user?.id ?? null} />
+      ) : (
+        <TenantDashboard userId={user?.id ?? null} />
+      )}
     </>
   );
 }
@@ -63,6 +71,60 @@ function OwnerDashboard({ userId }: { userId: string | null }) {
         <QuickLink to="/app/calendar" icon={FileText} title="Calendário" subtitle="Ocupação e reservas" />
         <QuickLink to="/app/finance" icon={CreditCard} title="Financeiro" subtitle="Seus recebimentos" />
         <QuickLink to="/app/maintenance" icon={Wrench} title="Manutenção" subtitle="Solicitar serviços" />
+      </div>
+    </>
+  );
+}
+
+function InvestorDashboard({ userId }: { userId: string | null }) {
+  const [stats, setStats] = useState<{ properties: number; invested: number; activeIncome: number } | null>(null);
+
+  useEffect(() => {
+    if (!userId) return;
+    (async () => {
+      const { data: tokens } = await supabase
+        .from("property_tokens")
+        .select("fraction_percent, status, property_id, properties(price)")
+        .eq("owner_id", userId)
+        .eq("status", "active");
+
+      const rows = tokens ?? [];
+      const propertyIds = Array.from(new Set(rows.map((r: any) => r.property_id)));
+      const invested = rows.reduce((sum: number, r: any) => {
+        const price = Number(r.properties?.price ?? 0);
+        return sum + price * (Number(r.fraction_percent) / 100);
+      }, 0);
+
+      let activeIncome = 0;
+      if (propertyIds.length > 0) {
+        const { count } = await supabase
+          .from("contracts")
+          .select("id", { count: "exact", head: true })
+          .in("property_id", propertyIds)
+          .eq("status", "active");
+        activeIncome = count ?? 0;
+      }
+
+      setStats({ properties: propertyIds.length, invested, activeIncome });
+    })();
+  }, [userId]);
+
+  return (
+    <>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <StatCard label="Imóveis investidos" value={stats ? String(stats.properties) : "…"} icon={Building2} />
+        <StatCard
+          label="Valor investido"
+          value={stats ? `€${stats.invested.toLocaleString("en-US", { maximumFractionDigits: 0 })}` : "…"}
+          icon={Coins}
+          accent="skyblue"
+        />
+        <StatCard label="Contratos ativos" value={stats ? String(stats.activeIncome) : "…"} icon={TrendingUp} />
+      </div>
+      <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
+        <QuickLink to="/app/investor-portfolio" icon={Coins} title="Meu portfólio" subtitle="Suas frações e imóveis" />
+        <QuickLink to="/app/investor-earnings" icon={TrendingUp} title="Rendimentos" subtitle="Sua parte nos recebimentos" />
+        <QuickLink to="/app/investor-documents" icon={FileText} title="Documentos" subtitle="Contratos dos imóveis" />
       </div>
     </>
   );

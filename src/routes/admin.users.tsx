@@ -19,7 +19,7 @@ type UserRow = {
   created_at: string;
 };
 
-const roleLabels: Record<string, string> = { admin: "Super admin", owner: "Dono de imóvel", tenant: "Inquilino" };
+const roleLabels: Record<string, string> = { admin: "Super admin", owner: "Dono de imóvel", tenant: "Inquilino", investor: "Investidor" };
 
 function initials(name: string | null) {
   return (name || "?").split(" ").filter(Boolean).map((n) => n[0]).slice(0, 2).join("").toUpperCase();
@@ -70,6 +70,7 @@ function AdminUsers() {
   const admins = users.filter((u) => u.role === "admin").length;
   const owners = users.filter((u) => u.role === "owner").length;
   const tenants = users.filter((u) => u.role === "tenant").length;
+  const investors = users.filter((u) => u.role === "investor").length;
 
   const filtered = users
     .filter((u) => roleFilter === "all" || u.role === roleFilter)
@@ -79,10 +80,11 @@ function AdminUsers() {
     <>
       <PageHeader title="Users" subtitle="Todos os usuários cadastrados na plataforma." />
 
-      <div className="mb-6 grid gap-4 sm:grid-cols-3">
+      <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="Super admins" value={String(admins)} icon={UsersIcon} />
         <StatCard label="Donos de imóvel" value={String(owners)} icon={UsersIcon} accent="skyblue" />
         <StatCard label="Inquilinos" value={String(tenants)} icon={UsersIcon} accent="emerald" />
+        <StatCard label="Investidores" value={String(investors)} icon={UsersIcon} accent="skyblue" />
       </div>
 
       <div className="mb-4 flex flex-wrap items-center gap-3">
@@ -90,7 +92,7 @@ function AdminUsers() {
           <Search className="h-4 w-4 text-muted-foreground" />
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar por nome ou e-mail…" className="w-56 bg-transparent text-sm outline-none" />
         </div>
-        {["all", "admin", "owner", "tenant"].map((r) => (
+        {["all", "admin", "owner", "tenant", "investor"].map((r) => (
           <button
             key={r}
             onClick={() => setRoleFilter(r)}
@@ -147,6 +149,7 @@ function AdminUsers() {
                         <SelectItem value="admin">Super admin</SelectItem>
                         <SelectItem value="owner">Dono de imóvel</SelectItem>
                         <SelectItem value="tenant">Inquilino</SelectItem>
+                        <SelectItem value="investor">Investidor</SelectItem>
                       </SelectContent>
                     </Select>
                   </td>

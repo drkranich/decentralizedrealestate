@@ -1,4 +1,5 @@
 import { FileSignature, BrainCircuit, CreditCard, Wrench, Sparkles, KeyRound, Globe } from "lucide-react";
+import { usePublicContent } from "@/lib/siteContent";
 
 const features = [
   { icon: FileSignature, title: "Automated contracts", desc: "Smart leases generated, signed and enforced automatically across jurisdictions." },
@@ -10,14 +11,22 @@ const features = [
   { icon: Globe, title: "International tenants", desc: "KYC, background, and credit checks across 80+ countries in seconds." },
 ];
 
+const manageDefaults = {
+  eyebrow: "Operations",
+  heading_prefix: "A complete",
+  heading_emphasis: "management ecosystem",
+  subheading: "Every workflow your portfolio needs — automated, observable, accountable.",
+};
+
 export function Manage() {
+  const c = usePublicContent("manage", manageDefaults);
   return (
     <section id="manage" className="py-24">
       <div className="mx-auto max-w-7xl px-4">
         <div className="mx-auto max-w-2xl text-center">
-          <div className="text-sm font-medium text-emerald">Operations</div>
-          <h2 className="mt-2 font-display text-4xl font-bold md:text-5xl">A complete <span className="text-emerald">management ecosystem</span></h2>
-          <p className="mt-4 text-muted-foreground">Every workflow your portfolio needs — automated, observable, accountable.</p>
+          <div className="text-sm font-medium text-emerald">{c.eyebrow}</div>
+          <h2 className="mt-2 font-display text-4xl font-bold md:text-5xl">{c.heading_prefix} <span className="text-emerald">{c.heading_emphasis}</span></h2>
+          <p className="mt-4 text-muted-foreground">{c.subheading}</p>
         </div>
 
         <div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-3">

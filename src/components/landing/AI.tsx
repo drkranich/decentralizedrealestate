@@ -1,5 +1,6 @@
 import { Bot, Lightbulb, Activity, UserCheck, Sparkles } from "lucide-react";
 import { useBrand } from "@/components/brand/BrandProvider";
+import { usePublicContent } from "@/lib/siteContent";
 
 const features = [
   { icon: Bot, title: "AI Assistant", desc: "24/7 conversational concierge for tenants, owners and investors." },
@@ -8,8 +9,17 @@ const features = [
   { icon: UserCheck, title: "Tenant scoring", desc: "Risk assessment combining KYC, behavior and on-platform history." },
 ];
 
+const aiDefaults = {
+  badge: "Powered by AI",
+  heading_prefix: "Intelligence at",
+  heading_emphasis: "every layer",
+  subheading:
+    "Property OS embeds proprietary models across pricing, risk, recommendation and operations — so the platform learns and improves with every transaction.",
+};
+
 export function AI() {
   const brand = useBrand();
+  const c = usePublicContent("ai", aiDefaults);
   return (
     <section id="ai" className="relative overflow-hidden py-24">
       <div className="absolute inset-0 -z-10 bg-skyblue/5" />
@@ -19,10 +29,10 @@ export function AI() {
           <div>
             <div className="inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-xs font-medium">
               <Sparkles className="h-3.5 w-3.5 text-emerald" />
-              Powered by AI
+              {c.badge}
             </div>
-            <h2 className="mt-4 font-display text-4xl font-bold md:text-5xl">Intelligence at <span className="text-emerald">every layer</span></h2>
-            <p className="mt-4 text-muted-foreground">{brand.name} embeds proprietary models across pricing, risk, recommendation and operations — so the platform learns and improves with every transaction.</p>
+            <h2 className="mt-4 font-display text-4xl font-bold md:text-5xl">{c.heading_prefix} <span className="text-emerald">{c.heading_emphasis}</span></h2>
+            <p className="mt-4 text-muted-foreground">{c.subheading}</p>
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
               {features.map((f, i) => (

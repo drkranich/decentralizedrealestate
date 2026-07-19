@@ -1,7 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, Building2, Calendar, TrendingUp, FileText, Wrench,
-  CreditCard, MessageSquare, LogOut, UserRound,
+  CreditCard, MessageSquare, LogOut, UserRound, Coins, ScrollText,
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
@@ -32,15 +32,23 @@ const tenantItems: Item[] = [
   { title: "Perfil", icon: UserRound, to: "/app/profile" },
 ];
 
+const investorItems: Item[] = [
+  { title: "Dashboard", icon: LayoutDashboard, to: "/app/dashboard" },
+  { title: "Meu portfólio", icon: Coins, to: "/app/investor-portfolio" },
+  { title: "Rendimentos", icon: TrendingUp, to: "/app/investor-earnings" },
+  { title: "Documentos", icon: ScrollText, to: "/app/investor-documents" },
+  { title: "Perfil", icon: UserRound, to: "/app/profile" },
+];
+
 export function UserSidebar({ role }: { role: UserRole | null }) {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const path = useRouterState({ select: (s) => s.location.pathname });
   const { user, signOut } = useAuthUser();
   const avatarUrl = useAvatarUrl();
-  const items = role === "owner" ? ownerItems : tenantItems;
+  const items = role === "owner" ? ownerItems : role === "investor" ? investorItems : tenantItems;
   const displayName = (user?.user_metadata?.name as string | undefined) ?? user?.email ?? "";
-  const roleLabel = role === "owner" ? "Dono de imóvel" : "Inquilino";
+  const roleLabel = role === "owner" ? "Dono de imóvel" : role === "investor" ? "Investidor" : "Inquilino";
 
   return (
     <Sidebar collapsible="icon" className="border-r border-glass-border bg-sidebar/70 backdrop-blur-xl">
