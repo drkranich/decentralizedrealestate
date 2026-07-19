@@ -3,6 +3,7 @@ import { useState } from "react";
 import { User, Bell, Shield, CreditCard, Globe, Key } from "lucide-react";
 import { PageHeader, Card, SectionTitle, Badge, DemoDataBadge } from "@/components/app/ui";
 import { ProfileCard } from "@/components/app/ProfileCard";
+import { AddressCard } from "@/components/app/AddressCard";
 import { PlanCard } from "@/components/app/PlanCard";
 import { toast } from "sonner";
 
@@ -43,7 +44,12 @@ function Settings() {
         </nav>
 
         <div className="space-y-6">
-          {tab === "profile" && <ProfileCard />}
+          {tab === "profile" && (
+            <div className="space-y-6">
+              <ProfileCard />
+              <AddressCard />
+            </div>
+          )}
 
           {tab === "notifications" && (
             <Card>
@@ -139,10 +145,16 @@ function Field({ label, value, readOnly }: { label: string; value: string; readO
 function ToggleRow({ label, on: initial }: { label: string; on: boolean }) {
   const [on, setOn] = useState(initial);
   return (
-    <div className="flex items-center justify-between rounded-xl border border-border/50 bg-secondary/30 p-3">
+    <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/[0.03] px-3.5 py-3 backdrop-blur-sm">
       <span className="text-sm">{label}</span>
-      <button onClick={() => setOn(!on)} className={`relative h-6 w-11 rounded-full transition-colors ${on ? "bg-emerald" : "bg-muted"}`}>
-        <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${on ? "translate-x-5" : "translate-x-0.5"}`} />
+      <button
+        onClick={() => setOn(!on)}
+        aria-pressed={on}
+        className={`flex h-6 w-11 shrink-0 items-center rounded-full border px-0.5 backdrop-blur-sm transition-colors ${
+          on ? "justify-end border-emerald/30 bg-emerald/80" : "justify-start border-white/10 bg-white/10"
+        }`}
+      >
+        <span className="h-4.5 w-4.5 rounded-full bg-white shadow-sm" />
       </button>
     </div>
   );

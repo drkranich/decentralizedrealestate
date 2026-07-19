@@ -114,13 +114,16 @@ const groups: Group[] = [
 
 function ItemLink({ item, active, collapsed }: { item: Item; active: boolean; collapsed: boolean }) {
   const className = cn(
-    "flex items-center gap-3 rounded-lg px-2.5 py-2 text-sm font-medium transition-colors",
+    "group relative flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors duration-150",
     active
-      ? "bg-foreground text-background"
-      : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+      ? "bg-white/[0.06] text-emerald backdrop-blur-sm"
+      : "text-muted-foreground hover:bg-white/[0.04] hover:text-foreground"
   );
   const content = (
     <>
+      {active && (
+        <span className="absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-full bg-emerald" />
+      )}
       <item.icon className="h-4 w-4 shrink-0" />
       {!collapsed && <span className="truncate">{item.title}</span>}
     </>
