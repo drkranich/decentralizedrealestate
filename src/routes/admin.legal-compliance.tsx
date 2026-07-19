@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import {
   AlertTriangle,
   Archive,
@@ -24,6 +25,7 @@ import {
   Badge,
   DemoDataBadge,
 } from "@/components/app/ui";
+import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/admin/legal-compliance")({
   component: LegalCompliance,
@@ -141,6 +143,37 @@ const pendingDecisions = [
 ];
 
 function LegalCompliance() {
+  const [stats, setStats] = useState({
+    jurisdictions: 0,
+    records: 0,
+    vaultDocuments: 0,
+    gates: 0,
+  });
+  const [schemaMissing, setSchemaMissing] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const [jurisdictions, records, vaultDocuments, gates] = await Promise.all([
+        supabase.from("legal_jurisdictions").select("id", { count: "exact", head: true }),
+        supabase.from("legaltech_module_records").select("id", { count: "exact", head: true }),
+        supabase.from("vault_documents").select("id", { count: "exact", head: true }),
+        supabase.from("compliance_gates").select("id", { count: "exact", head: true }),
+      ]);
+
+      if (jurisdictions.error || records.error || vaultDocuments.error || gates.error) {
+        setSchemaMissing(true);
+        return;
+      }
+
+      setStats({
+        jurisdictions: jurisdictions.count ?? 0,
+        records: records.count ?? 0,
+        vaultDocuments: vaultDocuments.count ?? 0,
+        gates: gates.count ?? 0,
+      });
+    })();
+  }, []);
+
   return (
     <>
       <PageHeader
@@ -172,30 +205,39 @@ function LegalCompliance() {
         substitui parecer jurídico e não promete conformidade automática.
       </div>
 
+      {schemaMissing && (
+        <Card className="mb-6 border-dashed border-destructive/30">
+          <div className="text-sm text-muted-foreground">
+            A migração LegalTech ainda não foi aplicada no Supabase. As rotas estão prontas, mas os
+            dados reais dependem das tabelas novas.
+          </div>
+        </Card>
+      )}
+
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <StatCard
           label="Fase atual"
-          value="Diagnóstico"
-          change="Sem migrations neste passo"
+          value={schemaMissing ? "Pendente" : "Operacional"}
+          change={schemaMissing ? "migration pendente" : `${stats.records} registros`}
           icon={ClipboardCheck}
         />
         <StatCard
-          label="Jurisdição prioritária"
-          value="Brasil"
-          change="Outras ficam bloqueadas"
+          label="Jurisdições"
+          value={String(stats.jurisdictions)}
+          change="Brasil prioritário"
           icon={Globe2}
           accent="skyblue"
         />
         <StatCard
-          label="Oferta tokenizada"
-          value="Bloqueada"
-          change="Exige classificação jurídica"
+          label="Gates"
+          value={String(stats.gates)}
+          change="property, owner, offer, investor"
           icon={LockKeyhole}
         />
         <StatCard
-          label="Contrato assinado"
-          value="Imutável"
-          change="Sem sobrescrita de evidência"
+          label="Vault"
+          value={String(stats.vaultDocuments)}
+          change="documentos privados"
           icon={FileLock2}
           accent="skyblue"
         />

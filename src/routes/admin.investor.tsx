@@ -1,471 +1,598 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import {
-  ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip,
-  PieChart, Pie, Cell, BarChart, Bar, LineChart, Line, RadialBarChart, RadialBar,
-} from "recharts";
-import {
-  Coins, TrendingUp, PieChart as PieIcon, Wallet, Globe2, ArrowUpRight, ArrowDownRight,
-  Sparkles, Activity, Zap, Shield, Bitcoin,
+  BadgeCheck,
+  Coins,
+  Loader2,
+  Plus,
+  Save,
+  ShieldCheck,
+  Ticket,
+  Users,
+  WalletCards,
 } from "lucide-react";
-import { useState } from "react";
-import { PageHeader, StatCard, Card, SectionTitle, Badge, DemoDataBadge } from "@/components/app/ui";
-import { useMarketData } from "@/lib/market";
-import { useBrand } from "@/components/brand/BrandProvider";
 import { toast } from "sonner";
+import { PageHeader, StatCard, Card, SectionTitle, Badge } from "@/components/app/ui";
+import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/admin/investor")({
-  component: Investor,
+  component: InvestorAdmin,
 });
 
-const portfolio = Array.from({ length: 24 }, (_, i) => ({
-  m: i,
-  v: 100000 + i * 3500 + Math.sin(i / 1.4) * 8000,
-  bench: 100000 + i * 1900,
-}));
-
-const income = Array.from({ length: 12 }, (_, i) => ({
-  m: ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"][i],
-  rent: 900 + i * 70 + Math.sin(i) * 120,
-  yield: 380 + i * 22,
-}));
-
-const diversification = [
-  { name: "Residential", v: 42, c: "var(--emerald)" },
-  { name: "Commercial", v: 22, c: "var(--skyblue)" },
-  { name: "Hospitality", v: 18, c: "var(--emerald-glow)" },
-  { name: "Tokenized REITs", v: 12, c: "var(--silver)" },
-  { name: "Land", v: 6, c: "oklch(0.55 0.18 30)" },
-];
-
-const geo = [
-  { region: "Europe", v: 38, flag: "🇪🇺" },
-  { region: "N. America", v: 24, flag: "🇺🇸" },
-  { region: "Asia", v: 22, flag: "🌏" },
-  { region: "LATAM", v: 9, flag: "🌎" },
-  { region: "MENA", v: 7, flag: "🌍" },
-];
-
-const tokens = [
-  { sym: "LIS-LX01", n: "Lisbon Loft", city: "Lisbon", held: 142, value: 14200, apy: 9.4, ch: 12.4 },
-  { sym: "TKY-SK22", n: "Tokyo Tower", city: "Tokyo", held: 88, value: 8800, apy: 7.8, ch: 8.1 },
-  { sym: "BAL-BV09", n: "Bali Villa", city: "Ubud", held: 240, value: 24000, apy: 12.1, ch: 18.6 },
-  { sym: "DXB-PH04", n: "Dubai Penthouse", city: "Dubai", held: 56, value: 11200, apy: 8.9, ch: 6.3 },
-  { sym: "NYC-ST14", n: "Brooklyn Studio", city: "New York", held: 110, value: 13750, apy: 6.2, ch: -1.8 },
-  { sym: "BER-MT07", n: "Berlin Mitte", city: "Berlin", held: 64, value: 7680, apy: 10.2, ch: 4.4 },
-];
-
-const opportunities = [
-  { n: "Berlin Mitte Loft", region: "🇩🇪 Berlin", apy: 10.2, raised: 42, min: 100, days: 12 },
-  { n: "Singapore Marina", region: "🇸🇬 Singapore", apy: 8.8, raised: 71, min: 250, days: 6 },
-  { n: "Mexico City Suite", region: "🇲🇽 CDMX", apy: 13.4, raised: 28, min: 50, days: 21 },
-  { n: "Cape Town Cliff", region: "🇿🇦 Cape Town", apy: 11.6, raised: 55, min: 100, days: 9 },
-];
-
-const yieldProjection = Array.from({ length: 10 }, (_, i) => ({
-  y: 2026 + i,
-  conservative: 184320 * Math.pow(1.06, i),
-  base: 184320 * Math.pow(1.094, i),
-  aggressive: 184320 * Math.pow(1.13, i),
-}));
-
-const defaultFxRates: Record<string, { sym: string; rate: number }> = {
-  USD: { sym: "$", rate: 1 },
-  EUR: { sym: "€", rate: 0.92 },
-  GBP: { sym: "£", rate: 0.79 },
-  BTC: { sym: "₿", rate: 0.0000148 },
-  ETH: { sym: "Ξ", rate: 0.000312 },
-  AED: { sym: "د.إ", rate: 3.6725 },
+type InvestorUser = {
+  id: string;
+  name: string | null;
+  email: string | null;
+  role: string;
+  created_at: string;
 };
 
-function Investor() {
-  const brand = useBrand();
-  const [ccy, setCcy] = useState<keyof typeof defaultFxRates>("USD");
-  const [period, setPeriod] = useState("1Y");
-  const { ticker, fx, changes, error: marketError, updatedAt } = useMarketData();
+type InvestorProfile = {
+  user_id: string;
+  onboarding_status: string;
+  kyc_status: string;
+  suitability_status: string;
+  risk_profile: string;
+  preferred_currency: string;
+};
 
-  const totalValue = 184320;
-  const monthlyIncome = 1742;
+type Opportunity = {
+  id: string;
+  title: string;
+  location: string | null;
+  token_symbol: string;
+  status: string;
+  target_amount: number;
+  raised_amount: number;
+  min_ticket: number;
+  currency: string;
+  expected_yield_percent: number | null;
+  risk_level: "low" | "medium" | "high" | "critical";
+  published_at: string | null;
+};
 
-  const rates: Record<string, { sym: string; rate: number }> = {
-    ...defaultFxRates,
-    ...(fx
-      ? {
-          EUR: { sym: "€", rate: fx.EUR },
-          GBP: { sym: "£", rate: fx.GBP },
-          BTC: { sym: "₿", rate: fx.BTC },
-          ETH: { sym: "Ξ", rate: fx.ETH },
-        }
-      : {}),
+type Order = {
+  id: string;
+  investor_id: string;
+  opportunity_id: string;
+  status: string;
+  amount: number;
+  currency: string;
+  created_at: string;
+  users?: { name: string | null; email: string | null } | null;
+  investment_opportunities?: { title: string; token_symbol: string } | null;
+};
+
+type Position = {
+  id: string;
+  investor_id: string;
+  token_code: string;
+  principal_amount: number;
+  currency: string;
+  status: string;
+};
+
+function InvestorAdmin() {
+  const [investors, setInvestors] = useState<InvestorUser[]>([]);
+  const [profiles, setProfiles] = useState<InvestorProfile[]>([]);
+  const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [positions, setPositions] = useState<Position[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [schemaMissing, setSchemaMissing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [form, setForm] = useState({
+    title: "",
+    location: "",
+    token_symbol: "",
+    target_amount: "",
+    min_ticket: "",
+    currency: "USD",
+    expected_yield_percent: "",
+    risk_level: "high",
+    summary: "",
+  });
+
+  const load = async () => {
+    setLoading(true);
+    setSchemaMissing(false);
+
+    const [
+      { data: users },
+      { data: profileRows, error: profileError },
+      { data: opportunityRows, error: opportunityError },
+      { data: orderRows },
+      { data: positionRows },
+    ] = await Promise.all([
+      supabase
+        .from("users")
+        .select("id, name, email, role, created_at")
+        .eq("role", "investor")
+        .order("created_at", { ascending: false }),
+      supabase
+        .from("investor_profiles")
+        .select(
+          "user_id, onboarding_status, kyc_status, suitability_status, risk_profile, preferred_currency",
+        ),
+      supabase
+        .from("investment_opportunities")
+        .select(
+          "id, title, location, token_symbol, status, target_amount, raised_amount, min_ticket, currency, expected_yield_percent, risk_level, published_at",
+        )
+        .order("created_at", { ascending: false }),
+      supabase
+        .from("investor_orders")
+        .select(
+          "id, investor_id, opportunity_id, status, amount, currency, created_at, users(name, email), investment_opportunities(title, token_symbol)",
+        )
+        .order("created_at", { ascending: false })
+        .limit(12),
+      supabase
+        .from("investor_positions")
+        .select("id, investor_id, token_code, principal_amount, currency, status"),
+    ]);
+
+    if (profileError || opportunityError) {
+      setSchemaMissing(true);
+    }
+
+    setInvestors((users as InvestorUser[]) ?? []);
+    setProfiles((profileRows as InvestorProfile[]) ?? []);
+    setOpportunities((opportunityRows as Opportunity[]) ?? []);
+    setOrders((orderRows as Order[]) ?? []);
+    setPositions((positionRows as Position[]) ?? []);
+    setLoading(false);
   };
 
-  function fmt(v: number, c: string) {
-    const r = rates[c];
-    const val = v * r.rate;
-    if (c === "BTC" || c === "ETH") return `${r.sym}${val.toFixed(4)}`;
-    return `${r.sym}${Math.round(val).toLocaleString("en-US")}`;
-  }
+  useEffect(() => {
+    load();
+  }, []);
 
-  function fmtPrice(sym: string, price: number) {
-    if (sym === "BTC/USD" || sym === "GOLD/oz") return `$${price.toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
-    return price.toFixed(4);
-  }
+  const createOpportunity = async () => {
+    if (!form.title.trim() || !form.token_symbol.trim()) {
+      toast.error("Título e token são obrigatórios.");
+      return;
+    }
+
+    setSaving(true);
+    const { error } = await supabase.from("investment_opportunities").insert({
+      title: form.title.trim(),
+      location: form.location.trim() || null,
+      token_symbol: form.token_symbol.trim().toUpperCase(),
+      status: "draft",
+      summary: form.summary.trim() || null,
+      target_amount: Number(form.target_amount || 0),
+      raised_amount: 0,
+      min_ticket: Number(form.min_ticket || 0),
+      currency: form.currency,
+      expected_yield_percent: form.expected_yield_percent
+        ? Number(form.expected_yield_percent)
+        : null,
+      risk_level: form.risk_level,
+      available_to_retail: false,
+    });
+    setSaving(false);
+
+    if (error) {
+      toast.error(error.message || "Não foi possível criar a oportunidade.");
+      return;
+    }
+
+    toast.success("Oportunidade criada como rascunho.");
+    setForm({
+      title: "",
+      location: "",
+      token_symbol: "",
+      target_amount: "",
+      min_ticket: "",
+      currency: "USD",
+      expected_yield_percent: "",
+      risk_level: "high",
+      summary: "",
+    });
+    load();
+  };
+
+  const setOpportunityStatus = async (opportunity: Opportunity, status: string) => {
+    const patch = {
+      status,
+      published_at:
+        status === "approved" || status === "approved_with_conditions"
+          ? (opportunity.published_at ?? new Date().toISOString())
+          : null,
+    };
+    const { error } = await supabase
+      .from("investment_opportunities")
+      .update(patch)
+      .eq("id", opportunity.id);
+    if (error) {
+      toast.error(error.message || "Não foi possível atualizar a oportunidade.");
+      return;
+    }
+    toast.success("Oportunidade atualizada.");
+    load();
+  };
+
+  const setOrderStatus = async (order: Order, status: string) => {
+    const { error } = await supabase.from("investor_orders").update({ status }).eq("id", order.id);
+    if (error) {
+      toast.error(error.message || "Não foi possível atualizar a ordem.");
+      return;
+    }
+    toast.success("Ordem atualizada.");
+    load();
+  };
+
+  const totalPrincipal = positions.reduce(
+    (sum, position) => sum + Number(position.principal_amount ?? 0),
+    0,
+  );
+  const pendingCompliance = orders.filter((order) => order.status === "pending_compliance").length;
+  const approvedProfiles = profiles.filter(
+    (profile) =>
+      profile.kyc_status === "approved" || profile.kyc_status === "approved_with_conditions",
+  ).length;
 
   return (
     <>
-      {/* Live market ticker */}
-      <div className="-mx-4 mb-6 overflow-hidden border-y border-border bg-background/60 backdrop-blur md:-mx-8">
-        <div className="flex animate-marquee gap-8 whitespace-nowrap px-4 py-2 font-mono text-xs md:px-8">
-          {ticker.length === 0 ? (
-            <span className="flex items-center gap-2 text-muted-foreground">
-              {marketError ? `Cotações indisponíveis: ${marketError}` : "Carregando cotações ao vivo…"}
-            </span>
-          ) : (
-            [...ticker, ...ticker].map((t, i) => (
-              <span key={i} className="flex items-center gap-2">
-                <span className="font-semibold tracking-wider">{t.sym}</span>
-                <span>{fmtPrice(t.sym, t.price)}</span>
-                <span className={t.changePct >= 0 ? "text-emerald" : "text-red-500"}>
-                  {t.changePct >= 0 ? "▲" : "▼"} {Math.abs(t.changePct).toFixed(2)}%
-                </span>
-              </span>
-            ))
-          )}
-        </div>
-      </div>
-
-      <PageHeader title="Investor Terminal" subtitle={`${brand.name} · tokenized real estate, global yields, real-time.`}>
-        <div className="flex items-center gap-1 rounded-full border border-border bg-card p-1 text-xs">
-          {Object.keys(defaultFxRates).map((c) => (
-            <button
-              key={c}
-              onClick={() => setCcy(c as keyof typeof defaultFxRates)}
-              className={`rounded-full px-2.5 py-1 font-medium transition ${ccy === c ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"}`}
-            >
-              {c}
-            </button>
-          ))}
-        </div>
-        <button onClick={() => toast.info("A tokenização de investidor ainda não está conectada a saques reais.")} className="rounded-full border border-border bg-card px-4 py-2 text-sm font-medium hover:bg-secondary">Withdraw</button>
-        <button onClick={() => toast.info("A tokenização de investidor ainda não está conectada a aportes reais.")} className="rounded-full bg-emerald px-4 py-2 text-sm font-semibold text-white shadow-glow">Invest more</button>
+      <PageHeader
+        title="Investor Command Center"
+        subtitle="Gestão real de investidores, oportunidades tokenizadas, ordens, KYC e posições."
+      >
+        <button
+          type="button"
+          onClick={createOpportunity}
+          disabled={saving || schemaMissing}
+          className="flex items-center gap-2 rounded-full bg-emerald px-4 py-2 text-sm font-semibold text-white shadow-glow disabled:opacity-60"
+        >
+          {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+          Criar oportunidade
+        </button>
       </PageHeader>
 
-      <div className="mt-4 rounded-2xl border border-dashed border-skyblue/30 bg-skyblue/5 p-4 text-xs text-muted-foreground">
-        <span className="font-semibold text-skyblue">Nota:</span> os tokens, rendimentos e histórico de investidor abaixo são dados de demonstração — a tokenização de imóveis ainda não está conectada a transações reais.
+      {schemaMissing && (
+        <Card className="mb-6 border-dashed border-destructive/30 text-sm text-muted-foreground">
+          A migração LegalTech/Investidor ainda não foi aplicada; algumas tabelas podem aparecer
+          vazias.
+        </Card>
+      )}
+
+      <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <StatCard
+          label="Investidores"
+          value={loading ? "..." : String(investors.length)}
+          icon={Users}
+        />
+        <StatCard
+          label="KYC aprovado"
+          value={loading ? "..." : String(approvedProfiles)}
+          icon={ShieldCheck}
+          accent="skyblue"
+        />
+        <StatCard
+          label="Ordens em compliance"
+          value={loading ? "..." : String(pendingCompliance)}
+          icon={BadgeCheck}
+        />
+        <StatCard
+          label="Principal em posições"
+          value={loading ? "..." : formatMoney(totalPrincipal, "USD")}
+          icon={Coins}
+          accent="skyblue"
+        />
       </div>
 
-      {/* Hero KPIs */}
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatCard label="Portfolio value" value={fmt(totalValue, ccy)} change="+24.8% YTD" icon={Wallet} />
-        <StatCard label="Monthly passive income" value={fmt(monthlyIncome, ccy)} change="+$214 MoM" icon={TrendingUp} accent="skyblue" />
-        <StatCard label="Avg ROI" value="11.4%" change="vs 6.8% market" icon={PieIcon} />
-        <StatCard label="Tokens held" value="27" change="across 6 assets" icon={Coins} accent="skyblue" />
-      </div>
-
-      {/* Portfolio + Risk */}
-      <div className="mt-6 grid gap-6 lg:grid-cols-3">
-        <Card className="lg:col-span-2">
+      <div className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
+        <Card>
           <SectionTitle
-            title="Portfolio performance"
-            action={
-              <div className="flex items-center gap-3">
-                <span className="hidden items-center gap-3 text-xs sm:flex">
-                  <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-emerald" /> Portfolio</span>
-                  <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-skyblue" /> Benchmark</span>
-                </span>
-                <div className="flex gap-1 rounded-full bg-secondary p-0.5 text-xs">
-                  {["1M", "3M", "6M", "1Y", "ALL"].map((p) => (
-                    <button
-                      key={p}
-                      onClick={() => setPeriod(p)}
-                      className={`rounded-full px-3 py-1 ${p === period ? "bg-foreground text-background" : "text-muted-foreground"}`}
-                    >
-                      {p}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            }
+            title="Nova oportunidade"
+            action={<Ticket className="h-4 w-4 text-emerald" />}
           />
-          <div className="h-72">
-            <ResponsiveContainer>
-              <AreaChart data={portfolio}>
-                <defs>
-                  <linearGradient id="p1" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="var(--emerald)" stopOpacity={0.5} />
-                    <stop offset="100%" stopColor="var(--emerald)" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <XAxis dataKey="m" tickLine={false} axisLine={false} fontSize={11} stroke="currentColor" opacity={0.4} />
-                <YAxis tickLine={false} axisLine={false} fontSize={11} stroke="currentColor" opacity={0.4} />
-                <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid var(--border)", background: "var(--card)" }} />
-                <Area type="monotone" dataKey="v" stroke="var(--emerald)" strokeWidth={3} fill="url(#p1)" />
-                <Line type="monotone" dataKey="bench" stroke="var(--skyblue)" strokeWidth={2} dot={false} strokeDasharray="4 4" />
-              </AreaChart>
-            </ResponsiveContainer>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Field label="Título" wide>
+              <input
+                value={form.title}
+                onChange={(event) => setFormValue("title", event.target.value, setForm)}
+                className="input"
+              />
+            </Field>
+            <Field label="Local">
+              <input
+                value={form.location}
+                onChange={(event) => setFormValue("location", event.target.value, setForm)}
+                className="input"
+              />
+            </Field>
+            <Field label="Token">
+              <input
+                value={form.token_symbol}
+                onChange={(event) => setFormValue("token_symbol", event.target.value, setForm)}
+                className="input"
+              />
+            </Field>
+            <Field label="Meta">
+              <input
+                type="number"
+                value={form.target_amount}
+                onChange={(event) => setFormValue("target_amount", event.target.value, setForm)}
+                className="input"
+              />
+            </Field>
+            <Field label="Ticket mínimo">
+              <input
+                type="number"
+                value={form.min_ticket}
+                onChange={(event) => setFormValue("min_ticket", event.target.value, setForm)}
+                className="input"
+              />
+            </Field>
+            <Field label="Moeda">
+              <select
+                value={form.currency}
+                onChange={(event) => setFormValue("currency", event.target.value, setForm)}
+                className="input"
+              >
+                <option value="USD">USD</option>
+                <option value="EUR">EUR</option>
+                <option value="BRL">BRL</option>
+              </select>
+            </Field>
+            <Field label="Yield esperado">
+              <input
+                type="number"
+                value={form.expected_yield_percent}
+                onChange={(event) =>
+                  setFormValue("expected_yield_percent", event.target.value, setForm)
+                }
+                className="input"
+              />
+            </Field>
+            <Field label="Risco">
+              <select
+                value={form.risk_level}
+                onChange={(event) => setFormValue("risk_level", event.target.value, setForm)}
+                className="input"
+              >
+                <option value="low">Baixo</option>
+                <option value="medium">Médio</option>
+                <option value="high">Alto</option>
+                <option value="critical">Crítico</option>
+              </select>
+            </Field>
+            <Field label="Resumo" wide>
+              <textarea
+                value={form.summary}
+                onChange={(event) => setFormValue("summary", event.target.value, setForm)}
+                rows={4}
+                className="input min-h-24 resize-none"
+              />
+            </Field>
           </div>
         </Card>
 
-        <Card>
-          <SectionTitle title="Risk score" action={<Shield className="h-4 w-4 text-emerald" />} />
-          <div className="relative h-44">
-            <ResponsiveContainer>
-              <RadialBarChart innerRadius="65%" outerRadius="100%" data={[{ name: "Risk", value: 72, fill: "var(--emerald)" }]} startAngle={90} endAngle={-270}>
-                <RadialBar dataKey="value" cornerRadius={20} background={{ fill: "var(--muted)" }} />
-              </RadialBarChart>
-            </ResponsiveContainer>
-            <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
-              <div className="font-display text-3xl font-bold">72<span className="text-base text-muted-foreground">/100</span></div>
-              <div className="text-xs text-muted-foreground">Balanced</div>
-            </div>
+        <Card className="overflow-hidden p-0">
+          <div className="p-6 pb-4">
+            <SectionTitle
+              title="Oportunidades"
+              action={<WalletCards className="h-4 w-4 text-emerald" />}
+            />
           </div>
-          <div className="mt-4 grid grid-cols-3 gap-2 text-center text-[11px]">
-            <div className="rounded-lg bg-emerald/10 p-2"><div className="font-semibold text-emerald">Low</div><div className="text-muted-foreground">42%</div></div>
-            <div className="rounded-lg bg-skyblue/10 p-2"><div className="font-semibold text-skyblue">Med</div><div className="text-muted-foreground">38%</div></div>
-            <div className="rounded-lg bg-yellow-500/10 p-2"><div className="font-semibold text-yellow-500">High</div><div className="text-muted-foreground">20%</div></div>
-          </div>
-        </Card>
-      </div>
-
-      {/* Income + Diversification + Geo */}
-      <div className="mt-6 grid gap-6 lg:grid-cols-3">
-        <Card>
-          <SectionTitle title="Monthly passive income" />
-          <div className="h-56">
-            <ResponsiveContainer>
-              <BarChart data={income}>
-                <XAxis dataKey="m" tickLine={false} axisLine={false} fontSize={11} stroke="currentColor" opacity={0.5} />
-                <YAxis tickLine={false} axisLine={false} fontSize={11} stroke="currentColor" opacity={0.5} />
-                <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid var(--border)", background: "var(--card)" }} />
-                <Bar dataKey="rent" stackId="a" fill="var(--emerald)" radius={[0, 0, 0, 0]} />
-                <Bar dataKey="yield" stackId="a" fill="var(--skyblue)" radius={[6, 6, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="mt-2 flex justify-center gap-4 text-xs">
-            <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-emerald" /> Rent</span>
-            <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-skyblue" /> Token yield</span>
-          </div>
-        </Card>
-
-        <Card>
-          <SectionTitle title="Asset diversification" />
-          <div className="h-44">
-            <ResponsiveContainer>
-              <PieChart>
-                <Pie data={diversification} dataKey="v" innerRadius={45} outerRadius={75} paddingAngle={3}>
-                  {diversification.map((s) => <Cell key={s.name} fill={s.c} />)}
-                </Pie>
-                <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid var(--border)", background: "var(--card)" }} />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="mt-2 space-y-1.5">
-            {diversification.map((d) => (
-              <div key={d.name} className="flex items-center justify-between text-xs">
-                <span className="flex items-center gap-2"><span className="h-2 w-2 rounded-full" style={{ background: d.c }} />{d.name}</span>
-                <span className="font-mono font-semibold">{d.v}%</span>
-              </div>
-            ))}
-          </div>
-        </Card>
-
-        <Card>
-          <SectionTitle title="Global properties" action={<Globe2 className="h-4 w-4 text-skyblue" />} />
-          <div className="space-y-3">
-            {geo.map((g) => (
-              <div key={g.region} className="flex items-center gap-3">
-                <span className="text-xl">{g.flag}</span>
-                <div className="flex-1">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="font-semibold">{g.region}</span>
-                    <span className="font-mono text-xs text-muted-foreground">{g.v}%</span>
-                  </div>
-                  <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-muted">
-                    <div className="h-full rounded-full bg-emerald" style={{ width: `${g.v * 2.6}%` }} />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <button onClick={() => toast.info("Mapa mundial de investimentos ainda não está disponível.")} className="mt-4 w-full rounded-xl border border-border bg-secondary/30 py-2 text-xs font-medium hover:bg-secondary">View on world map</button>
-        </Card>
-      </div>
-
-      {/* Holdings table */}
-      <Card className="mt-6 overflow-hidden p-0">
-        <div className="flex items-center justify-between p-6 pb-4">
-          <div>
-            <h2 className="font-display text-lg font-semibold">Tokenized holdings</h2>
-            <p className="text-xs text-muted-foreground">Posições de demonstração — sem liquidação real</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Badge variant="muted">Demonstração</Badge>
-            <button onClick={() => toast.info("Exportação real ficará disponível quando houver posições reais de tokens.")} className="rounded-full border border-border px-3 py-1.5 text-xs font-medium hover:bg-secondary">Export CSV</button>
-          </div>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-y border-border bg-secondary/30 text-left text-xs uppercase tracking-wider text-muted-foreground">
-                <th className="px-6 py-3 font-medium">Token</th>
-                <th className="px-6 py-3 font-medium">Property</th>
-                <th className="px-6 py-3 font-medium">City</th>
-                <th className="px-6 py-3 font-medium text-right">Held</th>
-                <th className="px-6 py-3 font-medium text-right">Value</th>
-                <th className="px-6 py-3 font-medium text-right">APY</th>
-                <th className="px-6 py-3 font-medium text-right">30d</th>
-                <th className="px-6 py-3"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {tokens.map((t) => (
-                <tr key={t.sym} className="border-b border-border last:border-0 transition hover:bg-secondary/30">
-                  <td className="px-6 py-4">
-                    <span className="rounded-md bg-secondary/60 px-2 py-1 font-mono text-xs font-semibold">{t.sym}</span>
-                  </td>
-                  <td className="px-6 py-4 font-medium">{t.n}</td>
-                  <td className="px-6 py-4 text-muted-foreground">{t.city}</td>
-                  <td className="px-6 py-4 text-right font-mono">{t.held}</td>
-                  <td className="px-6 py-4 text-right font-mono font-semibold">{fmt(t.value, ccy)}</td>
-                  <td className="px-6 py-4 text-right font-mono font-semibold text-emerald">{t.apy}%</td>
-                  <td className={`px-6 py-4 text-right font-mono ${t.ch >= 0 ? "text-emerald" : "text-red-500"}`}>
-                    <span className="inline-flex items-center gap-1">
-                      {t.ch >= 0 ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
-                      {Math.abs(t.ch)}%
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <button onClick={() => toast.info("Negociação de tokens ainda não está disponível — é um exemplo de demonstração.")} className="rounded-full border border-border px-3 py-1 text-xs hover:bg-secondary">Trade</button>
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-y border-border bg-secondary/30 text-left text-xs uppercase tracking-wide text-muted-foreground">
+                  <th className="px-5 py-3">Token</th>
+                  <th className="px-5 py-3">Oportunidade</th>
+                  <th className="px-5 py-3">Meta</th>
+                  <th className="px-5 py-3">Status</th>
+                  <th className="px-5 py-3">Publicação</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </Card>
-
-      {/* Opportunities + Yield projection */}
-      <div className="mt-6 grid gap-6 lg:grid-cols-3">
-        <Card className="lg:col-span-2">
-          <SectionTitle
-            title="Yield projection"
-            action={
-              <div className="flex gap-3 text-xs">
-                <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-skyblue" /> Conservative</span>
-                <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-emerald" /> Base</span>
-                <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-emerald-glow" /> Aggressive</span>
-              </div>
-            }
-          />
-          <div className="h-64">
-            <ResponsiveContainer>
-              <LineChart data={yieldProjection}>
-                <XAxis dataKey="y" tickLine={false} axisLine={false} fontSize={11} stroke="currentColor" opacity={0.4} />
-                <YAxis tickLine={false} axisLine={false} fontSize={11} stroke="currentColor" opacity={0.4} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
-                <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid var(--border)", background: "var(--card)" }} formatter={(v: any) => fmt(Number(v), ccy)} />
-                <Line type="monotone" dataKey="conservative" stroke="var(--skyblue)" strokeWidth={2} dot={false} />
-                <Line type="monotone" dataKey="base" stroke="var(--emerald)" strokeWidth={3} dot={false} />
-                <Line type="monotone" dataKey="aggressive" stroke="var(--emerald-glow)" strokeWidth={2} strokeDasharray="4 4" dot={false} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="mt-2 grid grid-cols-3 gap-3 text-center text-xs">
-            <div className="rounded-xl border border-border/60 p-3">
-              <div className="text-muted-foreground">10y · 6%</div>
-              <div className="mt-1 font-display text-lg font-bold">{fmt(yieldProjection[9].conservative, ccy)}</div>
-            </div>
-            <div className="rounded-xl border border-emerald/40 bg-emerald/5 p-3">
-              <div className="text-emerald">10y · 9.4%</div>
-              <div className="mt-1 font-display text-lg font-bold">{fmt(yieldProjection[9].base, ccy)}</div>
-            </div>
-            <div className="rounded-xl border border-border/60 p-3">
-              <div className="text-muted-foreground">10y · 13%</div>
-              <div className="mt-1 font-display text-lg font-bold">{fmt(yieldProjection[9].aggressive, ccy)}</div>
-            </div>
-          </div>
-        </Card>
-
-        <Card>
-          <SectionTitle title="Investment opportunities" action={<Sparkles className="h-4 w-4 text-emerald" />} />
-          <div className="space-y-3">
-            {opportunities.map((o) => (
-              <div key={o.n} className="rounded-2xl border border-border/60 bg-secondary/30 p-4 transition hover:border-emerald/40 hover:shadow-soft">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="text-sm font-semibold">{o.n}</div>
-                    <div className="text-xs text-muted-foreground">{o.region}</div>
-                  </div>
-                  <Badge variant="emerald">{o.apy}% APY</Badge>
-                </div>
-                <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-background">
-                  <div className="h-full rounded-full bg-emerald" style={{ width: `${o.raised}%` }} />
-                </div>
-                <div className="mt-2 flex items-center justify-between text-[11px] text-muted-foreground">
-                  <span>{o.raised}% raised · min {fmt(o.min, ccy)}</span>
-                  <span>{o.days}d left</span>
-                </div>
-                <button onClick={() => toast.info("Aportes reais em oportunidades tokenizadas ainda não estão disponíveis.")} className="mt-3 w-full rounded-full bg-foreground py-1.5 text-xs font-semibold text-background hover:opacity-90">
-                  Invest →
-                </button>
-              </div>
-            ))}
+              </thead>
+              <tbody>
+                {opportunities.map((opportunity) => (
+                  <tr key={opportunity.id} className="border-b border-border last:border-0">
+                    <td className="px-5 py-4 font-mono text-xs">{opportunity.token_symbol}</td>
+                    <td className="px-5 py-4">
+                      <div className="font-medium">{opportunity.title}</div>
+                      <div className="text-xs text-muted-foreground">
+                        {opportunity.location ?? "-"}
+                      </div>
+                    </td>
+                    <td className="px-5 py-4">
+                      {formatMoney(opportunity.target_amount, opportunity.currency)}
+                    </td>
+                    <td className="px-5 py-4">
+                      <select
+                        value={opportunity.status}
+                        onChange={(event) => setOpportunityStatus(opportunity, event.target.value)}
+                        className="rounded-full border border-glass-border bg-glass-fill px-3 py-1 text-xs"
+                      >
+                        <option value="draft">Rascunho</option>
+                        <option value="pending_review">Revisão</option>
+                        <option value="legal_review">Jurídico</option>
+                        <option value="approved_with_conditions">Condicionado</option>
+                        <option value="approved">Aprovado</option>
+                        <option value="blocked">Bloqueado</option>
+                        <option value="archived">Arquivado</option>
+                      </select>
+                    </td>
+                    <td className="px-5 py-4">
+                      <Badge variant={opportunity.published_at ? "emerald" : "muted"}>
+                        {opportunity.published_at ? "Publicado" : "Não publicado"}
+                      </Badge>
+                    </td>
+                  </tr>
+                ))}
+                {opportunities.length === 0 && (
+                  <tr>
+                    <td className="px-5 py-8 text-sm text-muted-foreground" colSpan={5}>
+                      Nenhuma oportunidade cadastrada.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </Card>
       </div>
 
-      {/* Activity feed */}
-      <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        <Card>
-          <SectionTitle title="On-chain activity" action={<DemoDataBadge />} />
-          <div className="space-y-3">
-            {[
-              { i: Zap, who: "Smart contract", what: "Distributed dividend 142 USDC", t: "2m ago", v: "emerald" as const },
-              { i: Coins, who: "You", what: "Bought 14 tokens of LIS-LX01", t: "12m ago", v: "blue" as const },
-              { i: Bitcoin, who: "Bridge", what: "Swapped 0.04 BTC → 2,840 USDC", t: "1h ago", v: "default" as const },
-              { i: Shield, who: "Custodian", what: "Rebalanced risk allocation", t: "3h ago", v: "muted" as const },
-            ].map((a, i) => (
-              <div key={i} className="flex items-start gap-3 rounded-2xl border border-border/40 p-3">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald/15">
-                  <a.i className="h-4 w-4 text-emerald" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="text-sm"><span className="font-semibold">{a.who}</span> {a.what}</div>
-                  <div className="font-mono text-[11px] text-muted-foreground">{a.t}</div>
-                </div>
-                <Badge variant={a.v}>tx</Badge>
-              </div>
-            ))}
+      <div className="mt-6 grid gap-6 xl:grid-cols-2">
+        <Card className="overflow-hidden p-0">
+          <div className="p-6 pb-4">
+            <SectionTitle title="Ordens recentes" />
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-y border-border bg-secondary/30 text-left text-xs uppercase tracking-wide text-muted-foreground">
+                  <th className="px-5 py-3">Investidor</th>
+                  <th className="px-5 py-3">Oportunidade</th>
+                  <th className="px-5 py-3">Valor</th>
+                  <th className="px-5 py-3">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {orders.map((order) => (
+                  <tr key={order.id} className="border-b border-border last:border-0">
+                    <td className="px-5 py-4">
+                      {order.users?.name ?? order.users?.email ?? order.investor_id.slice(0, 8)}
+                    </td>
+                    <td className="px-5 py-4">
+                      {order.investment_opportunities?.token_symbol ?? "-"}
+                    </td>
+                    <td className="px-5 py-4">{formatMoney(order.amount, order.currency)}</td>
+                    <td className="px-5 py-4">
+                      <select
+                        value={order.status}
+                        onChange={(event) => setOrderStatus(order, event.target.value)}
+                        className="rounded-full border border-glass-border bg-glass-fill px-3 py-1 text-xs"
+                      >
+                        <option value="pending_compliance">Compliance</option>
+                        <option value="pending_payment">Pagamento</option>
+                        <option value="funded">Funded</option>
+                        <option value="settled">Liquidada</option>
+                        <option value="blocked">Bloqueada</option>
+                        <option value="cancelled">Cancelada</option>
+                        <option value="refunded">Devolvida</option>
+                      </select>
+                    </td>
+                  </tr>
+                ))}
+                {orders.length === 0 && (
+                  <tr>
+                    <td className="px-5 py-8 text-sm text-muted-foreground" colSpan={4}>
+                      Nenhuma ordem registrada.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </Card>
 
-        <Card>
-          <SectionTitle
-            title="Currency desk"
-            action={
-              <span className="font-mono text-xs text-muted-foreground">
-                {marketError ? "câmbio indisponível" : updatedAt ? `câmbio ao vivo · ${updatedAt.toLocaleTimeString("pt-PT", { hour: "2-digit", minute: "2-digit" })}` : "carregando…"}
-              </span>
-            }
-          />
-          <div className="grid grid-cols-2 gap-3">
-            {Object.entries(rates).map(([k, v]) => {
-              const change = (changes as Record<string, number | undefined>)[k];
-              const up = change === undefined ? null : change >= 0;
-              return (
-                <div key={k} className="rounded-2xl border border-border/50 bg-secondary/20 p-3">
-                  <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <span className="font-mono font-semibold tracking-wider">{k}/USD</span>
-                    <span className={up === null ? "text-muted-foreground" : up ? "text-emerald" : "text-red-500"}>
-                      {up === null ? "—" : up ? "▲" : "▼"} {change !== undefined ? `${Math.abs(change).toFixed(2)}%` : ""}
-                    </span>
-                  </div>
-                  <div className="mt-1 font-display text-xl font-bold">{v.sym} {v.rate < 0.001 ? v.rate.toExponential(2) : v.rate.toFixed(k === "USD" ? 2 : 4)}</div>
-                </div>
-              );
-            })}
+        <Card className="overflow-hidden p-0">
+          <div className="p-6 pb-4">
+            <SectionTitle title="Investidores" />
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-y border-border bg-secondary/30 text-left text-xs uppercase tracking-wide text-muted-foreground">
+                  <th className="px-5 py-3">Nome</th>
+                  <th className="px-5 py-3">KYC</th>
+                  <th className="px-5 py-3">Suitability</th>
+                  <th className="px-5 py-3">Risco</th>
+                </tr>
+              </thead>
+              <tbody>
+                {investors.map((investor) => {
+                  const profile = profiles.find((item) => item.user_id === investor.id);
+                  return (
+                    <tr key={investor.id} className="border-b border-border last:border-0">
+                      <td className="px-5 py-4">
+                        <div className="font-medium">{investor.name ?? "Investidor"}</div>
+                        <div className="text-xs text-muted-foreground">{investor.email}</div>
+                      </td>
+                      <td className="px-5 py-4">
+                        <Badge variant={statusVariant(profile?.kyc_status)}>
+                          {statusLabel(profile?.kyc_status)}
+                        </Badge>
+                      </td>
+                      <td className="px-5 py-4">
+                        <Badge variant={statusVariant(profile?.suitability_status)}>
+                          {statusLabel(profile?.suitability_status)}
+                        </Badge>
+                      </td>
+                      <td className="px-5 py-4">{profile?.risk_profile ?? "-"}</td>
+                    </tr>
+                  );
+                })}
+                {investors.length === 0 && (
+                  <tr>
+                    <td className="px-5 py-8 text-sm text-muted-foreground" colSpan={4}>
+                      Nenhum usuário investidor cadastrado.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </Card>
       </div>
     </>
   );
+}
+
+function Field({
+  label,
+  wide,
+  children,
+}: {
+  label: string;
+  wide?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <label className={wide ? "sm:col-span-2" : ""}>
+      <span className="mb-1 block text-xs font-medium text-muted-foreground">{label}</span>
+      {children}
+    </label>
+  );
+}
+
+function setFormValue(
+  key: string,
+  value: string,
+  setForm: React.Dispatch<React.SetStateAction<Record<string, string>>>,
+) {
+  setForm((prev) => ({ ...prev, [key]: value }));
+}
+
+function formatMoney(value: number, currency: string) {
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: currency || "USD",
+    maximumFractionDigits: 0,
+  }).format(Number(value ?? 0));
+}
+
+function statusLabel(status: string | null | undefined) {
+  const labels: Record<string, string> = {
+    draft: "Rascunho",
+    pending_review: "Revisão",
+    legal_review: "Jurídico",
+    approved: "Aprovado",
+    approved_with_conditions: "Condicionado",
+    blocked: "Bloqueado",
+    expired: "Expirado",
+    archived: "Arquivado",
+  };
+  return status ? (labels[status] ?? status) : "Pendente";
+}
+
+function statusVariant(status: string | null | undefined) {
+  if (status === "approved" || status === "approved_with_conditions") return "emerald" as const;
+  if (status === "blocked" || status === "expired") return "warn" as const;
+  if (status === "pending_review" || status === "legal_review") return "blue" as const;
+  return "muted" as const;
 }

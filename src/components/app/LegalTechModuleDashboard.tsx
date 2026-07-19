@@ -1,39 +1,42 @@
 import { Link } from "@tanstack/react-router";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   AlertTriangle,
   Archive,
   BadgeCheck,
   CheckCircle2,
-  ClipboardCheck,
   Database,
+  Download,
+  Edit3,
   FileCheck2,
-  FileClock,
   FileLock2,
   FileSearch,
-  Gavel,
   Globe2,
   Landmark,
-  LockKeyhole,
+  Loader2,
+  Plus,
   Scale,
-  ShieldAlert,
   ShieldCheck,
   Signature,
+  Trash2,
+  Upload,
   UserCheck,
-  WalletCards,
   type LucideIcon,
 } from "lucide-react";
 import { toast } from "sonner";
+import { PageHeader, StatCard, Card, SectionTitle, Badge } from "@/components/app/ui";
 import {
-  PageHeader,
-  StatCard,
-  Card,
-  SectionTitle,
-  Badge,
-  DemoDataBadge,
-} from "@/components/app/ui";
-import { Progress } from "@/components/ui/progress";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { supabase } from "@/lib/supabase";
+import { useAuthUser } from "@/lib/auth";
 
-type LegalTechModuleKey =
+export type LegalTechModuleKey =
   | "jurisdictions"
   | "token-classifications"
   | "compliance-engine"
@@ -43,163 +46,70 @@ type LegalTechModuleKey =
   | "escrow-reconciliation"
   | "audit-evidence";
 
-type BadgeVariant = "default" | "emerald" | "blue" | "warn" | "muted";
+type LegalTechStatus =
+  | "draft"
+  | "pending_review"
+  | "legal_review"
+  | "approved"
+  | "approved_with_conditions"
+  | "blocked"
+  | "expired"
+  | "archived"
+  | "deleted"
+  | "legal_hold";
 
-type StatConfig = {
-  label: string;
-  value: string;
-  change: string;
-  icon: LucideIcon;
-  accent?: "emerald" | "skyblue";
-};
+type RiskLevel = "low" | "medium" | "high" | "critical";
 
-type WorkItem = {
-  title: string;
-  meta: string;
-  status: string;
-  statusVariant: BadgeVariant;
-  risk: string;
-};
-
-type RecordRow = {
+type ModuleRecord = {
+  id: string;
+  module_key: LegalTechModuleKey;
   ref: string;
-  name: string;
-  owner: string;
-  state: string;
-  due: string;
-  risk: string;
+  title: string;
+  owner_label: string;
+  status: LegalTechStatus;
+  risk_level: RiskLevel;
+  due_date: string | null;
+  summary: string | null;
+  archived_at: string | null;
+  deleted_at: string | null;
+  created_at: string;
 };
 
-type ControlItem = {
-  label: string;
-  detail: string;
-  progress: number;
+type VaultDocument = {
+  id: string;
+  title: string;
+  document_kind: string;
+  subject_type: string;
+  storage_bucket: string;
+  storage_path: string;
+  hash_sha256: string | null;
+  version: string;
+  status: LegalTechStatus;
+  sensitivity: string;
+  created_at: string;
 };
 
 type ModuleConfig = {
   key: LegalTechModuleKey;
   path: string;
   title: string;
-  menuTitle: string;
   subtitle: string;
   icon: LucideIcon;
   operationalNote: string;
-  stats: StatConfig[];
-  workQueue: WorkItem[];
-  controls: ControlItem[];
-  records: RecordRow[];
   evidence: string[];
   blockers: string[];
   automations: string[];
 };
 
-const legalTechModules: Record<LegalTechModuleKey, ModuleConfig> = {
+const moduleConfigs: Record<LegalTechModuleKey, ModuleConfig> = {
   jurisdictions: {
     key: "jurisdictions",
     path: "/admin/jurisdictions",
     title: "Jurisdiction Rule Packs",
-    menuTitle: "Jurisdições",
     subtitle: "Pacotes regulatórios por país, versão, vigência, restrição e responsável jurídico.",
     icon: Globe2,
     operationalNote:
-      "Brasil é o pacote prioritário. Outras jurisdições permanecem bloqueadas até matriz local, parceiros licenciados e aprovação jurídica.",
-    stats: [
-      { label: "Pacotes", value: "6", change: "1 operacional, 5 bloqueados", icon: Globe2 },
-      {
-        label: "Versões ativas",
-        value: "1.0-BR",
-        change: "base de diagnóstico",
-        icon: FileCheck2,
-        accent: "skyblue",
-      },
-      {
-        label: "Regras pendentes",
-        value: "42",
-        change: "dependem de validação local",
-        icon: Gavel,
-      },
-      {
-        label: "Jurisdições travadas",
-        value: "5",
-        change: "sem revisão externa",
-        icon: LockKeyhole,
-        accent: "skyblue",
-      },
-    ],
-    workQueue: [
-      {
-        title: "Brasil: matriz inicial de tokenização imobiliária",
-        meta: "CVM, BACEN, COAF, LGPD, registro imobiliário e tributação",
-        status: "Em diagnóstico",
-        statusVariant: "blue",
-        risk: "alto",
-      },
-      {
-        title: "Portugal: regra de oferta pública e suitability",
-        meta: "CMVM, AML, assinatura, proteção de dados e registro",
-        status: "Bloqueado",
-        statusVariant: "warn",
-        risk: "alto",
-      },
-      {
-        title: "Estados Unidos: bloqueio por estado e Reg D/Reg S",
-        meta: "SEC, FinCEN, money transmitter e restrições estaduais",
-        status: "Revisão externa",
-        statusVariant: "muted",
-        risk: "crítico",
-      },
-    ],
-    controls: [
-      {
-        label: "Matriz regulatória Brasil",
-        detail: "Atividades permitidas, bloqueadas e dependentes de terceiros licenciados.",
-        progress: 42,
-      },
-      {
-        label: "Tabela de restrições por país",
-        detail: "Oferta, investidor, escrow, assinatura, custódia, cripto e privacidade.",
-        progress: 28,
-      },
-      {
-        label: "Versionamento e vigência",
-        detail: "Cada regra precisa de versão, início, fim e responsável aprovador.",
-        progress: 64,
-      },
-    ],
-    records: [
-      {
-        ref: "BR-REAL-1.0",
-        name: "Brasil Real Estate Pack",
-        owner: "Legal",
-        state: "Diagnóstico",
-        due: "jul 2026",
-        risk: "alto",
-      },
-      {
-        ref: "PT-REAL-DRAFT",
-        name: "Portugal Property Pack",
-        owner: "Externo",
-        state: "Bloqueado",
-        due: "a definir",
-        risk: "alto",
-      },
-      {
-        ref: "US-SEC-HOLD",
-        name: "US Securities Hold",
-        owner: "Compliance",
-        state: "Legal hold",
-        due: "a definir",
-        risk: "crítico",
-      },
-      {
-        ref: "AE-FREEZONE",
-        name: "UAE Free Zone Review",
-        owner: "Parcerias",
-        state: "Pré-análise",
-        due: "ago 2026",
-        risk: "médio",
-      },
-    ],
+      "Brasil é o pacote prioritário. Outras jurisdições ficam bloqueadas até parecer local, matriz regulatória e parceiros licenciados.",
     evidence: [
       "Reguladores aplicáveis e links de referência",
       "Parecer jurídico local por jurisdição",
@@ -207,14 +117,14 @@ const legalTechModules: Record<LegalTechModuleKey, ModuleConfig> = {
       "Versão vigente, responsável e data de aprovação",
     ],
     blockers: [
-      "Publicação comercial em país sem rule pack aprovado",
-      "Aplicação de regra expirada ou sem versão",
+      "Publicação em país sem rule pack aprovado",
+      "Regra expirada ou sem versão",
       "Operação com cripto sem análise local",
-      "Oferta pública sem restrição de elegibilidade",
+      "Oferta pública sem elegibilidade definida",
     ],
     automations: [
       "Avisar quando uma regra estiver perto de expirar",
-      "Bloquear criação de produto sem jurisdição válida",
+      "Bloquear produto sem jurisdição válida",
       "Gerar checklist por país antes de cada oferta",
     ],
   },
@@ -222,104 +132,10 @@ const legalTechModules: Record<LegalTechModuleKey, ModuleConfig> = {
     key: "token-classifications",
     path: "/admin/token-classifications",
     title: "Legal Token Classification",
-    menuTitle: "Classificação de tokens",
-    subtitle:
-      "Ficha jurídica obrigatória para cada ativo tokenizado, produto fracionado ou participação.",
+    subtitle: "Ficha jurídica obrigatória para cada ativo tokenizado ou produto fracionado.",
     icon: BadgeCheck,
     operationalNote:
-      "Nenhum token deve ser tratado como escritura ou propriedade registral direta. A ficha classifica o produto e decide se ele pode avançar.",
-    stats: [
-      { label: "Projetos token", value: "8", change: "todos em demonstração", icon: WalletCards },
-      {
-        label: "Classificações",
-        value: "0",
-        change: "nenhuma aprovada",
-        icon: BadgeCheck,
-        accent: "skyblue",
-      },
-      { label: "Bloqueios", value: "8", change: "sem parecer vinculante", icon: LockKeyhole },
-      {
-        label: "Campos críticos",
-        value: "17",
-        change: "natureza, oferta, público e direitos",
-        icon: FileSearch,
-        accent: "skyblue",
-      },
-    ],
-    workQueue: [
-      {
-        title: "Classificar frações de ativo residencial",
-        meta: "Direitos econômicos, governança, repasse e restrição de transferência",
-        status: "Requer parecer",
-        statusVariant: "warn",
-        risk: "alto",
-      },
-      {
-        title: "Separar token de governança e token econômico",
-        meta: "Evitar confusão entre participação econômica, escritura e posse",
-        status: "Em desenho",
-        statusVariant: "blue",
-        risk: "alto",
-      },
-      {
-        title: "Criar matriz de suitability por investidor",
-        meta: "Investidor qualificado, varejo, limites, residência fiscal e aceites",
-        status: "Pendente",
-        statusVariant: "muted",
-        risk: "médio",
-      },
-    ],
-    controls: [
-      {
-        label: "Legal Token Classification Record",
-        detail: "Natureza jurídica, direitos do titular, riscos, restrições e jurisdição.",
-        progress: 35,
-      },
-      {
-        label: "Restrições de transferência",
-        detail: "Whitelist, lock-up, bloqueio por país, suitability e AML.",
-        progress: 24,
-      },
-      {
-        label: "Vínculo documental",
-        detail: "Cada token precisa apontar para contrato, parecer, cap table e evidências.",
-        progress: 18,
-      },
-    ],
-    records: [
-      {
-        ref: "LTC-001",
-        name: "Residencial fracionado BR",
-        owner: "Legal",
-        state: "Rascunho",
-        due: "jul 2026",
-        risk: "alto",
-      },
-      {
-        ref: "LTC-002",
-        name: "Hotelaria com repasse",
-        owner: "Investimentos",
-        state: "Bloqueado",
-        due: "ago 2026",
-        risk: "alto",
-      },
-      {
-        ref: "LTC-003",
-        name: "Governança de empreendimento",
-        owner: "Produto",
-        state: "Pré-análise",
-        due: "ago 2026",
-        risk: "médio",
-      },
-      {
-        ref: "LTC-004",
-        name: "Mercado secundário interno",
-        owner: "Compliance",
-        state: "Indisponível",
-        due: "a definir",
-        risk: "crítico",
-      },
-    ],
+      "Nenhum token deve ser tratado como escritura ou propriedade registral direta sem estrutura jurídica aprovada.",
     evidence: [
       "Parecer jurídico assinado",
       "Termo de risco do investidor",
@@ -335,121 +151,17 @@ const legalTechModules: Record<LegalTechModuleKey, ModuleConfig> = {
     automations: [
       "Bloquear oferta quando o record estiver incompleto",
       "Exigir nova revisão ao mudar direito econômico",
-      "Gerar pacote de disclosure por classe de investidor",
+      "Gerar disclosure por classe de investidor",
     ],
   },
   "compliance-engine": {
     key: "compliance-engine",
     path: "/admin/compliance-engine",
     title: "Heritage Compliance Engine",
-    menuTitle: "Compliance Engine",
-    subtitle:
-      "Motor de decisões com regra aplicada, fundamento, versão, evidência e revisão humana.",
+    subtitle: "Decisões com regra aplicada, fundamento, versão, evidência e revisão humana.",
     icon: ShieldCheck,
     operationalNote:
-      "A decisão de compliance nunca é invisível: toda aprovação, bloqueio ou exceção precisa de regra versionada e trilha de evidências.",
-    stats: [
-      {
-        label: "Decisões simuladas",
-        value: "128",
-        change: "sem efeito regulatório real",
-        icon: ShieldCheck,
-      },
-      {
-        label: "Revisão humana",
-        value: "39%",
-        change: "casos com risco elevado",
-        icon: UserCheck,
-        accent: "skyblue",
-      },
-      {
-        label: "Regras críticas",
-        value: "24",
-        change: "AML, suitability, oferta e contrato",
-        icon: Gavel,
-      },
-      {
-        label: "Bloqueios hard-stop",
-        value: "11",
-        change: "sanções, jurisdição e documentação",
-        icon: ShieldAlert,
-        accent: "skyblue",
-      },
-    ],
-    workQueue: [
-      {
-        title: "Decisão: oferta tokenizada BR sem classificação",
-        meta: "Rule BR-TOKEN-001 v0.1, falta parecer jurídico",
-        status: "Bloqueada",
-        statusVariant: "warn",
-        risk: "alto",
-      },
-      {
-        title: "Decisão: investidor com residência fiscal divergente",
-        meta: "Suitability e KYC reforçado antes de aceite",
-        status: "Revisão",
-        statusVariant: "blue",
-        risk: "médio",
-      },
-      {
-        title: "Decisão: documento assinado com tentativa de sobrescrita",
-        meta: "Legal Vault deve preservar original e abrir nova versão",
-        status: "Hard-stop",
-        statusVariant: "warn",
-        risk: "crítico",
-      },
-    ],
-    controls: [
-      {
-        label: "Decision record",
-        detail: "Resultado, regra, versão, evidência, justificativa e aprovador.",
-        progress: 58,
-      },
-      {
-        label: "Human override",
-        detail: "Exceções exigem justificativa, segundo aprovador e expiração.",
-        progress: 34,
-      },
-      {
-        label: "Rule tests",
-        detail: "Casos de falha: regra expirada, documento ausente e usuário sancionado.",
-        progress: 41,
-      },
-    ],
-    records: [
-      {
-        ref: "DEC-2026-001",
-        name: "Offer legal gate",
-        owner: "Compliance",
-        state: "Bloqueada",
-        due: "agora",
-        risk: "alto",
-      },
-      {
-        ref: "DEC-2026-014",
-        name: "Investor AML review",
-        owner: "AML",
-        state: "Revisão",
-        due: "24h",
-        risk: "médio",
-      },
-      {
-        ref: "DEC-2026-027",
-        name: "Contract approval gate",
-        owner: "Legal",
-        state: "Condição",
-        due: "48h",
-        risk: "alto",
-      },
-      {
-        ref: "DEC-2026-051",
-        name: "Document vault immutability",
-        owner: "Security",
-        state: "Hard-stop",
-        due: "agora",
-        risk: "crítico",
-      },
-    ],
+      "Toda aprovação, bloqueio ou exceção precisa de regra versionada, justificativa e trilha de evidências.",
     evidence: [
       "Rule id e versão aplicada",
       "Snapshot dos dados avaliados",
@@ -458,9 +170,9 @@ const legalTechModules: Record<LegalTechModuleKey, ModuleConfig> = {
     ],
     blockers: [
       "Decisão sem rule pack versionado",
-      "Override sem justificativa e aprovador",
+      "Override sem justificativa",
       "Operação sem evidência anexada",
-      "Aprovação automática em caso de alto risco",
+      "Aprovação automática em alto risco",
     ],
     automations: [
       "Calcular severidade por regra e jurisdição",
@@ -472,113 +184,10 @@ const legalTechModules: Record<LegalTechModuleKey, ModuleConfig> = {
     key: "legal-vault",
     path: "/admin/legal-vault",
     title: "Heritage Legal Vault",
-    menuTitle: "Legal Vault",
     subtitle: "Cofre documental com hash, versão, retenção, legal hold e cadeia de custódia.",
     icon: FileLock2,
     operationalNote:
-      "Documentos sensíveis não ficam públicos, documentos assinados não são sobrescritos e evidências críticas não são apagadas.",
-    stats: [
-      {
-        label: "Categorias",
-        value: "12",
-        change: "imóvel, pessoa, oferta, contrato e prova",
-        icon: Archive,
-      },
-      {
-        label: "Legal holds",
-        value: "3",
-        change: "retenção obrigatória",
-        icon: FileLock2,
-        accent: "skyblue",
-      },
-      {
-        label: "Hashes pendentes",
-        value: "0",
-        change: "exigido antes de assinatura",
-        icon: CheckCircle2,
-      },
-      {
-        label: "Documentos públicos",
-        value: "0",
-        change: "sensíveis ficam privados",
-        icon: LockKeyhole,
-        accent: "skyblue",
-      },
-    ],
-    workQueue: [
-      {
-        title: "Definir política de retenção por tipo documental",
-        meta: "KYC, contrato, matrícula, comprovantes, assinatura e disputa",
-        status: "Em desenho",
-        statusVariant: "blue",
-        risk: "alto",
-      },
-      {
-        title: "Separar original, normalizado, assinado e evidência",
-        meta: "Impede sobrescrita e mantém cadeia de custódia",
-        status: "Planejado",
-        statusVariant: "muted",
-        risk: "médio",
-      },
-      {
-        title: "Criar legal hold para disputa e ordem judicial",
-        meta: "Bloqueio de exclusão e exportação controlada",
-        status: "Obrigatório",
-        statusVariant: "warn",
-        risk: "alto",
-      },
-    ],
-    controls: [
-      {
-        label: "Imutabilidade de assinatura",
-        detail: "Documento assinado só pode ganhar nova versão, nunca ser alterado.",
-        progress: 62,
-      },
-      {
-        label: "Retenção e legal hold",
-        detail: "Políticas por jurisdição, tipo documental e situação de disputa.",
-        progress: 44,
-      },
-      {
-        label: "Auditoria de visualização",
-        detail: "Acesso a documento sensível exige log, papel, motivo e usuário.",
-        progress: 38,
-      },
-    ],
-    records: [
-      {
-        ref: "VAULT-PROP",
-        name: "Documentos do imóvel",
-        owner: "Operação",
-        state: "Privado",
-        due: "jul 2026",
-        risk: "alto",
-      },
-      {
-        ref: "VAULT-KYC",
-        name: "KYC/KYB",
-        owner: "Compliance",
-        state: "Restrito",
-        due: "jul 2026",
-        risk: "alto",
-      },
-      {
-        ref: "VAULT-SIGN",
-        name: "Assinaturas",
-        owner: "Legal",
-        state: "Imutável",
-        due: "ago 2026",
-        risk: "médio",
-      },
-      {
-        ref: "VAULT-EVID",
-        name: "Evidências",
-        owner: "Audit",
-        state: "Append-only",
-        due: "ago 2026",
-        risk: "alto",
-      },
-    ],
+      "Documentos sensíveis ficam em bucket privado. Contratos assinados não são sobrescritos; recebem nova versão.",
     evidence: [
       "Hash SHA-256 do arquivo",
       "Metadados de upload e visualização",
@@ -601,109 +210,10 @@ const legalTechModules: Record<LegalTechModuleKey, ModuleConfig> = {
     key: "contract-lifecycle",
     path: "/admin/contract-lifecycle",
     title: "Contract Lifecycle Management",
-    menuTitle: "CLM",
-    subtitle:
-      "Templates, cláusulas, versões, revisão jurídica, assinatura, vigência e arquivamento.",
+    subtitle: "Templates, cláusulas, versões, revisão jurídica, assinatura e arquivamento.",
     icon: Signature,
     operationalNote:
-      "Contrato gerado por IA ou template só avança para assinatura após revisão jurídica, versão aprovada e evidências vinculadas.",
-    stats: [
-      {
-        label: "Templates",
-        value: "9",
-        change: "compra, venda, locação, investimento e escrow",
-        icon: FileCheck2,
-      },
-      {
-        label: "Cláusulas",
-        value: "64",
-        change: "biblioteca versionada",
-        icon: FileSearch,
-        accent: "skyblue",
-      },
-      { label: "Estados", value: "15", change: "do rascunho ao legal hold", icon: FileClock },
-      {
-        label: "Assinaturas reais",
-        value: "0",
-        change: "provedor não conectado",
-        icon: Signature,
-        accent: "skyblue",
-      },
-    ],
-    workQueue: [
-      {
-        title: "Template de compra e venda tradicional",
-        meta: "Partes, imóvel, preço, condições, escritura e registro",
-        status: "Rascunho",
-        statusVariant: "blue",
-        risk: "médio",
-      },
-      {
-        title: "Termo de investimento fracionado",
-        meta: "Direitos econômicos, disclosure, risco, suitability e distribuição",
-        status: "Requer parecer",
-        statusVariant: "warn",
-        risk: "alto",
-      },
-      {
-        title: "Contrato de escrow e liberação",
-        meta: "Condições precedentes, devolução, disputa e conciliação",
-        status: "Parceiro necessário",
-        statusVariant: "muted",
-        risk: "alto",
-      },
-    ],
-    controls: [
-      {
-        label: "Estados contratuais",
-        detail: "Rascunho, revisão, aprovado, assinatura, vigente, substituído, legal hold.",
-        progress: 68,
-      },
-      {
-        label: "Biblioteca de cláusulas",
-        detail: "Cláusulas por jurisdição, operação, versão, risco e aprovador.",
-        progress: 33,
-      },
-      {
-        label: "Assinatura eletrônica",
-        detail: "Provider, evidência, certificado, IP, trilha de aceite e cofre.",
-        progress: 21,
-      },
-    ],
-    records: [
-      {
-        ref: "TPL-SALE-BR",
-        name: "Compra e venda BR",
-        owner: "Legal",
-        state: "Rascunho",
-        due: "jul 2026",
-        risk: "médio",
-      },
-      {
-        ref: "TPL-LEASE-BR",
-        name: "Locação residencial BR",
-        owner: "Legal",
-        state: "Revisão",
-        due: "jul 2026",
-        risk: "médio",
-      },
-      {
-        ref: "TPL-TOKEN-BR",
-        name: "Investimento tokenizado",
-        owner: "Legal",
-        state: "Bloqueado",
-        due: "ago 2026",
-        risk: "alto",
-      },
-      {
-        ref: "TPL-ESCROW",
-        name: "Escrow conditions",
-        owner: "Finance",
-        state: "Parceiro",
-        due: "a definir",
-        risk: "alto",
-      },
-    ],
+      "Contrato gerado por IA ou template só avança para assinatura após revisão jurídica e versão aprovada.",
     evidence: [
       "Versão do template e cláusulas usadas",
       "Aprovação jurídica e data",
@@ -717,113 +227,19 @@ const legalTechModules: Record<LegalTechModuleKey, ModuleConfig> = {
       "Template sem jurisdição definida",
     ],
     automations: [
-      "Bloquear assinatura se contrato estiver em revisão",
+      "Bloquear assinatura em revisão",
       "Criar nova versão ao alterar cláusula",
-      "Alertar vencimento e renovação de contrato",
+      "Alertar vencimento e renovação",
     ],
   },
   "identity-aml": {
     key: "identity-aml",
     path: "/admin/identity-aml",
     title: "KYC, KYB, AML & Sanctions",
-    menuTitle: "KYC/KYB/AML",
-    subtitle:
-      "Identidade, beneficiário final, sanções, PEP, origem de recursos e monitoramento contínuo.",
+    subtitle: "Identidade, beneficiário final, sanções, PEP, origem de recursos e monitoramento.",
     icon: UserCheck,
     operationalNote:
-      "Identidade e AML dependem de provedores e políticas aprovadas. O dashboard modela filas, bloqueios e evidências, sem substituir verificação licenciada.",
-    stats: [
-      { label: "Casos KYC", value: "24", change: "modelo operacional", icon: UserCheck },
-      {
-        label: "Casos KYB",
-        value: "7",
-        change: "beneficiário final pendente",
-        icon: Landmark,
-        accent: "skyblue",
-      },
-      { label: "PEP/Sanções", value: "0", change: "hard-stop quando positivo", icon: ShieldAlert },
-      {
-        label: "EDD",
-        value: "9",
-        change: "due diligence reforçada",
-        icon: FileSearch,
-        accent: "skyblue",
-      },
-    ],
-    workQueue: [
-      {
-        title: "Investidor com origem de recursos incompleta",
-        meta: "Solicitar comprovante adicional e declaração de patrimônio",
-        status: "EDD",
-        statusVariant: "warn",
-        risk: "alto",
-      },
-      {
-        title: "Proprietário PJ sem beneficiário final",
-        meta: "KYB, poderes de representação e sanções",
-        status: "Pendente",
-        statusVariant: "blue",
-        risk: "médio",
-      },
-      {
-        title: "Wallet screening antes de aporte cripto",
-        meta: "Não aceitar cripto sem análise de endereço e origem",
-        status: "Parceiro necessário",
-        statusVariant: "muted",
-        risk: "alto",
-      },
-    ],
-    controls: [
-      {
-        label: "KYC/KYB workflow",
-        detail: "Identidade, endereço, beneficiário final, poderes e risco.",
-        progress: 52,
-      },
-      {
-        label: "Sanções e PEP",
-        detail: "Checagem inicial e monitoramento contínuo antes de operação.",
-        progress: 30,
-      },
-      {
-        label: "Origem de recursos",
-        detail: "EDD, evidências financeiras e justificativa de aprovação.",
-        progress: 26,
-      },
-    ],
-    records: [
-      {
-        ref: "KYC-INV-001",
-        name: "Investidor varejo BR",
-        owner: "Compliance",
-        state: "EDD",
-        due: "24h",
-        risk: "alto",
-      },
-      {
-        ref: "KYB-OWN-004",
-        name: "Proprietário PJ",
-        owner: "Compliance",
-        state: "Beneficiário final",
-        due: "48h",
-        risk: "médio",
-      },
-      {
-        ref: "AML-WALLET",
-        name: "Wallet screening",
-        owner: "AML",
-        state: "Sem provedor",
-        due: "a definir",
-        risk: "alto",
-      },
-      {
-        ref: "PEP-MON",
-        name: "Monitoramento PEP",
-        owner: "Compliance",
-        state: "Planejado",
-        due: "ago 2026",
-        risk: "médio",
-      },
-    ],
+      "Identidade e AML dependem de provedores e políticas aprovadas; o dashboard registra filas, bloqueios e evidências.",
     evidence: [
       "Documento de identidade e prova de vida",
       "Comprovante de endereço e residência fiscal",
@@ -839,116 +255,17 @@ const legalTechModules: Record<LegalTechModuleKey, ModuleConfig> = {
     automations: [
       "Reabrir KYC quando documento expirar",
       "Aplicar EDD por risco, país e valor",
-      "Bloquear operação quando houver match de sanções",
+      "Bloquear operação com match de sanções",
     ],
   },
   "escrow-reconciliation": {
     key: "escrow-reconciliation",
     path: "/admin/escrow-reconciliation",
     title: "Payments, Escrow & Reconciliation",
-    menuTitle: "Escrow & Reconciliação",
-    subtitle:
-      "Pagamentos, escrow, condições precedentes, liberação, devolução, disputa e conciliação.",
+    subtitle: "Pagamentos, escrow, condições precedentes, liberação, disputa e conciliação.",
     icon: Landmark,
     operationalNote:
-      "A plataforma não deve custodiar recursos sem validação jurídica, financeira e parceiro licenciado. Este módulo desenha os gates e a conciliação.",
-    stats: [
-      {
-        label: "Fluxos",
-        value: "7",
-        change: "compra, locação, token, escrow e repasse",
-        icon: Landmark,
-      },
-      {
-        label: "Estados de pagamento",
-        value: "13",
-        change: "iniciado até conciliado",
-        icon: WalletCards,
-        accent: "skyblue",
-      },
-      { label: "Condições", value: "18", change: "precedentes de liberação", icon: ClipboardCheck },
-      {
-        label: "Custódia própria",
-        value: "0",
-        change: "bloqueada pelo PDF",
-        icon: LockKeyhole,
-        accent: "skyblue",
-      },
-    ],
-    workQueue: [
-      {
-        title: "Fluxo de compra com escrow externo",
-        meta: "Sinal, saldo, escritura, registro e liberação condicionada",
-        status: "Parceiro necessário",
-        statusVariant: "warn",
-        risk: "alto",
-      },
-      {
-        title: "Repasse de rendimentos tokenizados",
-        meta: "Receita, retenção, taxa, distribuição e relatório do investidor",
-        status: "Planejado",
-        statusVariant: "blue",
-        risk: "médio",
-      },
-      {
-        title: "Compra com criptoativos",
-        meta: "AML, volatilidade, conversão, parceiro VASP e registro contábil",
-        status: "Bloqueado",
-        statusVariant: "warn",
-        risk: "crítico",
-      },
-    ],
-    controls: [
-      {
-        label: "Estados de escrow",
-        detail: "Iniciado, pago, em escrow, condição pendente, liberado, devolvido, disputa.",
-        progress: 55,
-      },
-      {
-        label: "Conciliação financeira",
-        detail: "Pagamento, taxa, repasse, retenção, disputa e comprovante.",
-        progress: 36,
-      },
-      {
-        label: "Parceiros licenciados",
-        detail: "Pagamentos, escrow, custódia, câmbio, cripto e relatórios.",
-        progress: 14,
-      },
-    ],
-    records: [
-      {
-        ref: "ESC-SALE",
-        name: "Compra tradicional",
-        owner: "Finance",
-        state: "Desenho",
-        due: "jul 2026",
-        risk: "alto",
-      },
-      {
-        ref: "ESC-LEASE",
-        name: "Locação e garantia",
-        owner: "Finance",
-        state: "Rascunho",
-        due: "ago 2026",
-        risk: "médio",
-      },
-      {
-        ref: "ESC-TOKEN",
-        name: "Distribuição tokenizada",
-        owner: "Investimentos",
-        state: "Bloqueado",
-        due: "a definir",
-        risk: "alto",
-      },
-      {
-        ref: "ESC-CRYPTO",
-        name: "Compra com cripto",
-        owner: "Compliance",
-        state: "Indisponível",
-        due: "a definir",
-        risk: "crítico",
-      },
-    ],
+      "A plataforma não deve custodiar recursos sem validação jurídica, financeira e parceiro licenciado.",
     evidence: [
       "Comprovante de pagamento",
       "Condições precedentes atendidas",
@@ -957,7 +274,7 @@ const legalTechModules: Record<LegalTechModuleKey, ModuleConfig> = {
     ],
     blockers: [
       "Custódia própria sem licença",
-      "Liberação sem condição precedente cumprida",
+      "Liberação sem condição cumprida",
       "Cripto sem AML e parceiro VASP",
       "Repasse sem relatório e conciliação",
     ],
@@ -971,104 +288,10 @@ const legalTechModules: Record<LegalTechModuleKey, ModuleConfig> = {
     key: "audit-evidence",
     path: "/admin/audit-evidence",
     title: "Audit & Evidence Service",
-    menuTitle: "Audit & Evidence",
-    subtitle:
-      "Eventos append-only, cadeia de custódia, exportação de evidências e trilha de auditoria.",
+    subtitle: "Eventos append-only, cadeia de custódia, exportação de evidências e auditoria.",
     icon: Archive,
     operationalNote:
-      "Eventos críticos não devem ser apagados. O serviço organiza quem fez, quando, com qual regra, qual evidência e qual resultado.",
-    stats: [
-      { label: "Eventos críticos", value: "14", change: "modelo append-only", icon: Archive },
-      {
-        label: "Cadeias",
-        value: "6",
-        change: "contrato, token, pagamento, KYC, vault e rule pack",
-        icon: Database,
-        accent: "skyblue",
-      },
-      { label: "Exports", value: "0", change: "sem evidência real ainda", icon: FileCheck2 },
-      {
-        label: "Exclusões permitidas",
-        value: "0",
-        change: "retention-first",
-        icon: LockKeyhole,
-        accent: "skyblue",
-      },
-    ],
-    workQueue: [
-      {
-        title: "Modelo append-only para eventos de contrato",
-        meta: "Criado, revisado, aprovado, assinado, substituído, legal hold",
-        status: "Em desenho",
-        statusVariant: "blue",
-        risk: "médio",
-      },
-      {
-        title: "Pacote de exportação de evidências",
-        meta: "Linha do tempo, arquivos, hashes, decisões e usuários",
-        status: "Planejado",
-        statusVariant: "muted",
-        risk: "médio",
-      },
-      {
-        title: "Bloqueio de deleção de evento crítico",
-        meta: "Eventos de assinatura, pagamento, AML, decisão e vault",
-        status: "Obrigatório",
-        statusVariant: "warn",
-        risk: "alto",
-      },
-    ],
-    controls: [
-      {
-        label: "Modelo append-only",
-        detail: "Eventos críticos só podem receber anexos ou correções referenciadas.",
-        progress: 49,
-      },
-      {
-        label: "Cadeia de custódia",
-        detail: "Origem, hash, acesso, transformação, assinatura e exportação.",
-        progress: 32,
-      },
-      {
-        label: "Export legal pack",
-        detail: "Dossiê por ativo, contrato, investidor, pagamento ou disputa.",
-        progress: 22,
-      },
-    ],
-    records: [
-      {
-        ref: "AUD-CONTRACT",
-        name: "Eventos de contrato",
-        owner: "Legal",
-        state: "Modelado",
-        due: "jul 2026",
-        risk: "médio",
-      },
-      {
-        ref: "AUD-TOKEN",
-        name: "Eventos de token",
-        owner: "Investimentos",
-        state: "Bloqueado",
-        due: "ago 2026",
-        risk: "alto",
-      },
-      {
-        ref: "AUD-PAY",
-        name: "Eventos financeiros",
-        owner: "Finance",
-        state: "Planejado",
-        due: "ago 2026",
-        risk: "alto",
-      },
-      {
-        ref: "AUD-AML",
-        name: "Eventos AML",
-        owner: "Compliance",
-        state: "Obrigatório",
-        due: "jul 2026",
-        risk: "alto",
-      },
-    ],
+      "Eventos críticos não devem ser apagados. O serviço organiza quem fez, quando, com qual regra e qual evidência.",
     evidence: [
       "Timestamp, actor, role e IP",
       "Rule pack e decisão aplicada",
@@ -1089,9 +312,253 @@ const legalTechModules: Record<LegalTechModuleKey, ModuleConfig> = {
   },
 };
 
+const statusLabels: Record<LegalTechStatus, string> = {
+  draft: "Rascunho",
+  pending_review: "Revisão",
+  legal_review: "Jurídico",
+  approved: "Aprovado",
+  approved_with_conditions: "Condicionado",
+  blocked: "Bloqueado",
+  expired: "Expirado",
+  archived: "Arquivado",
+  deleted: "Excluído",
+  legal_hold: "Legal hold",
+};
+
+const riskLabels: Record<RiskLevel, string> = {
+  low: "Baixo",
+  medium: "Médio",
+  high: "Alto",
+  critical: "Crítico",
+};
+
+const emptyForm: RecordFormState = {
+  ref: "",
+  title: "",
+  owner_label: "Operação",
+  status: "draft",
+  risk_level: "medium",
+  due_date: "",
+  summary: "",
+};
+
+type RecordFormState = {
+  ref: string;
+  title: string;
+  owner_label: string;
+  status: LegalTechStatus;
+  risk_level: RiskLevel;
+  due_date: string;
+  summary: string;
+};
+
 export function LegalTechModuleDashboard({ moduleKey }: { moduleKey: LegalTechModuleKey }) {
-  const module = legalTechModules[moduleKey];
+  const module = moduleConfigs[moduleKey];
   const Icon = module.icon;
+  const { user } = useAuthUser();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [records, setRecords] = useState<ModuleRecord[]>([]);
+  const [vaultDocs, setVaultDocs] = useState<VaultDocument[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [schemaMissing, setSchemaMissing] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [editing, setEditing] = useState<ModuleRecord | null>(null);
+  const [form, setForm] = useState<RecordFormState>(emptyForm);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    setSchemaMissing(false);
+
+    const { data, error } = await supabase
+      .from("legaltech_module_records")
+      .select(
+        "id, module_key, ref, title, owner_label, status, risk_level, due_date, summary, archived_at, deleted_at, created_at",
+      )
+      .eq("module_key", moduleKey)
+      .is("deleted_at", null)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      setSchemaMissing(true);
+      setRecords([]);
+      setLoading(false);
+      return;
+    }
+
+    setRecords((data as ModuleRecord[]) ?? []);
+
+    if (moduleKey === "legal-vault") {
+      const { data: docs } = await supabase
+        .from("vault_documents")
+        .select(
+          "id, title, document_kind, subject_type, storage_bucket, storage_path, hash_sha256, version, status, sensitivity, created_at",
+        )
+        .order("created_at", { ascending: false });
+      setVaultDocs((docs as VaultDocument[]) ?? []);
+    }
+
+    setLoading(false);
+  }, [moduleKey]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const activeRecords = useMemo(
+    () => records.filter((record) => !record.archived_at && record.status !== "archived"),
+    [records],
+  );
+  const approvedCount = records.filter(
+    (record) => record.status === "approved" || record.status === "approved_with_conditions",
+  ).length;
+  const blockedCount = records.filter(
+    (record) => record.status === "blocked" || record.risk_level === "critical",
+  ).length;
+  const dueSoonCount = records.filter((record) => {
+    if (!record.due_date) return false;
+    const days = (new Date(record.due_date).getTime() - Date.now()) / 86400000;
+    return days >= 0 && days <= 14;
+  }).length;
+
+  const openCreate = () => {
+    setEditing(null);
+    setForm({
+      ...emptyForm,
+      ref: `${moduleKey.toUpperCase().slice(0, 4)}-${Date.now().toString().slice(-5)}`,
+    });
+    setDialogOpen(true);
+  };
+
+  const openEdit = (record: ModuleRecord) => {
+    setEditing(record);
+    setForm({
+      ref: record.ref,
+      title: record.title,
+      owner_label: record.owner_label,
+      status: record.status,
+      risk_level: record.risk_level,
+      due_date: record.due_date ?? "",
+      summary: record.summary ?? "",
+    });
+    setDialogOpen(true);
+  };
+
+  const saveRecord = async () => {
+    if (!form.ref.trim() || !form.title.trim()) {
+      toast.error("Ref e título são obrigatórios.");
+      return;
+    }
+
+    setSaving(true);
+    const payload = {
+      module_key: moduleKey,
+      ref: form.ref.trim(),
+      title: form.title.trim(),
+      owner_label: form.owner_label.trim() || "Operação",
+      status: form.status,
+      risk_level: form.risk_level,
+      due_date: form.due_date || null,
+      summary: form.summary.trim() || null,
+      created_by: user?.id ?? null,
+      archived_at: form.status === "archived" ? new Date().toISOString() : null,
+      deleted_at: null,
+    };
+
+    const query = editing
+      ? supabase.from("legaltech_module_records").update(payload).eq("id", editing.id)
+      : supabase.from("legaltech_module_records").insert(payload);
+
+    const { error } = await query;
+    setSaving(false);
+
+    if (error) {
+      toast.error(error.message || "Não foi possível salvar o registro.");
+      return;
+    }
+
+    toast.success(editing ? "Registro atualizado." : "Registro criado.");
+    setDialogOpen(false);
+    load();
+  };
+
+  const updateRecordState = async (record: ModuleRecord, status: "archived" | "deleted") => {
+    const patch =
+      status === "archived"
+        ? { status: "archived", archived_at: new Date().toISOString() }
+        : { status: "deleted", deleted_at: new Date().toISOString() };
+
+    const { error } = await supabase
+      .from("legaltech_module_records")
+      .update(patch)
+      .eq("id", record.id);
+    if (error) {
+      toast.error(error.message || "Não foi possível alterar o registro.");
+      return;
+    }
+    toast.success(status === "archived" ? "Registro arquivado." : "Registro excluído.");
+    load();
+  };
+
+  const uploadVaultDocument = async (file: File) => {
+    if (!user) {
+      toast.error("Sessão não encontrada.");
+      return;
+    }
+
+    setUploading(true);
+    const hash = await sha256(file);
+    const safeName = file.name.replace(/[^\w.-]+/g, "-").toLowerCase();
+    const storagePath = `documents/${Date.now()}-${safeName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("legal-vault")
+      .upload(storagePath, file, { upsert: false, cacheControl: "3600" });
+
+    if (uploadError) {
+      setUploading(false);
+      toast.error(uploadError.message || "Não foi possível enviar o documento.");
+      return;
+    }
+
+    const { error } = await supabase.from("vault_documents").insert({
+      title: file.name,
+      document_kind: "property_document",
+      subject_type: "legaltech",
+      storage_bucket: "legal-vault",
+      storage_path: storagePath,
+      mime_type: file.type || null,
+      file_size: file.size,
+      hash_sha256: hash,
+      status: "pending_review",
+      sensitivity: "restricted",
+      uploaded_by: user.id,
+    });
+
+    setUploading(false);
+
+    if (error) {
+      toast.error(error.message || "Arquivo enviado, mas o registro não foi salvo.");
+      return;
+    }
+
+    toast.success("Documento enviado ao Legal Vault.");
+    load();
+  };
+
+  const downloadVaultDocument = async (doc: VaultDocument) => {
+    const { data, error } = await supabase.storage
+      .from(doc.storage_bucket)
+      .createSignedUrl(doc.storage_path, 60);
+
+    if (error || !data?.signedUrl) {
+      toast.error(error?.message || "Não foi possível criar link de download.");
+      return;
+    }
+
+    window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+  };
 
   return (
     <>
@@ -1103,14 +570,40 @@ export function LegalTechModuleDashboard({ moduleKey }: { moduleKey: LegalTechMo
           <Scale className="h-4 w-4" />
           Cockpit
         </Link>
+        {moduleKey === "legal-vault" && (
+          <>
+            <input
+              ref={fileInputRef}
+              type="file"
+              className="hidden"
+              onChange={(event) => {
+                const file = event.target.files?.[0];
+                if (file) uploadVaultDocument(file);
+                event.target.value = "";
+              }}
+            />
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading || schemaMissing}
+              className="flex items-center gap-2 rounded-full border border-glass-border bg-card px-4 py-2 text-sm font-medium hover:bg-secondary disabled:opacity-60"
+            >
+              {uploading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Upload className="h-4 w-4" />
+              )}
+              Upload
+            </button>
+          </>
+        )}
         <button
           type="button"
-          onClick={() =>
-            toast.info("Registro salvo ficará disponível quando o schema LegalTech for aprovado.")
-          }
-          className="flex items-center gap-2 rounded-full bg-emerald px-4 py-2 text-sm font-semibold text-white shadow-glow"
+          onClick={openCreate}
+          disabled={schemaMissing}
+          className="flex items-center gap-2 rounded-full bg-emerald px-4 py-2 text-sm font-semibold text-white shadow-glow disabled:opacity-60"
         >
-          <Icon className="h-4 w-4" />
+          <Plus className="h-4 w-4" />
           Novo registro
         </button>
       </PageHeader>
@@ -1120,67 +613,48 @@ export function LegalTechModuleDashboard({ moduleKey }: { moduleKey: LegalTechMo
         {module.operationalNote}
       </div>
 
+      {schemaMissing && (
+        <Card className="mb-6 border-dashed border-destructive/30">
+          <div className="flex gap-3 text-sm text-muted-foreground">
+            <AlertTriangle className="h-5 w-5 shrink-0 text-destructive" />
+            <div>
+              <div className="font-semibold text-foreground">Migração Supabase pendente</div>
+              <p>
+                A interface já está pronta, mas as tabelas LegalTech ainda não foram aplicadas neste
+                banco. Rode a migration `create_legaltech_investor_infrastructure` para ativar o
+                CRUD real.
+              </p>
+            </div>
+          </div>
+        </Card>
+      )}
+
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        {module.stats.map((stat) => (
-          <StatCard
-            key={stat.label}
-            label={stat.label}
-            value={stat.value}
-            change={stat.change}
-            icon={stat.icon}
-            accent={stat.accent}
-          />
-        ))}
-      </div>
-
-      <div className="mt-6 grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
-        <Card>
-          <SectionTitle title="Fila de trabalho" action={<DemoDataBadge />} />
-          <div className="space-y-3">
-            {module.workQueue.map((item) => (
-              <div
-                key={item.title}
-                className="rounded-2xl border border-glass-border bg-glass-fill p-4"
-              >
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <div className="font-display text-sm font-semibold">{item.title}</div>
-                    <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                      {item.meta}
-                    </p>
-                  </div>
-                  <div className="flex shrink-0 flex-wrap gap-2">
-                    <Badge variant={item.statusVariant}>{item.status}</Badge>
-                    <Badge variant={item.risk === "crítico" ? "warn" : "muted"}>{item.risk}</Badge>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
-
-        <Card>
-          <SectionTitle
-            title="Controles obrigatórios"
-            action={<ShieldCheck className="h-4 w-4 text-emerald" />}
-          />
-          <div className="space-y-4">
-            {module.controls.map((control) => (
-              <div key={control.label}>
-                <div className="mb-2 flex items-center justify-between gap-3">
-                  <div className="min-w-0">
-                    <div className="text-sm font-semibold">{control.label}</div>
-                    <div className="text-xs text-muted-foreground">{control.detail}</div>
-                  </div>
-                  <span className="font-mono text-xs text-muted-foreground">
-                    {control.progress}%
-                  </span>
-                </div>
-                <Progress value={control.progress} className="bg-muted" />
-              </div>
-            ))}
-          </div>
-        </Card>
+        <StatCard
+          label="Registros"
+          value={loading ? "..." : String(records.length)}
+          icon={Database}
+        />
+        <StatCard
+          label="Ativos"
+          value={loading ? "..." : String(activeRecords.length)}
+          change="sem arquivados"
+          icon={CheckCircle2}
+          accent="skyblue"
+        />
+        <StatCard
+          label="Aprovados"
+          value={loading ? "..." : String(approvedCount)}
+          change="aprovados ou condicionados"
+          icon={ShieldCheck}
+        />
+        <StatCard
+          label="Risco/bloqueio"
+          value={loading ? "..." : String(blockedCount)}
+          change={`${dueSoonCount} vencem em 14 dias`}
+          icon={AlertTriangle}
+          accent="skyblue"
+        />
       </div>
 
       <Card className="mt-6 overflow-hidden p-0">
@@ -1188,56 +662,149 @@ export function LegalTechModuleDashboard({ moduleKey }: { moduleKey: LegalTechMo
           <div>
             <h2 className="font-display text-lg font-semibold">Registros operacionais</h2>
             <p className="text-xs text-muted-foreground">
-              Estrutura de registros prevista pelo documento. Persistência real depende do schema e
-              RLS.
+              CRUD real por módulo, conectado à tabela `legaltech_module_records`.
             </p>
           </div>
-          <Badge variant="muted">Blueprint</Badge>
+          <Badge variant={schemaMissing ? "warn" : "emerald"}>
+            {schemaMissing ? "Pendente" : "Ativo"}
+          </Badge>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-y border-border bg-secondary/30 text-left text-xs uppercase tracking-wide text-muted-foreground">
-                <th className="px-6 py-3 font-medium">Ref</th>
-                <th className="px-6 py-3 font-medium">Registro</th>
-                <th className="px-6 py-3 font-medium">Responsável</th>
-                <th className="px-6 py-3 font-medium">Estado</th>
-                <th className="px-6 py-3 font-medium">Prazo</th>
-                <th className="px-6 py-3 font-medium">Risco</th>
-              </tr>
-            </thead>
-            <tbody>
-              {module.records.map((row) => (
-                <tr
-                  key={row.ref}
-                  className="border-b border-border last:border-0 hover:bg-secondary/30"
-                >
-                  <td className="px-6 py-4 font-mono text-xs">{row.ref}</td>
-                  <td className="px-6 py-4 font-medium">{row.name}</td>
-                  <td className="px-6 py-4 text-muted-foreground">{row.owner}</td>
-                  <td className="px-6 py-4">
-                    <Badge
-                      variant={
-                        row.state === "Bloqueado" || row.state === "Indisponível" ? "warn" : "blue"
-                      }
-                    >
-                      {row.state}
-                    </Badge>
-                  </td>
-                  <td className="px-6 py-4 text-muted-foreground">{row.due}</td>
-                  <td className="px-6 py-4">
-                    <Badge
-                      variant={row.risk === "crítico" || row.risk === "alto" ? "warn" : "muted"}
-                    >
-                      {row.risk}
-                    </Badge>
-                  </td>
+
+        {loading ? (
+          <div className="flex items-center justify-center gap-2 py-16 text-sm text-muted-foreground">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            Carregando registros...
+          </div>
+        ) : records.length === 0 ? (
+          <div className="px-6 pb-8 text-sm text-muted-foreground">
+            Nenhum registro neste módulo ainda.
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-y border-border bg-secondary/30 text-left text-xs uppercase tracking-wide text-muted-foreground">
+                  <th className="px-6 py-3 font-medium">Ref</th>
+                  <th className="px-6 py-3 font-medium">Registro</th>
+                  <th className="px-6 py-3 font-medium">Responsável</th>
+                  <th className="px-6 py-3 font-medium">Estado</th>
+                  <th className="px-6 py-3 font-medium">Prazo</th>
+                  <th className="px-6 py-3 font-medium">Risco</th>
+                  <th className="px-6 py-3 font-medium text-right">Ações</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {records.map((record) => (
+                  <tr
+                    key={record.id}
+                    className="border-b border-border last:border-0 hover:bg-secondary/30"
+                  >
+                    <td className="px-6 py-4 font-mono text-xs">{record.ref}</td>
+                    <td className="px-6 py-4">
+                      <div className="font-medium">{record.title}</div>
+                      {record.summary && (
+                        <div className="mt-1 max-w-md truncate text-xs text-muted-foreground">
+                          {record.summary}
+                        </div>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 text-muted-foreground">{record.owner_label}</td>
+                    <td className="px-6 py-4">
+                      <Badge variant={statusVariant(record.status)}>
+                        {statusLabels[record.status]}
+                      </Badge>
+                    </td>
+                    <td className="px-6 py-4 text-muted-foreground">
+                      {record.due_date
+                        ? new Date(record.due_date).toLocaleDateString("pt-BR")
+                        : "-"}
+                    </td>
+                    <td className="px-6 py-4">
+                      <Badge variant={riskVariant(record.risk_level)}>
+                        {riskLabels[record.risk_level]}
+                      </Badge>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex justify-end gap-1.5">
+                        <IconButton label="Editar" icon={Edit3} onClick={() => openEdit(record)} />
+                        <IconButton
+                          label="Arquivar"
+                          icon={Archive}
+                          onClick={() => updateRecordState(record, "archived")}
+                        />
+                        <IconButton
+                          label="Excluir"
+                          icon={Trash2}
+                          danger
+                          onClick={() => {
+                            if (window.confirm(`Excluir "${record.title}"?`)) {
+                              updateRecordState(record, "deleted");
+                            }
+                          }}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </Card>
+
+      {moduleKey === "legal-vault" && (
+        <Card className="mt-6 overflow-hidden p-0">
+          <div className="flex items-start justify-between gap-3 p-6 pb-4">
+            <div>
+              <h2 className="font-display text-lg font-semibold">Documentos no Vault</h2>
+              <p className="text-xs text-muted-foreground">
+                Upload privado, hash SHA-256 e download por URL assinada.
+              </p>
+            </div>
+            <Badge variant="blue">{vaultDocs.length} documentos</Badge>
+          </div>
+          {vaultDocs.length === 0 ? (
+            <div className="px-6 pb-8 text-sm text-muted-foreground">
+              Nenhum documento enviado ainda.
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-y border-border bg-secondary/30 text-left text-xs uppercase tracking-wide text-muted-foreground">
+                    <th className="px-6 py-3 font-medium">Documento</th>
+                    <th className="px-6 py-3 font-medium">Tipo</th>
+                    <th className="px-6 py-3 font-medium">Hash</th>
+                    <th className="px-6 py-3 font-medium">Sensibilidade</th>
+                    <th className="px-6 py-3 font-medium text-right">Download</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {vaultDocs.map((doc) => (
+                    <tr key={doc.id} className="border-b border-border last:border-0">
+                      <td className="px-6 py-4 font-medium">{doc.title}</td>
+                      <td className="px-6 py-4 text-muted-foreground">{doc.document_kind}</td>
+                      <td className="px-6 py-4 font-mono text-[11px] text-muted-foreground">
+                        {doc.hash_sha256 ? `${doc.hash_sha256.slice(0, 18)}...` : "-"}
+                      </td>
+                      <td className="px-6 py-4">
+                        <Badge variant="muted">{doc.sensitivity}</Badge>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <IconButton
+                          label="Baixar"
+                          icon={Download}
+                          onClick={() => downloadVaultDocument(doc)}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </Card>
+      )}
 
       <div className="mt-6 grid gap-6 xl:grid-cols-3">
         <ChecklistCard
@@ -1253,12 +820,113 @@ export function LegalTechModuleDashboard({ moduleKey }: { moduleKey: LegalTechMo
           variant="warn"
         />
         <ChecklistCard
-          title="Próximas automações"
-          icon={Database}
+          title="Automações esperadas"
+          icon={FileSearch}
           items={module.automations}
           variant="blue"
         />
       </div>
+
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent className="max-w-2xl border-glass-border bg-card/95">
+          <DialogHeader>
+            <DialogTitle>{editing ? "Editar registro" : "Novo registro"}</DialogTitle>
+            <DialogDescription>
+              Registro operacional do módulo {module.title}. Use status e risco para controlar gates
+              internos antes de publicar qualquer operação.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Field label="Ref">
+              <input
+                value={form.ref}
+                onChange={(event) => setFormValue("ref", event.target.value, setForm)}
+                className="input"
+              />
+            </Field>
+            <Field label="Responsável">
+              <input
+                value={form.owner_label}
+                onChange={(event) => setFormValue("owner_label", event.target.value, setForm)}
+                className="input"
+              />
+            </Field>
+            <Field label="Título" wide>
+              <input
+                value={form.title}
+                onChange={(event) => setFormValue("title", event.target.value, setForm)}
+                className="input"
+              />
+            </Field>
+            <Field label="Estado">
+              <select
+                value={form.status}
+                onChange={(event) =>
+                  setFormValue("status", event.target.value as LegalTechStatus, setForm)
+                }
+                className="input"
+              >
+                {Object.entries(statusLabels).map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </Field>
+            <Field label="Risco">
+              <select
+                value={form.risk_level}
+                onChange={(event) =>
+                  setFormValue("risk_level", event.target.value as RiskLevel, setForm)
+                }
+                className="input"
+              >
+                {Object.entries(riskLabels).map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </Field>
+            <Field label="Prazo">
+              <input
+                type="date"
+                value={form.due_date}
+                onChange={(event) => setFormValue("due_date", event.target.value, setForm)}
+                className="input"
+              />
+            </Field>
+            <Field label="Resumo" wide>
+              <textarea
+                value={form.summary}
+                onChange={(event) => setFormValue("summary", event.target.value, setForm)}
+                rows={4}
+                className="input min-h-24 resize-none"
+              />
+            </Field>
+          </div>
+
+          <DialogFooter>
+            <button
+              type="button"
+              onClick={() => setDialogOpen(false)}
+              className="rounded-full border border-glass-border bg-glass-fill px-4 py-2 text-sm font-medium hover:bg-secondary"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              onClick={saveRecord}
+              disabled={saving}
+              className="flex items-center gap-2 rounded-full bg-emerald px-4 py-2 text-sm font-semibold text-white shadow-glow disabled:opacity-60"
+            >
+              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Icon className="h-4 w-4" />}
+              Salvar
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
@@ -1272,7 +940,7 @@ function ChecklistCard({
   title: string;
   icon: LucideIcon;
   items: string[];
-  variant: BadgeVariant;
+  variant: "emerald" | "warn" | "blue";
 }) {
   return (
     <Card>
@@ -1290,4 +958,78 @@ function ChecklistCard({
       </div>
     </Card>
   );
+}
+
+function Field({
+  label,
+  wide,
+  children,
+}: {
+  label: string;
+  wide?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <label className={wide ? "sm:col-span-2" : ""}>
+      <span className="mb-1 block text-xs font-medium text-muted-foreground">{label}</span>
+      {children}
+    </label>
+  );
+}
+
+function IconButton({
+  label,
+  icon: Icon,
+  onClick,
+  danger,
+}: {
+  label: string;
+  icon: LucideIcon;
+  onClick: () => void;
+  danger?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      title={label}
+      className={`inline-flex h-8 w-8 items-center justify-center rounded-full border border-glass-border transition-colors ${
+        danger
+          ? "text-destructive hover:bg-destructive/10"
+          : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+      }`}
+    >
+      <Icon className="h-4 w-4" />
+      <span className="sr-only">{label}</span>
+    </button>
+  );
+}
+
+function statusVariant(status: LegalTechStatus) {
+  if (status === "approved" || status === "approved_with_conditions") return "emerald" as const;
+  if (status === "blocked" || status === "expired" || status === "deleted") return "warn" as const;
+  if (status === "pending_review" || status === "legal_review") return "blue" as const;
+  return "muted" as const;
+}
+
+function riskVariant(risk: RiskLevel) {
+  if (risk === "critical" || risk === "high") return "warn" as const;
+  if (risk === "medium") return "blue" as const;
+  return "emerald" as const;
+}
+
+function setFormValue<K extends keyof RecordFormState>(
+  key: K,
+  value: RecordFormState[K],
+  setForm: React.Dispatch<React.SetStateAction<RecordFormState>>,
+) {
+  setForm((prev) => ({ ...prev, [key]: value }));
+}
+
+async function sha256(file: File) {
+  const buffer = await file.arrayBuffer();
+  const hash = await crypto.subtle.digest("SHA-256", buffer);
+  return Array.from(new Uint8Array(hash))
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
 }

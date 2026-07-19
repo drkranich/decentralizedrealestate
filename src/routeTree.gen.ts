@@ -79,8 +79,10 @@ import { Route as AppContractRouteImport } from './routes/app.contract'
 import { Route as AppContractsRouteImport } from './routes/app.contracts'
 import { Route as AppDashboardRouteImport } from './routes/app.dashboard'
 import { Route as AppFinanceRouteImport } from './routes/app.finance'
+import { Route as AppInvestorComplianceRouteImport } from './routes/app.investor-compliance'
 import { Route as AppInvestorDocumentsRouteImport } from './routes/app.investor-documents'
 import { Route as AppInvestorEarningsRouteImport } from './routes/app.investor-earnings'
+import { Route as AppInvestorOpportunitiesRouteImport } from './routes/app.investor-opportunities'
 import { Route as AppInvestorPortfolioRouteImport } from './routes/app.investor-portfolio'
 import { Route as AppMaintenanceRouteImport } from './routes/app.maintenance'
 import { Route as AppMessagesRouteImport } from './routes/app.messages'
@@ -444,6 +446,11 @@ const AppFinanceRoute = AppFinanceRouteImport.update({
   path: '/finance',
   getParentRoute: () => AppRoute,
 } as any)
+const AppInvestorComplianceRoute = AppInvestorComplianceRouteImport.update({
+  id: '/investor-compliance',
+  path: '/investor-compliance',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppInvestorDocumentsRoute = AppInvestorDocumentsRouteImport.update({
   id: '/investor-documents',
   path: '/investor-documents',
@@ -454,6 +461,12 @@ const AppInvestorEarningsRoute = AppInvestorEarningsRouteImport.update({
   path: '/investor-earnings',
   getParentRoute: () => AppRoute,
 } as any)
+const AppInvestorOpportunitiesRoute =
+  AppInvestorOpportunitiesRouteImport.update({
+    id: '/investor-opportunities',
+    path: '/investor-opportunities',
+    getParentRoute: () => AppRoute,
+  } as any)
 const AppInvestorPortfolioRoute = AppInvestorPortfolioRouteImport.update({
   id: '/investor-portfolio',
   path: '/investor-portfolio',
@@ -566,8 +579,10 @@ export interface FileRoutesByFullPath {
   '/app/contracts': typeof AppContractsRoute
   '/app/dashboard': typeof AppDashboardRoute
   '/app/finance': typeof AppFinanceRoute
+  '/app/investor-compliance': typeof AppInvestorComplianceRoute
   '/app/investor-documents': typeof AppInvestorDocumentsRoute
   '/app/investor-earnings': typeof AppInvestorEarningsRoute
+  '/app/investor-opportunities': typeof AppInvestorOpportunitiesRoute
   '/app/investor-portfolio': typeof AppInvestorPortfolioRoute
   '/app/maintenance': typeof AppMaintenanceRoute
   '/app/messages': typeof AppMessagesRoute
@@ -648,8 +663,10 @@ export interface FileRoutesByTo {
   '/app/contracts': typeof AppContractsRoute
   '/app/dashboard': typeof AppDashboardRoute
   '/app/finance': typeof AppFinanceRoute
+  '/app/investor-compliance': typeof AppInvestorComplianceRoute
   '/app/investor-documents': typeof AppInvestorDocumentsRoute
   '/app/investor-earnings': typeof AppInvestorEarningsRoute
+  '/app/investor-opportunities': typeof AppInvestorOpportunitiesRoute
   '/app/investor-portfolio': typeof AppInvestorPortfolioRoute
   '/app/maintenance': typeof AppMaintenanceRoute
   '/app/messages': typeof AppMessagesRoute
@@ -731,8 +748,10 @@ export interface FileRoutesById {
   '/app/contracts': typeof AppContractsRoute
   '/app/dashboard': typeof AppDashboardRoute
   '/app/finance': typeof AppFinanceRoute
+  '/app/investor-compliance': typeof AppInvestorComplianceRoute
   '/app/investor-documents': typeof AppInvestorDocumentsRoute
   '/app/investor-earnings': typeof AppInvestorEarningsRoute
+  '/app/investor-opportunities': typeof AppInvestorOpportunitiesRoute
   '/app/investor-portfolio': typeof AppInvestorPortfolioRoute
   '/app/maintenance': typeof AppMaintenanceRoute
   '/app/messages': typeof AppMessagesRoute
@@ -815,8 +834,10 @@ export interface FileRouteTypes {
     | '/app/contracts'
     | '/app/dashboard'
     | '/app/finance'
+    | '/app/investor-compliance'
     | '/app/investor-documents'
     | '/app/investor-earnings'
+    | '/app/investor-opportunities'
     | '/app/investor-portfolio'
     | '/app/maintenance'
     | '/app/messages'
@@ -897,8 +918,10 @@ export interface FileRouteTypes {
     | '/app/contracts'
     | '/app/dashboard'
     | '/app/finance'
+    | '/app/investor-compliance'
     | '/app/investor-documents'
     | '/app/investor-earnings'
+    | '/app/investor-opportunities'
     | '/app/investor-portfolio'
     | '/app/maintenance'
     | '/app/messages'
@@ -979,8 +1002,10 @@ export interface FileRouteTypes {
     | '/app/contracts'
     | '/app/dashboard'
     | '/app/finance'
+    | '/app/investor-compliance'
     | '/app/investor-documents'
     | '/app/investor-earnings'
+    | '/app/investor-opportunities'
     | '/app/investor-portfolio'
     | '/app/maintenance'
     | '/app/messages'
@@ -1512,6 +1537,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppFinanceRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/investor-compliance': {
+      id: '/app/investor-compliance'
+      path: '/investor-compliance'
+      fullPath: '/app/investor-compliance'
+      preLoaderRoute: typeof AppInvestorComplianceRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/investor-documents': {
       id: '/app/investor-documents'
       path: '/investor-documents'
@@ -1524,6 +1556,13 @@ declare module '@tanstack/react-router' {
       path: '/investor-earnings'
       fullPath: '/app/investor-earnings'
       preLoaderRoute: typeof AppInvestorEarningsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/investor-opportunities': {
+      id: '/app/investor-opportunities'
+      path: '/investor-opportunities'
+      fullPath: '/app/investor-opportunities'
+      preLoaderRoute: typeof AppInvestorOpportunitiesRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/investor-portfolio': {
@@ -1691,8 +1730,10 @@ interface AppRouteChildren {
   AppContractsRoute: typeof AppContractsRoute
   AppDashboardRoute: typeof AppDashboardRoute
   AppFinanceRoute: typeof AppFinanceRoute
+  AppInvestorComplianceRoute: typeof AppInvestorComplianceRoute
   AppInvestorDocumentsRoute: typeof AppInvestorDocumentsRoute
   AppInvestorEarningsRoute: typeof AppInvestorEarningsRoute
+  AppInvestorOpportunitiesRoute: typeof AppInvestorOpportunitiesRoute
   AppInvestorPortfolioRoute: typeof AppInvestorPortfolioRoute
   AppMaintenanceRoute: typeof AppMaintenanceRoute
   AppMessagesRoute: typeof AppMessagesRoute
@@ -1707,8 +1748,10 @@ const AppRouteChildren: AppRouteChildren = {
   AppContractsRoute: AppContractsRoute,
   AppDashboardRoute: AppDashboardRoute,
   AppFinanceRoute: AppFinanceRoute,
+  AppInvestorComplianceRoute: AppInvestorComplianceRoute,
   AppInvestorDocumentsRoute: AppInvestorDocumentsRoute,
   AppInvestorEarningsRoute: AppInvestorEarningsRoute,
+  AppInvestorOpportunitiesRoute: AppInvestorOpportunitiesRoute,
   AppInvestorPortfolioRoute: AppInvestorPortfolioRoute,
   AppMaintenanceRoute: AppMaintenanceRoute,
   AppMessagesRoute: AppMessagesRoute,

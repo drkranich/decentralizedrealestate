@@ -496,6 +496,15 @@ export const permissionRoutes: PermissionRoute[] = [
     defaultRoles: ["investor"],
   },
   {
+    id: "app.investor_opportunities",
+    label: "Oportunidades",
+    path: "/app/investor-opportunities",
+    area: "app",
+    section: "Investidor",
+    description: "Ofertas tokenizadas publicadas para análise e registro de interesse.",
+    defaultRoles: ["investor"],
+  },
+  {
     id: "app.investor_earnings",
     label: "Rendimentos",
     path: "/app/investor-earnings",
@@ -511,6 +520,15 @@ export const permissionRoutes: PermissionRoute[] = [
     area: "app",
     section: "Investidor",
     description: "Contratos, comprovantes e documentos do investidor.",
+    defaultRoles: ["investor"],
+  },
+  {
+    id: "app.investor_compliance",
+    label: "Compliance",
+    path: "/app/investor-compliance",
+    area: "app",
+    section: "Investidor",
+    description: "KYC, suitability, origem de recursos, sanções e carteiras do investidor.",
     defaultRoles: ["investor"],
   },
   {
@@ -713,6 +731,22 @@ export const roleCapabilities: RoleCapability[] = [
     defaultRoles: ["investor"],
     availableFor: ["investor"],
   },
+  {
+    id: "investor.register_interest",
+    label: "Registrar interesse em oportunidades",
+    description: "Pode iniciar ordem condicionada a KYC, suitability e compliance.",
+    section: "Mercado",
+    defaultRoles: ["investor"],
+    availableFor: ["investor"],
+  },
+  {
+    id: "investor.manage_compliance_profile",
+    label: "Gerenciar perfil de compliance",
+    description: "Pode manter KYC, residência fiscal, origem de recursos e carteiras para triagem.",
+    section: "Compliance",
+    defaultRoles: ["investor"],
+    availableFor: ["investor"],
+  },
 ];
 
 export const defaultRolePermissions: RolePermissions = roleOrder.reduce((acc, role) => {
@@ -730,6 +764,25 @@ export const defaultRolePermissions: RolePermissions = roleOrder.reduce((acc, ro
   return acc;
 }, {} as RolePermissions);
 
+const introducedDefaultPermissions: RolePermissions = {
+  admin: {
+    routes: ["admin.investor", "admin.legal_compliance", "admin.legal_vault"],
+    capabilities: ["admin.manage_investors", "admin.manage_legal_compliance"],
+  },
+  owner: {
+    routes: [],
+    capabilities: [],
+  },
+  tenant: {
+    routes: [],
+    capabilities: [],
+  },
+  investor: {
+    routes: ["app.investor_opportunities", "app.investor_compliance"],
+    capabilities: ["investor.register_interest", "investor.manage_compliance_profile"],
+  },
+};
+
 export function normalizeRolePermissions(raw: unknown): RolePermissions {
   const source = (raw && typeof raw === "object" ? raw : {}) as Partial<
     Record<UserRole, Partial<RolePermissionState>>
@@ -739,10 +792,10 @@ export function normalizeRolePermissions(raw: unknown): RolePermissions {
     const defaultState = defaultRolePermissions[role];
     const sourceState = source[role];
     const sourceRoutes = Array.isArray(sourceState?.routes)
-      ? sourceState.routes
+      ? unique([...sourceState.routes, ...introducedDefaultPermissions[role].routes])
       : defaultState.routes;
     const sourceCapabilities = Array.isArray(sourceState?.capabilities)
-      ? sourceState.capabilities
+      ? unique([...sourceState.capabilities, ...introducedDefaultPermissions[role].capabilities])
       : defaultState.capabilities;
 
     const lockedRoutes = permissionRoutes

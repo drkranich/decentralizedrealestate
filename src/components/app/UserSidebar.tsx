@@ -12,6 +12,8 @@ import {
   UserRound,
   Coins,
   ScrollText,
+  BadgeCheck,
+  WalletCards,
   type LucideIcon,
 } from "lucide-react";
 import {
@@ -54,9 +56,11 @@ const tenantItems: Item[] = [
 
 const investorItems: Item[] = [
   { title: "Dashboard", icon: LayoutDashboard, to: "/app/dashboard" },
+  { title: "Oportunidades", icon: WalletCards, to: "/app/investor-opportunities" },
   { title: "Meu portfólio", icon: Coins, to: "/app/investor-portfolio" },
   { title: "Rendimentos", icon: TrendingUp, to: "/app/investor-earnings" },
   { title: "Documentos", icon: ScrollText, to: "/app/investor-documents" },
+  { title: "Compliance", icon: BadgeCheck, to: "/app/investor-compliance" },
   { title: "Perfil", icon: UserRound, to: "/app/profile" },
 ];
 

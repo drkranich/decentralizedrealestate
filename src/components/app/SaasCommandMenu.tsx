@@ -4,6 +4,7 @@ import {
   Archive,
   BadgeCheck,
   Building2,
+  Coins,
   FileText,
   FileLock2,
   Globe2,
@@ -17,8 +18,11 @@ import {
   Settings,
   ShieldCheck,
   Signature,
+  ScrollText,
+  TrendingUp,
   UserCheck,
   Users,
+  WalletCards,
 } from "lucide-react";
 import type { UserRole } from "@/lib/auth";
 import {
@@ -70,6 +74,11 @@ const iconByPath: Record<string, typeof Search> = {
   "/app/properties": Building2,
   "/app/contracts": FileText,
   "/app/contract": FileText,
+  "/app/investor-opportunities": WalletCards,
+  "/app/investor-portfolio": Coins,
+  "/app/investor-earnings": TrendingUp,
+  "/app/investor-documents": ScrollText,
+  "/app/investor-compliance": ShieldCheck,
 };
 
 const adminQuickActions: SearchIntent[] = [
