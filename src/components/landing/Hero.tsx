@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { Search, MapPin, Sparkles, TrendingUp, Globe2, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroImg from "@/assets/hero.jpg";
@@ -20,40 +19,28 @@ export function Hero() {
 
       <div className="mx-auto max-w-7xl px-4">
         <div className="mx-auto max-w-4xl text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+          <div
             className="inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-xs font-medium"
           >
             <Sparkles className="h-3.5 w-3.5 text-emerald" />
             <span>The world's first decentralized real estate OS</span>
-          </motion.div>
+          </div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
+          <h1
             className="mt-6 font-display text-5xl font-bold leading-[1.05] tracking-tight md:text-7xl"
           >
             Own, host & invest in{" "}
             <span className="text-emerald">real estate</span>{" "}
             without borders.
-          </motion.h1>
+          </h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
+          <p
             className="mx-auto mt-6 max-w-2xl text-lg text-foreground/70 md:text-xl"
           >
             One platform to discover properties, fractional invest in tokenized assets, and automate operations with AI — anywhere on earth.
-          </motion.p>
+          </p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.3 }}
+          <div
             className="mt-10"
           >
             <div className="mx-auto flex max-w-2xl items-center gap-2 rounded-full glass-strong p-2 shadow-elegant">
@@ -75,17 +62,14 @@ export function Hero() {
               <Button size="lg" variant="outline" className="rounded-full glass">Invest</Button>
               <Button size="lg" variant="outline" className="rounded-full glass">Become Host</Button>
             </div>
-          </motion.div>
+          </div>
         </div>
 
         {/* Floating stats */}
         <div className="pointer-events-none relative mt-20 hidden h-64 md:block">
           {stats.map((s) => (
-            <motion.div
+            <div
               key={s.label}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: s.delay }}
               className={`absolute ${s.position} animate-float`}
               style={{ animationDelay: `${s.delay}s` }}
             >
@@ -98,7 +82,7 @@ export function Hero() {
                   <div className="font-display text-xl font-bold">{s.value}</div>
                 </div>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

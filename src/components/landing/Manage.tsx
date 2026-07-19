@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { FileSignature, BrainCircuit, CreditCard, Wrench, Sparkles, KeyRound, Globe } from "lucide-react";
 
 const features = [
@@ -23,12 +22,8 @@ export function Manage() {
 
         <div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {features.map((f, i) => (
-            <motion.div
+            <div
               key={f.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.05 }}
               className="group relative overflow-hidden rounded-3xl border border-border bg-card p-6 transition-all hover:-translate-y-1 hover:border-emerald/40 hover:shadow-elegant"
             >
               <div className="absolute -right-12 -top-12 h-32 w-32 rounded-full bg-emerald/10 opacity-0 blur-2xl transition-opacity group-hover:opacity-100" />
@@ -39,7 +34,7 @@ export function Manage() {
                 <h3 className="mt-4 font-display text-lg font-semibold">{f.title}</h3>
                 <p className="mt-1.5 text-sm text-muted-foreground">{f.desc}</p>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

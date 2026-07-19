@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { LineChart, Line, ResponsiveContainer, Area, AreaChart } from "recharts";
 import { TrendingUp, Coins, PieChart } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -24,12 +23,8 @@ export function Investments() {
 
         <div className="mt-14 grid gap-6 lg:grid-cols-3">
           {tokens.map((t, i) => (
-            <motion.div
+            <div
               key={t.token}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
               className="group relative overflow-hidden rounded-3xl border border-border bg-card p-6 shadow-soft transition-all hover:shadow-elegant"
             >
               <div className={`absolute -right-20 -top-20 h-48 w-48 rounded-full bg-${t.color} opacity-20 blur-3xl transition-opacity group-hover:opacity-40`} />
@@ -75,7 +70,7 @@ export function Investments() {
                   Invest now
                 </Button>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
 

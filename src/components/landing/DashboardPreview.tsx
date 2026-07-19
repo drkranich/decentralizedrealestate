@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { Bar, BarChart, ResponsiveContainer, Line, LineChart } from "recharts";
 import { User, Building, TrendingUp, Shield } from "lucide-react";
 
@@ -63,15 +62,10 @@ export function DashboardPreview() {
           </div>
         </div>
 
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={tab}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3 }}
-            className="mt-10 overflow-hidden rounded-3xl border border-border bg-card shadow-elegant"
-          >
+        <div
+          key={tab}
+          className="animate-fade-in-up mt-10 overflow-hidden rounded-3xl border border-border bg-card shadow-elegant"
+        >
             <div className="flex items-center gap-2 border-b border-border/50 px-5 py-3">
               <div className="flex gap-1.5">
                 <div className="h-3 w-3 rounded-full bg-destructive/60" />
@@ -97,7 +91,7 @@ export function DashboardPreview() {
                 <div className="mt-3 h-40">
                   <ResponsiveContainer>
                     <LineChart data={data}>
-                      <Line type="monotone" dataKey="y" stroke="oklch(0.62 0.16 160)" strokeWidth={2.5} dot={false} />
+                      <Line type="monotone" dataKey="y" stroke="oklch(0.74 0.11 156)" strokeWidth={2.5} dot={false} />
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
@@ -107,14 +101,13 @@ export function DashboardPreview() {
                 <div className="mt-3 h-40">
                   <ResponsiveContainer>
                     <BarChart data={data}>
-                      <Bar dataKey="y" fill="oklch(0.72 0.13 230)" radius={[6, 6, 0, 0]} />
+                      <Bar dataKey="y" fill="oklch(0.62 0.14 240)" radius={[6, 6, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
               </div>
             </div>
-          </motion.div>
-        </AnimatePresence>
+        </div>
       </div>
     </section>
   );

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { MapPin, Globe, Building2, Calendar, Sofa, TrendingUp, Map } from "lucide-react";
 
 const filters = [
@@ -22,11 +21,7 @@ export function SmartSearch() {
           <p className="mt-4 text-muted-foreground">Filter across 84 countries, with live map data and AI-curated matches.</p>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+        <div
           className="mt-12 overflow-hidden rounded-3xl glass-strong shadow-elegant"
         >
           <div className="flex flex-wrap gap-2 border-b border-border/50 p-4">
@@ -80,7 +75,7 @@ export function SmartSearch() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

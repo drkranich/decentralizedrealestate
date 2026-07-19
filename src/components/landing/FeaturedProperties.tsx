@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { Heart, Star, TrendingUp, Users } from "lucide-react";
 import { useState } from "react";
 
@@ -34,12 +33,8 @@ export function FeaturedProperties() {
 
         <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {properties.map((p, i) => (
-            <motion.div
+            <div
               key={i}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.05 }}
               className="group overflow-hidden rounded-3xl border border-border bg-card shadow-soft transition-all hover:-translate-y-1 hover:shadow-elegant"
             >
               <div className={`relative aspect-[4/3] overflow-hidden bg-${p.gradient}`}>
@@ -87,7 +82,7 @@ export function FeaturedProperties() {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

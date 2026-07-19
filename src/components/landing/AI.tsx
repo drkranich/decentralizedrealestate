@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { Bot, Lightbulb, Activity, UserCheck, Sparkles } from "lucide-react";
 import { useBrand } from "@/components/brand/BrandProvider";
 
@@ -27,27 +26,19 @@ export function AI() {
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
               {features.map((f, i) => (
-                <motion.div
+                <div
                   key={f.title}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: i * 0.08 }}
                   className="rounded-2xl border border-border bg-card p-5 transition-all hover:border-emerald/40"
                 >
                   <f.icon className="h-5 w-5 text-emerald" />
                   <div className="mt-3 font-display text-base font-semibold">{f.title}</div>
                   <div className="mt-1 text-xs text-muted-foreground">{f.desc}</div>
-                </motion.div>
+                </div>
               ))}
             </div>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+          <div
             className="relative"
           >
             <div className="rounded-3xl glass-strong p-6 shadow-elegant">
@@ -78,7 +69,7 @@ export function AI() {
               </div>
             </div>
             <div className="absolute -inset-4 -z-10 rounded-3xl bg-emerald/20 blur-3xl" />
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

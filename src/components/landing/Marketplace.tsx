@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { Sparkles, Wrench, Truck, Palette, Shield, Sofa, Wifi } from "lucide-react";
 
 const services = [
@@ -23,12 +22,8 @@ export function Marketplace() {
 
         <div className="mt-14 grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {services.map((s, i) => (
-            <motion.div
+            <div
               key={s.label}
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.05 }}
               className={`group cursor-pointer overflow-hidden rounded-3xl border border-border bg-${s.color} p-6 transition-all hover:-translate-y-1 hover:shadow-elegant`}
             >
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl glass-strong">
@@ -36,7 +31,7 @@ export function Marketplace() {
               </div>
               <div className="mt-12 font-display text-lg font-semibold">{s.label}</div>
               <div className="mt-1 text-xs text-muted-foreground">Book in seconds →</div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

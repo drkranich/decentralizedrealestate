@@ -53,6 +53,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "google", content: "notranslate" },
       { title: `${defaultBrand.name} — ${defaultBrand.tagline}` },
       { name: "description", content: "Decentralized real estate platform for investing, hosting, and managing properties worldwide. Tokenized ownership, AI pricing, automated operations." },
       { property: "og:title", content: `${defaultBrand.name} — ${defaultBrand.tagline}` },
@@ -79,7 +80,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" translate="no" className="notranslate">
       <head>
         <HeadContent />
       </head>

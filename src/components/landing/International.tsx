@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { Languages, DollarSign, CreditCard, Globe2 } from "lucide-react";
 import { useBrand } from "@/components/brand/BrandProvider";
 
@@ -26,18 +25,14 @@ export function International() {
 
             <div className="grid grid-cols-2 gap-4">
               {features.map((f, i) => (
-                <motion.div
+                <div
                   key={f.title}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: i * 0.05 }}
                   className="rounded-2xl border border-background/10 bg-background/5 p-5 backdrop-blur-sm"
                 >
                   <f.icon className="h-5 w-5 text-emerald" />
                   <div className="mt-3 font-display text-base font-semibold">{f.title}</div>
                   <div className="mt-1 text-xs text-background/60">{f.desc}</div>
-                </motion.div>
+                </div>
               ))}
             </div>
           </div>
