@@ -32,6 +32,10 @@ function Finance() {
         </button>
       </PageHeader>
 
+      <div className="mt-4 rounded-2xl border border-dashed border-skyblue/30 bg-skyblue/5 p-4 text-xs text-muted-foreground">
+        <span className="font-semibold text-skyblue">Nota:</span> todos os valores, gráficos e transações abaixo são dados de demonstração — o histórico financeiro real será exibido aqui assim que pagamentos reais forem processados pela plataforma.
+      </div>
+
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatCard label="Gross revenue" value="€384K" change="+22.4% YoY" icon={DollarSign} />
         <StatCard label="Expenses" value="€118K" change="-4.2% MoM" icon={TrendingDown} accent="skyblue" />

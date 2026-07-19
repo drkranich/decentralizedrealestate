@@ -33,6 +33,10 @@ function PropertiesAnalytics() {
     <>
       <PageHeader title="Property analytics" subtitle="Revenue, performance, tenant behavior and cost analytics." />
 
+      <div className="mt-4 rounded-2xl border border-dashed border-skyblue/30 bg-skyblue/5 p-4 text-xs text-muted-foreground">
+        <span className="font-semibold text-skyblue">Nota:</span> os gráficos de desempenho abaixo são dados de demonstração — as análises reais dependerão de reservas e receitas futuras.
+      </div>
+
       <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="Total revenue YTD" value="€312k" change="+24%" icon={TrendingUp} />
         <StatCard label="Avg performance" value="84/100" change="+6 pts" icon={Activity} />

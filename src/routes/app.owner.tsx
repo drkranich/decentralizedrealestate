@@ -14,6 +14,10 @@ function OwnerHub() {
     <>
       <PageHeader title="Owner Hub" subtitle="Your operational command center." />
 
+      <div className="mt-4 rounded-2xl border border-dashed border-skyblue/30 bg-skyblue/5 p-4 text-xs text-muted-foreground">
+        <span className="font-semibold text-skyblue">Nota:</span> esta página ainda usa dados de demonstração — receita, check-ins, manutenção e ranking de desempenho serão reais assim que houver reservas e receita processadas.
+      </div>
+
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatCard label="Properties owned" value="8" change="+1 this quarter" icon={Home} />
         <StatCard label="Net cashflow" value="€42,800" change="+12% MoM" icon={DollarSign} accent="skyblue" />

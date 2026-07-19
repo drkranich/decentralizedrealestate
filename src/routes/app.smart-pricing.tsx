@@ -26,6 +26,10 @@ function SmartPricing() {
         <button className="rounded-full bg-foreground px-4 py-2 text-sm font-semibold text-background">Apply suggestions</button>
       </PageHeader>
 
+      <div className="mt-4 rounded-2xl border border-dashed border-skyblue/30 bg-skyblue/5 p-4 text-xs text-muted-foreground">
+        <span className="font-semibold text-skyblue">Nota:</span> as sugestões de preço e a confiança de IA abaixo são dados de demonstração — o motor de precificação inteligente ainda não está conectado a dados reais de mercado.
+      </div>
+
       <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="Avg suggested rate" value="€168" change="+€23 / night" icon={TrendingUp} />
         <StatCard label="Forecast revenue" value="€42.6k" change="+18.2%" icon={Activity} />

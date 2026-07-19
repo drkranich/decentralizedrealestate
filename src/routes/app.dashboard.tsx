@@ -1,10 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
+import { useAuthUser } from "@/lib/auth";
 import { Area, AreaChart, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, PieChart, Pie, Cell, LineChart, Line } from "recharts";
 import {
   TrendingUp, DollarSign, Home, Users, Activity, ArrowUpRight, Wrench, Wallet,
   Sparkles, Bell, MessageSquare, Brush, Hammer, Sofa, ShieldCheck, Zap, AlertTriangle,
 } from "lucide-react";
-import { PageHeader, StatCard, Card, SectionTitle, Badge } from "@/components/app/ui";
+import { PageHeader, StatCard, Card, SectionTitle, Badge, DemoDataBadge } from "@/components/app/ui";
 import { useBrand } from "@/components/brand/BrandProvider";
 
 export const Route = createFileRoute("/app/dashboard")({
@@ -78,19 +81,47 @@ const activity = [
 
 function Dashboard() {
   const brand = useBrand();
+  const { user } = useAuthUser();
+  const [counts, setCounts] = useState({ total: 0, available: 0, leads: 0, contracts: 0 });
+
+  useEffect(() => {
+    (async () => {
+      const [props, avail, leads, contracts] = await Promise.all([
+        supabase.from("properties").select("id", { count: "exact", head: true }),
+        supabase.from("properties").select("id", { count: "exact", head: true }).eq("status", "available"),
+        supabase.from("leads").select("id", { count: "exact", head: true }),
+        supabase.from("contracts").select("id", { count: "exact", head: true }),
+      ]);
+      setCounts({
+        total: props.count ?? 0,
+        available: avail.count ?? 0,
+        leads: leads.count ?? 0,
+        contracts: contracts.count ?? 0,
+      });
+    })();
+  }, []);
+
+  const displayName = (user?.user_metadata?.name as string | undefined)?.split(" ")[0] ?? "there";
+
   return (
     <>
-      <PageHeader title="Good morning, Jordan" subtitle={`Welcome back to ${brand.name}. Here's your portfolio today.`}>
+      <PageHeader title={`Good morning, ${displayName}`} subtitle={`Welcome back to ${brand.name}. Here's your portfolio today.`}>
         <button className="rounded-full border border-border bg-card px-4 py-2 text-sm font-medium hover:bg-secondary">Last 30 days</button>
         <button className="rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background">Export</button>
       </PageHeader>
 
-      {/* KPIs */}
+      {/* KPIs — dados reais do Supabase */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatCard label="Total revenue" value="€84,290" change="+18.2% MoM" icon={DollarSign} />
-        <StatCard label="Occupancy" value="92.4%" change="+3.1%" icon={Home} accent="skyblue" />
-        <StatCard label="Active properties" value="24" change="+2 onboarded" icon={Activity} />
-        <StatCard label="Avg ROI" value="13.8%" change="+0.4%" icon={TrendingUp} accent="skyblue" />
+        <StatCard label="Total de imóveis" value={String(counts.total)} icon={Home} />
+        <StatCard label="Disponíveis" value={String(counts.available)} icon={Activity} accent="skyblue" />
+        <StatCard label="Leads recebidos" value={String(counts.leads)} icon={Users} />
+        <StatCard label="Contratos" value={String(counts.contracts)} icon={TrendingUp} accent="skyblue" />
+      </div>
+
+      <div className="mt-4 rounded-2xl border border-dashed border-skyblue/30 bg-skyblue/5 p-4 text-xs text-muted-foreground">
+        <span className="font-semibold text-skyblue">Nota:</span> os gráficos e cartões abaixo (receita, ocupação, ROI, manutenção,
+        atividade ao vivo, repasses, marketplace e insights de IA) usam dados de demonstração — eles serão substituídos por dados
+        reais assim que reservas, pagamentos e integrações estiverem conectados.
       </div>
 
       {/* Revenue + Mix */}

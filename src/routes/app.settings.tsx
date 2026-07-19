@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { User, Bell, Shield, CreditCard, Globe, Key } from "lucide-react";
-import { PageHeader, Card, SectionTitle, Badge } from "@/components/app/ui";
+import { PageHeader, Card, SectionTitle, Badge, DemoDataBadge } from "@/components/app/ui";
+import { useAuthUser, initials } from "@/lib/auth";
 
 export const Route = createFileRoute("/app/settings")({
   component: Settings,
@@ -18,6 +19,10 @@ const tabs = [
 
 function Settings() {
   const [tab, setTab] = useState("profile");
+  const { user } = useAuthUser();
+  const name = (user?.user_metadata?.name as string | undefined) ?? "";
+  const email = user?.email ?? "";
+  const phone = (user?.user_metadata?.phone as string | undefined) ?? "";
 
   return (
     <>
@@ -45,17 +50,13 @@ function Settings() {
               <Card>
                 <SectionTitle title="Profile" />
                 <div className="flex items-center gap-4">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald text-xl font-bold text-white">JD</div>
-                  <div>
-                    <button className="rounded-full border border-border bg-secondary/40 px-4 py-2 text-sm font-medium hover:bg-secondary">Upload</button>
-                    <button className="ml-2 text-sm text-muted-foreground hover:text-foreground">Remove</button>
-                  </div>
+                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald text-xl font-bold text-white">{initials(name || email)}</div>
+                  <div className="text-xs text-muted-foreground">Foto de perfil ainda não é suportada.</div>
                 </div>
                 <div className="mt-6 grid gap-4 md:grid-cols-2">
-                  <Field label="Full name" value="Jordan Doe" />
-                  <Field label="Email" value="jordan@propertyos.com" />
-                  <Field label="Company" value="Alpha Holdings" />
-                  <Field label="Phone" value="+351 912 345 678" />
+                  <Field label="Nome completo" value={name} readOnly />
+                  <Field label="E-mail" value={email} readOnly />
+                  <Field label="Celular" value={phone} readOnly />
                 </div>
               </Card>
             </>
@@ -63,7 +64,7 @@ function Settings() {
 
           {tab === "notifications" && (
             <Card>
-              <SectionTitle title="Notification preferences" />
+              <SectionTitle title="Notification preferences" action={<DemoDataBadge />} />
               <div className="space-y-3">
                 {[
                   { l: "New bookings", on: true },
@@ -81,7 +82,7 @@ function Settings() {
           {tab === "security" && (
             <>
               <Card>
-                <SectionTitle title="Two-factor authentication" />
+                <SectionTitle title="Two-factor authentication" action={<DemoDataBadge />} />
                 <div className="flex items-center justify-between rounded-2xl bg-emerald/5 border border-emerald/20 p-4">
                   <div>
                     <div className="text-sm font-semibold">Authenticator app</div>
@@ -91,7 +92,7 @@ function Settings() {
                 </div>
               </Card>
               <Card>
-                <SectionTitle title="Active sessions" />
+                <SectionTitle title="Active sessions" action={<DemoDataBadge />} />
                 <div className="space-y-2">
                   {[
                     { d: "MacBook Pro · Lisbon", n: "Now", c: "emerald" as const },
@@ -109,7 +110,7 @@ function Settings() {
 
           {tab === "billing" && (
             <Card>
-              <SectionTitle title="Plan" />
+              <SectionTitle title="Plan" action={<DemoDataBadge />} />
               <div className="rounded-2xl border border-emerald/30 bg-emerald/10 p-5">
                 <Badge variant="emerald">Pro</Badge>
                 <div className="mt-2 font-display text-2xl font-bold">€89/month</div>
@@ -135,7 +136,7 @@ function Settings() {
 
           {tab === "api" && (
             <Card>
-              <SectionTitle title="API keys" action={<button className="text-xs font-semibold text-emerald hover:underline">Generate new</button>} />
+              <SectionTitle title="API keys" action={<DemoDataBadge />} />
               <div className="space-y-2">
                 {["sk_live_••••••••a4F2", "sk_test_••••••••9bC1"].map((k) => (
                   <div key={k} className="flex items-center justify-between rounded-xl border border-border/50 bg-secondary/30 p-3 font-mono text-xs">
@@ -152,11 +153,15 @@ function Settings() {
   );
 }
 
-function Field({ label, value }: { label: string; value: string }) {
+function Field({ label, value, readOnly }: { label: string; value: string; readOnly?: boolean }) {
   return (
     <div>
       <label className="text-xs font-medium text-muted-foreground">{label}</label>
-      <input defaultValue={value} className="mt-1 w-full rounded-xl border border-border bg-secondary/40 p-2.5 text-sm" />
+      <input
+        defaultValue={value}
+        readOnly={readOnly}
+        className={`mt-1 w-full rounded-xl border border-border bg-secondary/40 p-2.5 text-sm ${readOnly ? "opacity-70" : ""}`}
+      />
     </div>
   );
 }

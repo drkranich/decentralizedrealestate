@@ -58,6 +58,10 @@ function Marketplace() {
         <button className="rounded-full bg-emerald px-4 py-2 text-sm font-semibold text-white shadow-glow">Become a provider</button>
       </PageHeader>
 
+      <div className="mt-4 rounded-2xl border border-dashed border-skyblue/30 bg-skyblue/5 p-4 text-xs text-muted-foreground">
+        <span className="font-semibold text-skyblue">Nota:</span> os prestadores de serviço e avaliações abaixo são dados de demonstração — o marketplace de serviços ainda não tem fornecedores reais cadastrados.
+      </div>
+
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatCard label="Providers worldwide" value="12,840" change="+182 this week" icon={Sparkles} />
         <StatCard label="Avg response" value="14 min" change="−3 min" icon={Clock} accent="skyblue" />

@@ -41,6 +41,10 @@ function CalendarPage() {
         </div>
       </PageHeader>
 
+      <div className="mt-4 rounded-2xl border border-dashed border-skyblue/30 bg-skyblue/5 p-4 text-xs text-muted-foreground">
+        <span className="font-semibold text-skyblue">Nota:</span> as reservas exibidas no calendário abaixo são dados de demonstração — não há um sistema de reservas real conectado ainda.
+      </div>
+
       <div className="mb-4 flex flex-wrap gap-3 text-xs">
         <Legend color="bg-emerald" label="Booking" icon={CalIcon} />
         <Legend color="bg-skyblue" label="Cleaning" icon={Brush} />

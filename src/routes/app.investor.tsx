@@ -131,6 +131,10 @@ function Investor() {
         <button className="rounded-full bg-emerald px-4 py-2 text-sm font-semibold text-white shadow-glow">Invest more</button>
       </PageHeader>
 
+      <div className="mt-4 rounded-2xl border border-dashed border-skyblue/30 bg-skyblue/5 p-4 text-xs text-muted-foreground">
+        <span className="font-semibold text-skyblue">Nota:</span> os tokens, rendimentos e histórico de investidor abaixo são dados de demonstração — a tokenização de imóveis ainda não está conectada a transações reais.
+      </div>
+
       {/* Hero KPIs */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatCard label="Portfolio value" value={fmt(totalValue, ccy)} change="+24.8% YTD" icon={Wallet} />
