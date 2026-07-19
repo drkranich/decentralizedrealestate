@@ -37,6 +37,9 @@
   --color-skyblue: var(--skyblue);
   --color-silver: var(--silver);
   --color-glass-tint: var(--glass-tint);
+  --color-glass-border: var(--glass-border);
+  --color-glass-fill: var(--glass-fill);
+  --color-glass-fill-strong: var(--glass-fill-strong);
 
   --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
   --font-display: "Outfit", "Plus Jakarta Sans", system-ui, sans-serif;
@@ -71,6 +74,10 @@
 
   /* Flat glass sheen (no gradients) — a single translucent tint behind cards */
   --glass-tint: oklch(1 0 0 / 0.06);
+  /* Theme-aware glass border/fill: visible frost on light OR dark backdrops */
+  --glass-border: oklch(0 0 0 / 0.08);
+  --glass-fill: oklch(0 0 0 / 0.025);
+  --glass-fill-strong: oklch(0 0 0 / 0.05);
   --shadow-soft: 0 1px 2px oklch(0 0 0 / 0.04), 0 8px 24px -8px oklch(0.2 0.04 250 / 0.08);
   --shadow-elegant: 0 24px 60px -20px oklch(0.74 0.11 156 / 0.25);
   --shadow-glow: 0 0 60px oklch(0.74 0.11 156 / 0.3);
@@ -96,6 +103,9 @@
   --border: oklch(1 0 0 / 0.08);
   --input: oklch(1 0 0 / 0.1);
   --ring: oklch(0.78 0.12 156);
+  --glass-border: oklch(1 0 0 / 0.1);
+  --glass-fill: oklch(1 0 0 / 0.04);
+  --glass-fill-strong: oklch(1 0 0 / 0.08);
 }
 
 @layer base {

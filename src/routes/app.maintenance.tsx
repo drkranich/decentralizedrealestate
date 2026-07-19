@@ -112,7 +112,7 @@ function Maintenance() {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Descreva o problema…"
-                className="w-full rounded-xl border border-white/10 bg-secondary/30 p-3 text-sm focus:outline-none"
+                className="w-full rounded-xl border border-glass-border bg-secondary/30 p-3 text-sm focus:outline-none"
                 rows={3}
               />
               <button
@@ -137,7 +137,7 @@ function Maintenance() {
         ) : (
           <div className="space-y-3">
             {requests.map((r) => (
-              <div key={r.id} className="flex items-center justify-between rounded-xl border border-white/10 bg-secondary/30 px-4 py-3">
+              <div key={r.id} className="flex items-center justify-between rounded-xl border border-glass-border bg-secondary/30 px-4 py-3">
                 <div className="flex items-center gap-3">
                   <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald/15 text-emerald">
                     <Wrench className="h-4 w-4" />
@@ -149,7 +149,7 @@ function Maintenance() {
                 </div>
                 {role === "owner" ? (
                   <Select value={r.status} onValueChange={(v) => updateStatus(r.id, v)}>
-                    <SelectTrigger className="h-auto w-auto gap-2 rounded-full border-white/10 bg-secondary/50 px-3 py-1 text-xs">
+                    <SelectTrigger className="h-auto w-auto gap-2 rounded-full border-glass-border bg-secondary/50 px-3 py-1 text-xs">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>

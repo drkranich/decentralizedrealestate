@@ -95,13 +95,13 @@ function TenantMessages() {
             )}
             <div ref={bottomRef} />
           </div>
-          <div className="mt-3 flex items-center gap-2 border-t border-white/10 pt-3">
+          <div className="mt-3 flex items-center gap-2 border-t border-glass-border pt-3">
             <input
               value={body}
               onChange={(e) => setBody(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && send()}
               placeholder="Escreva uma mensagem…"
-              className="flex-1 rounded-full border border-white/10 bg-secondary/30 px-4 py-2 text-sm focus:outline-none"
+              className="flex-1 rounded-full border border-glass-border bg-secondary/30 px-4 py-2 text-sm focus:outline-none"
             />
             <button
               onClick={send}

@@ -40,7 +40,7 @@ const empty: AddressState = {
 };
 
 const selectClass =
-  "mt-1 w-full rounded-xl border border-white/10 bg-white/[0.03] p-2.5 text-sm backdrop-blur-sm outline-none focus:border-emerald/40";
+  "mt-1 w-full rounded-xl border border-glass-border bg-glass-fill p-2.5 text-sm backdrop-blur-sm outline-none focus:border-emerald/40";
 const inputClass = selectClass;
 const labelClass = "text-xs font-medium text-muted-foreground";
 

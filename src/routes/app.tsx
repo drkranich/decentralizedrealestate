@@ -57,7 +57,7 @@ function UserLayout() {
         <UserSidebar role={role} />
 
         <div className="relative z-10 flex min-w-0 flex-1 flex-col">
-          <header className="sticky top-0 z-20 flex h-16 items-center justify-end gap-3 border-b border-white/10 bg-background/70 px-4 backdrop-blur-xl md:px-6">
+          <header className="sticky top-0 z-20 flex h-16 items-center justify-end gap-3 border-b border-glass-border bg-background/70 px-4 backdrop-blur-xl md:px-6">
             <SidebarTrigger className="mr-auto" />
             <button
               onClick={() => toast.info("Nenhuma notificação real no momento.")}

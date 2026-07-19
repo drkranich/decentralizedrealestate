@@ -35,7 +35,7 @@ function LoginPage() {
         <div className="absolute right-[-10rem] top-1/3 h-[24rem] w-[24rem] rounded-full bg-skyblue/15 blur-[110px] animate-drift-slower" />
       </div>
 
-      <div className="relative z-10 w-full max-w-sm rounded-3xl border border-white/10 bg-card/70 p-8 shadow-elegant backdrop-blur-2xl">
+      <div className="relative z-10 w-full max-w-sm rounded-3xl border border-glass-border bg-card/70 p-8 shadow-elegant backdrop-blur-2xl">
         <Logo />
         <h1 className="mt-6 font-display text-2xl font-bold">Welcome back</h1>
         <p className="mt-1 text-sm text-muted-foreground">Sign in to manage your properties.</p>

@@ -87,7 +87,7 @@ function Properties() {
       <PageHeader title="Properties" subtitle={loading ? "Loading your portfolio…" : `${total} ${total === 1 ? "property" : "properties"} on the platform right now.`}>
         <button
           onClick={() => setShowFilters((v) => !v)}
-          className={`flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors ${showFilters ? "border-emerald/40 bg-emerald/10 text-emerald" : "border-white/10 bg-card hover:bg-secondary"}`}
+          className={`flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors ${showFilters ? "border-emerald/40 bg-emerald/10 text-emerald" : "border-glass-border bg-card hover:bg-secondary"}`}
         >
           <Filter className="h-4 w-4" /> Filters
         </button>
@@ -115,7 +115,7 @@ function Properties() {
               key={s}
               onClick={() => setFilter(s)}
               className={`rounded-full px-3.5 py-1.5 text-xs font-medium capitalize transition-all ${
-                filter === s ? "bg-foreground text-background" : "border border-white/10 bg-card text-muted-foreground hover:bg-secondary"
+                filter === s ? "bg-foreground text-background" : "border border-glass-border bg-card text-muted-foreground hover:bg-secondary"
               }`}
             >
               {s}
@@ -123,13 +123,13 @@ function Properties() {
           ))}
           {showFilters && (
             <>
-              <span className="mx-1 h-4 w-px bg-white/10" />
+              <span className="mx-1 h-4 w-px bg-glass-fill-strong" />
               {["Todos", "Aluguel", "Venda"].map((s) => (
                 <button
                   key={s}
                   onClick={() => setListingFilter(s)}
                   className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-all ${
-                    listingFilter === s ? "bg-emerald text-white" : "border border-white/10 bg-card text-muted-foreground hover:bg-secondary"
+                    listingFilter === s ? "bg-emerald text-white" : "border border-glass-border bg-card text-muted-foreground hover:bg-secondary"
                   }`}
                 >
                   {s}
@@ -138,7 +138,7 @@ function Properties() {
             </>
           )}
         </div>
-        <div className="flex rounded-full border border-white/10 bg-card p-0.5">
+        <div className="flex rounded-full border border-glass-border bg-card p-0.5">
           <button onClick={() => setView("grid")} className={`flex h-8 w-8 items-center justify-center rounded-full ${view === "grid" ? "bg-secondary" : ""}`}>
             <Grid3x3 className="h-4 w-4" />
           </button>
@@ -162,7 +162,7 @@ function Properties() {
       ) : view === "grid" ? (
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {filtered.map((p) => (
-            <Link key={p.id} to="/admin/properties/$id" params={{ id: p.id }} className="group overflow-hidden rounded-3xl border border-white/10 bg-card transition-all hover:-translate-y-1 hover:shadow-elegant">
+            <Link key={p.id} to="/admin/properties/$id" params={{ id: p.id }} className="group overflow-hidden rounded-3xl border border-glass-border bg-card transition-all hover:-translate-y-1 hover:shadow-elegant">
               <div className="relative aspect-[4/3] overflow-hidden bg-secondary/40">
                 {p.cover_url ? (
                   <img src={p.cover_url} className="h-full w-full object-cover" />
@@ -186,7 +186,7 @@ function Properties() {
                 <div className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
                   <MapPin className="h-3 w-3" /> {[p.city, p.country].filter(Boolean).join(", ") || "Location not set"}
                 </div>
-                <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-3 text-xs">
+                <div className="mt-4 flex items-center justify-between border-t border-glass-border pt-3 text-xs">
                   <span className="text-muted-foreground">
                     {p.bedrooms ?? "—"} bd · {p.bathrooms ?? "—"} ba · {p.area_sqm ?? "—"} m²
                   </span>
@@ -200,7 +200,7 @@ function Properties() {
         <Card className="overflow-hidden p-0">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/10 bg-secondary/30 text-left text-xs uppercase tracking-wide text-muted-foreground">
+              <tr className="border-b border-glass-border bg-secondary/30 text-left text-xs uppercase tracking-wide text-muted-foreground">
                 <th className="px-5 py-3 font-medium">Property</th>
                 <th className="px-5 py-3 font-medium">Location</th>
                 <th className="px-5 py-3 font-medium">Type</th>
@@ -211,7 +211,7 @@ function Properties() {
             </thead>
             <tbody>
               {filtered.map((p) => (
-                <tr key={p.id} className="border-b border-white/10 last:border-0 hover:bg-secondary/30">
+                <tr key={p.id} className="border-b border-glass-border last:border-0 hover:bg-secondary/30">
                   <td className="px-5 py-4">
                     <Link to="/admin/properties/$id" params={{ id: p.id }} className="font-semibold">{p.title}</Link>
                   </td>

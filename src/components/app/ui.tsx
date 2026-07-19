@@ -21,7 +21,7 @@ export function StatCard({
   const accentClass = accent === "emerald" ? "bg-emerald/15 text-emerald" : "bg-skyblue/15 text-skyblue";
   return (
     <div
-      className="animate-fade-in-up group relative overflow-hidden rounded-3xl border border-white/10 bg-card/60 p-5 shadow-soft backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-emerald/30 hover:shadow-elegant"
+      className="animate-fade-in-up group relative overflow-hidden rounded-3xl border border-glass-border bg-card/60 p-5 shadow-soft backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-emerald/30 hover:shadow-elegant"
       style={{ animationDelay: `${delay}s` }}
     >
       <div className="pointer-events-none absolute inset-0 bg-glass-tint opacity-70" />
@@ -41,7 +41,7 @@ export function StatCard({
 
 export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
-    <div className={`animate-fade-in-up group relative overflow-hidden rounded-3xl border border-white/10 bg-card/60 p-6 shadow-soft backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-emerald/20 hover:shadow-elegant ${className}`}>
+    <div className={`animate-fade-in-up group relative overflow-hidden rounded-3xl border border-glass-border bg-card/60 p-6 shadow-soft backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-emerald/20 hover:shadow-elegant ${className}`}>
       <div className="pointer-events-none absolute inset-0 bg-glass-tint opacity-60" />
       <div className="relative">{children}</div>
     </div>
@@ -74,7 +74,7 @@ export function Badge({ children, variant = "default" }: { children: ReactNode; 
     muted: "bg-muted/70 text-muted-foreground backdrop-blur-sm",
   };
   return (
-    <span className={`inline-flex items-center rounded-full border border-white/10 px-2.5 py-0.5 text-xs font-medium transition-colors ${map[variant]}`}>
+    <span className={`inline-flex items-center rounded-full border border-glass-border px-2.5 py-0.5 text-xs font-medium transition-colors ${map[variant]}`}>
       {children}
     </span>
   );

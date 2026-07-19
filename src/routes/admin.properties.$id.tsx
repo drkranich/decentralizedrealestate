@@ -124,7 +124,7 @@ function PropertyDetails() {
             )}
           </div>
 
-          <div className="mt-6 flex gap-6 overflow-x-auto border-b border-white/10">
+          <div className="mt-6 flex gap-6 overflow-x-auto border-b border-glass-border">
             {["overview", "analytics", "documents", "maintenance", "smart devices", "bookings"].map((t) => (
               <button
                 key={t}
@@ -154,7 +154,7 @@ function PropertyDetails() {
                       { i: Maximize, l: "Area", v: property.area_sqm != null ? `${property.area_sqm} m²` : "—" },
                       { i: Calendar, l: "Built", v: property.year_built != null ? String(property.year_built) : "—" },
                     ].map((s) => (
-                      <div key={s.l} className="rounded-2xl border border-white/10 bg-secondary/30 p-4">
+                      <div key={s.l} className="rounded-2xl border border-glass-border bg-secondary/30 p-4">
                         <s.i className="h-4 w-4 text-emerald" />
                         <div className="mt-2 font-display text-lg font-bold">{s.v}</div>
                         <div className="text-xs text-muted-foreground">{s.l}</div>
@@ -166,7 +166,7 @@ function PropertyDetails() {
                 {property.latitude != null && property.longitude != null && (
                   <Card>
                     <SectionTitle title="Location" />
-                    <div className="rounded-2xl border border-white/10 bg-secondary/30 p-4 text-sm">
+                    <div className="rounded-2xl border border-glass-border bg-secondary/30 p-4 text-sm">
                       <div className="font-semibold">{property.latitude}, {property.longitude}</div>
                       <a
                         className="mt-1 inline-block text-xs text-emerald hover:underline"
@@ -220,7 +220,7 @@ function PropertyDetails() {
                     { i: Lock, l: "Front door" }, { i: Thermometer, l: "Climate" },
                     { i: Lightbulb, l: "Living lights" }, { i: Camera, l: "Entry camera" },
                   ].map((d) => (
-                    <div key={d.l} className="rounded-2xl border border-white/10 bg-secondary/30 p-4">
+                    <div key={d.l} className="rounded-2xl border border-glass-border bg-secondary/30 p-4">
                       <div className="flex items-center gap-2"><d.i className="h-4 w-4 text-muted-foreground" /><span className="text-sm font-semibold">{d.l}</span></div>
                       <div className="mt-2 text-xs text-muted-foreground">Nenhum dispositivo pareado</div>
                     </div>
@@ -252,7 +252,7 @@ function PropertyDetails() {
           <Card>
             <SectionTitle title="AI insights" action={<DemoDataBadge />} />
             <div className="space-y-2 text-xs opacity-70">
-              <div className="rounded-xl border border-white/10 bg-secondary/30 p-3">
+              <div className="rounded-xl border border-glass-border bg-secondary/30 p-3">
                 <div className="font-semibold flex items-center gap-1"><Sparkles className="h-3 w-3" /> Sem dados suficientes</div>
                 <div className="mt-1 text-muted-foreground">Insights de IA precisam de histórico real de preços e ocupação.</div>
               </div>

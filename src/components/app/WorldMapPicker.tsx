@@ -100,7 +100,7 @@ export function WorldMapPicker({
 
   return (
     <div>
-      <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-sm">
+      <div className="relative overflow-hidden rounded-2xl border border-glass-border bg-glass-fill backdrop-blur-sm">
         <svg
           ref={svgRef}
           viewBox={`0 0 ${VB_W} ${VB_H}`}
@@ -136,7 +136,7 @@ export function WorldMapPicker({
         <button
           onClick={useMyLocation}
           disabled={locating}
-          className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs font-medium backdrop-blur-sm hover:bg-white/[0.06] disabled:opacity-50"
+          className="flex items-center gap-1.5 rounded-lg border border-glass-border bg-glass-fill px-3 py-1.5 text-xs font-medium backdrop-blur-sm hover:bg-glass-fill-strong disabled:opacity-50"
         >
           <LocateFixed className="h-3.5 w-3.5" />
           {locating ? "Localizando…" : "Usar minha localização atual"}

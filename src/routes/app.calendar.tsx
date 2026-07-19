@@ -88,7 +88,7 @@ function OwnerCalendar() {
           ) : (
             <div className="space-y-3">
               {contracts.map((c) => (
-                <div key={c.id} className="flex items-center justify-between rounded-xl border border-white/10 bg-secondary/30 px-4 py-3">
+                <div key={c.id} className="flex items-center justify-between rounded-xl border border-glass-border bg-secondary/30 px-4 py-3">
                   <div>
                     <div className="font-medium">{c.property_title}</div>
                     <div className="text-xs text-muted-foreground">

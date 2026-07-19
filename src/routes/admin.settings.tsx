@@ -124,13 +124,13 @@ function Settings() {
 function ToggleRow({ label, on: initial }: { label: string; on: boolean }) {
   const [on, setOn] = useState(initial);
   return (
-    <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/[0.03] px-3.5 py-3 backdrop-blur-sm">
+    <div className="flex items-center justify-between rounded-lg border border-glass-border bg-glass-fill px-3.5 py-3 backdrop-blur-sm">
       <span className="text-sm">{label}</span>
       <button
         onClick={() => setOn(!on)}
         aria-pressed={on}
         className={`flex h-6 w-11 shrink-0 items-center rounded-full border px-0.5 backdrop-blur-sm transition-colors ${
-          on ? "justify-end border-emerald/30 bg-emerald/80" : "justify-start border-white/10 bg-white/10"
+          on ? "justify-end border-emerald/30 bg-emerald/80" : "justify-start border-glass-border bg-glass-fill-strong"
         }`}
       >
         <span className="h-4.5 w-4.5 rounded-full bg-white shadow-sm" />

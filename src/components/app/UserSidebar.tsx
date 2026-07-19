@@ -43,8 +43,8 @@ export function UserSidebar({ role }: { role: UserRole | null }) {
   const roleLabel = role === "owner" ? "Dono de imóvel" : "Inquilino";
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-white/10 bg-sidebar/70 backdrop-blur-xl">
-      <SidebarHeader className="border-b border-white/10">
+    <Sidebar collapsible="icon" className="border-r border-glass-border bg-sidebar/70 backdrop-blur-xl">
+      <SidebarHeader className="border-b border-glass-border">
         <div className="flex items-center gap-2 px-2 py-2">
           {collapsed ? <LogoMark size="md" /> : <Logo />}
         </div>
@@ -79,8 +79,8 @@ export function UserSidebar({ role }: { role: UserRole | null }) {
                         to={item.to}
                         className={`group relative flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors duration-150 ${
                           isActive
-                            ? "bg-white/[0.06] text-emerald backdrop-blur-sm"
-                            : "text-muted-foreground hover:bg-white/[0.04] hover:text-foreground"
+                            ? "bg-glass-fill-strong text-emerald backdrop-blur-sm"
+                            : "text-muted-foreground hover:bg-glass-fill hover:text-foreground"
                         }`}
                       >
                         {isActive && (
@@ -101,7 +101,7 @@ export function UserSidebar({ role }: { role: UserRole | null }) {
           <div className="mt-auto m-3">
             <button
               onClick={() => signOut()}
-              className="flex w-full items-center gap-2 rounded-xl border border-white/10 bg-secondary/40 px-3 py-2 text-xs font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
+              className="flex w-full items-center gap-2 rounded-xl border border-glass-border bg-secondary/40 px-3 py-2 text-xs font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
             >
               <LogOut className="h-3.5 w-3.5" /> Sair
             </button>

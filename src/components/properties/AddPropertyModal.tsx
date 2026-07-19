@@ -211,10 +211,10 @@ export function AddPropertyModal({ open, onClose }: Props) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 animate-in fade-in" onClick={onClose}>
       <div
-        className="max-h-[90vh] w-full max-w-2xl overflow-hidden rounded-3xl border border-white/10 bg-card/90 shadow-elegant backdrop-blur-2xl animate-in zoom-in-95"
+        className="max-h-[90vh] w-full max-w-2xl overflow-hidden rounded-3xl border border-glass-border bg-card/90 shadow-elegant backdrop-blur-2xl animate-in zoom-in-95"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
+        <div className="flex items-center justify-between border-b border-glass-border px-6 py-4">
           <div>
             <h3 className="font-display text-xl font-bold">Add property</h3>
             <p className="text-xs text-muted-foreground">Step {step} of 3</p>
@@ -245,7 +245,7 @@ export function AddPropertyModal({ open, onClose }: Props) {
                       key={lt}
                       type="button"
                       onClick={() => setForm((f) => ({ ...f, listingType: lt }))}
-                      className={`rounded-full px-3.5 py-1.5 text-xs font-medium capitalize transition-colors ${form.listingType === lt ? "bg-emerald text-white" : "border border-white/10 bg-secondary/40"}`}
+                      className={`rounded-full px-3.5 py-1.5 text-xs font-medium capitalize transition-colors ${form.listingType === lt ? "bg-emerald text-white" : "border border-glass-border bg-secondary/40"}`}
                     >
                       {lt === "aluguel" ? "Aluguel" : "Venda"}
                     </button>
@@ -255,7 +255,7 @@ export function AddPropertyModal({ open, onClose }: Props) {
               <Field label="Property type">
                 <div className="flex flex-wrap gap-2">
                   {propertyTypes.map((t) => (
-                    <button key={t} type="button" onClick={() => set("type", t)} className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-colors ${form.type === t ? "bg-foreground text-background" : "border border-white/10 bg-secondary/40"}`}>{t}</button>
+                    <button key={t} type="button" onClick={() => set("type", t)} className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-colors ${form.type === t ? "bg-foreground text-background" : "border border-glass-border bg-secondary/40"}`}>{t}</button>
                   ))}
                 </div>
               </Field>
@@ -278,7 +278,7 @@ export function AddPropertyModal({ open, onClose }: Props) {
                     {searching && <Loader2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-muted-foreground" />}
                   </div>
                   {showSuggestions && suggestions.length > 0 && (
-                    <div className="absolute z-10 mt-1 max-h-56 w-full overflow-y-auto rounded-2xl border border-white/10 bg-card/95 p-1 shadow-elegant backdrop-blur-xl">
+                    <div className="absolute z-10 mt-1 max-h-56 w-full overflow-y-auto rounded-2xl border border-glass-border bg-card/95 p-1 shadow-elegant backdrop-blur-xl">
                       {suggestions.map((s, i) => (
                         <button
                           type="button"
@@ -322,7 +322,7 @@ export function AddPropertyModal({ open, onClose }: Props) {
                   onClick={() => fileInputRef.current?.click()}
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={(e) => { e.preventDefault(); onFilesSelected(e.dataTransfer.files); }}
-                  className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-white/15 bg-secondary/30 px-6 py-8 text-center transition-colors hover:border-emerald/40"
+                  className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-glass-border bg-secondary/30 px-6 py-8 text-center transition-colors hover:border-emerald/40"
                 >
                   <Upload className="h-5 w-5 text-muted-foreground" />
                   <div className="text-sm font-medium">Drop files or click to upload</div>
@@ -331,7 +331,7 @@ export function AddPropertyModal({ open, onClose }: Props) {
                 {media.length > 0 && (
                   <div className="mt-3 grid grid-cols-4 gap-2">
                     {media.map((m) => (
-                      <div key={m.url} className="group relative aspect-square overflow-hidden rounded-xl border border-white/10 bg-secondary/40">
+                      <div key={m.url} className="group relative aspect-square overflow-hidden rounded-xl border border-glass-border bg-secondary/40">
                         {m.kind === "photo" ? (
                           <img src={m.url} className="h-full w-full object-cover" />
                         ) : (
@@ -379,7 +379,7 @@ export function AddPropertyModal({ open, onClose }: Props) {
           )}
         </div>
 
-        <div className="flex items-center justify-between border-t border-white/10 px-6 py-4">
+        <div className="flex items-center justify-between border-t border-glass-border px-6 py-4">
           <button onClick={() => (step === 1 ? onClose() : setStep(step - 1))} className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
             {step === 1 ? "Cancel" : "Back"}
           </button>

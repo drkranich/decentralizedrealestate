@@ -56,7 +56,7 @@ function SignupPage() {
   if (checkEmail) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-secondary/30 px-4">
-        <div className="w-full max-w-sm rounded-3xl border border-white/10 bg-card/70 p-8 text-center shadow-elegant backdrop-blur-2xl">
+        <div className="w-full max-w-sm rounded-3xl border border-glass-border bg-card/70 p-8 text-center shadow-elegant backdrop-blur-2xl">
           <Logo />
           <h1 className="mt-6 font-display text-xl font-bold">Confirme seu e-mail</h1>
           <p className="mt-2 text-sm text-muted-foreground">
@@ -77,7 +77,7 @@ function SignupPage() {
         <div className="absolute right-[-10rem] top-1/3 h-[24rem] w-[24rem] rounded-full bg-skyblue/15 blur-[110px] animate-drift-slower" />
       </div>
 
-      <div className="relative z-10 w-full max-w-sm rounded-3xl border border-white/10 bg-card/70 p-8 shadow-elegant backdrop-blur-2xl">
+      <div className="relative z-10 w-full max-w-sm rounded-3xl border border-glass-border bg-card/70 p-8 shadow-elegant backdrop-blur-2xl">
         <Logo />
         <h1 className="mt-6 font-display text-2xl font-bold">Create your account</h1>
         <p className="mt-1 text-sm text-muted-foreground">Proprietário ou inquilino — negocie direto, sem intermediário.</p>
@@ -120,7 +120,7 @@ function SignupPage() {
                   key={r}
                   type="button"
                   onClick={() => setRole(r)}
-                  className={`flex-1 rounded-full px-3.5 py-2 text-sm font-medium transition-colors ${role === r ? "bg-foreground text-background" : "border border-white/10 bg-secondary/40"}`}
+                  className={`flex-1 rounded-full px-3.5 py-2 text-sm font-medium transition-colors ${role === r ? "bg-foreground text-background" : "border border-glass-border bg-secondary/40"}`}
                 >
                   {r === "tenant" ? "Inquilino" : "Proprietário"}
                 </button>

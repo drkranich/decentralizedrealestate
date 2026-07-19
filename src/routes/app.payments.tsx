@@ -54,7 +54,7 @@ function TenantPayments() {
         ) : (
           <div className="space-y-3">
             {payments.map((p) => (
-              <div key={p.id} className="flex items-center justify-between rounded-xl border border-white/10 bg-secondary/30 px-4 py-3">
+              <div key={p.id} className="flex items-center justify-between rounded-xl border border-glass-border bg-secondary/30 px-4 py-3">
                 <div className="text-sm">{p.payment_date ?? "Sem data"}</div>
                 <div className="flex items-center gap-3">
                   <span className="text-sm font-semibold">€{Number(p.amount ?? 0).toLocaleString("en-US")}</span>

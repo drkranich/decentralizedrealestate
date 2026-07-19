@@ -75,7 +75,7 @@ function OwnerFinance() {
         ) : (
           <div className="space-y-3">
             {payments.map((p) => (
-              <div key={p.id} className="flex items-center justify-between rounded-xl border border-white/10 bg-secondary/30 px-4 py-3">
+              <div key={p.id} className="flex items-center justify-between rounded-xl border border-glass-border bg-secondary/30 px-4 py-3">
                 <div>
                   <div className="font-medium">{p.property_title}</div>
                   <div className="text-xs text-muted-foreground">{p.payment_date ?? "Sem data"}</div>

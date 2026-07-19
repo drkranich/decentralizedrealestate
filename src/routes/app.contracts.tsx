@@ -60,7 +60,7 @@ function OwnerContracts() {
         ) : (
           <div className="space-y-3">
             {contracts.map((c) => (
-              <div key={c.id} className="flex items-center justify-between rounded-xl border border-white/10 bg-secondary/30 px-4 py-3">
+              <div key={c.id} className="flex items-center justify-between rounded-xl border border-glass-border bg-secondary/30 px-4 py-3">
                 <div className="flex items-center gap-3">
                   <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald/15 text-emerald">
                     <FileText className="h-4 w-4" />

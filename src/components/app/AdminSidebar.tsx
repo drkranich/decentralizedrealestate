@@ -116,8 +116,8 @@ function ItemLink({ item, active, collapsed }: { item: Item; active: boolean; co
   const className = cn(
     "group relative flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors duration-150",
     active
-      ? "bg-white/[0.06] text-emerald backdrop-blur-sm"
-      : "text-muted-foreground hover:bg-white/[0.04] hover:text-foreground"
+      ? "bg-glass-fill-strong text-emerald backdrop-blur-sm"
+      : "text-muted-foreground hover:bg-glass-fill hover:text-foreground"
   );
   const content = (
     <>
@@ -165,8 +165,8 @@ export function AdminSidebar() {
   const ownerLabel = (user?.user_metadata?.name as string | undefined) || user?.email || "Sua conta";
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-white/10 bg-sidebar/70 backdrop-blur-xl">
-      <SidebarHeader className="border-b border-white/10">
+    <Sidebar collapsible="icon" className="border-r border-glass-border bg-sidebar/70 backdrop-blur-xl">
+      <SidebarHeader className="border-b border-glass-border">
         <div className="flex items-center gap-2 px-2 py-2">
           {collapsed ? <LogoMark size="md" /> : <Logo />}
         </div>
