@@ -72,7 +72,7 @@ function Finance() {
                   <span className="text-muted-foreground">{c.a}</span>
                 </div>
                 <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-secondary">
-                  <div className="h-full rounded-full bg-gradient-to-r from-emerald to-skyblue" style={{ width: `${c.v}%` }} />
+                  <div className="h-full rounded-full bg-emerald" style={{ width: `${c.v}%` }} />
                 </div>
               </div>
             ))}

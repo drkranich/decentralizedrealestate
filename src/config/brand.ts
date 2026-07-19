@@ -10,7 +10,7 @@ export type BrandTheme = {
   colors: {
     primary: string;
     primaryGlow: string;
-    accent: string;       // secondary brand color — gold
+    accent: string;       // secondary brand color — blue
     danger: string;       // alert / dispute / CTA color — red
     neutral: string;      // silver / gray
   };
@@ -47,20 +47,22 @@ export const defaultBrand: BrandConfig = {
   logo: { icon: "Building2" },
   theme: {
     colors: {
-      // Verde água — trust, liquidity
-      primary: "0.64 0.15 175",
-      primaryGlow: "0.78 0.17 173",
-      // Dourado — value, ownership
-      accent: "0.80 0.14 88",
+      // Verde menta — trust, liquidity
+      primary: "0.74 0.11 156",
+      primaryGlow: "0.84 0.12 154",
+      // Azul — complements the mint, used for secondary actions/data
+      accent: "0.62 0.14 240",
       // Vermelho — alerts, disputes, CTAs
-      danger: "0.58 0.21 27",
+      danger: "0.58 0.22 25",
       neutral: "0.78 0.01 240",
     },
     typography: {
-      sans: '"Inter", "SF Pro Display", system-ui, sans-serif',
-      display: '"Space Grotesk", "Inter", system-ui, sans-serif',
+      // Plus Jakarta Sans: warm, humanist, modern — reads less "corporate SaaS" than Inter.
+      sans: '"Plus Jakarta Sans", system-ui, sans-serif',
+      // Outfit: geometric display face for headings — confident without feeling stiff.
+      display: '"Outfit", "Plus Jakarta Sans", system-ui, sans-serif',
       googleFontsHref:
-        "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap",
+        "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=Outfit:wght@500;600;700;800&display=swap",
     },
     radius: "1rem",
   },

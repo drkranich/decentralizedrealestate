@@ -6,19 +6,19 @@ import { Button } from "@/components/ui/button";
 const data = Array.from({ length: 12 }, (_, i) => ({ x: i, y: 100 + i * 8 + Math.sin(i) * 6 }));
 
 const tokens = [
-  { name: "Lisbon Luxury Loft", token: "LIS-LX01", yield: 9.4, raised: 78, target: "€420K", color: "from-emerald to-emerald-glow" },
-  { name: "Tokyo Skyline Tower", token: "TKY-SK22", yield: 7.8, raised: 92, target: "¥85M", color: "from-skyblue to-emerald" },
-  { name: "Bali Beach Villa", token: "BAL-BV09", yield: 12.1, raised: 64, target: "$280K", color: "from-emerald-glow to-skyblue" },
+  { name: "Lisbon Luxury Loft", token: "LIS-LX01", yield: 9.4, raised: 78, target: "€420K", color: "emerald" },
+  { name: "Tokyo Skyline Tower", token: "TKY-SK22", yield: 7.8, raised: 92, target: "¥85M", color: "skyblue" },
+  { name: "Bali Beach Villa", token: "BAL-BV09", yield: 12.1, raised: 64, target: "$280K", color: "emerald-glow" },
 ];
 
 export function Investments() {
   return (
     <section id="invest" className="relative py-24">
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-transparent via-emerald/5 to-transparent" />
+      <div className="absolute inset-0 -z-10 bg-emerald/5" />
       <div className="mx-auto max-w-7xl px-4">
         <div className="mx-auto max-w-2xl text-center">
           <div className="text-sm font-medium text-emerald">Invest</div>
-          <h2 className="mt-2 font-display text-4xl font-bold md:text-5xl">Tokenized real estate. <br /><span className="gradient-text">Fractional ownership.</span></h2>
+          <h2 className="mt-2 font-display text-4xl font-bold md:text-5xl">Tokenized real estate. <br /><span className="text-emerald">Fractional ownership.</span></h2>
           <p className="mt-4 text-muted-foreground">Buy fractions of premium properties starting at $50. Earn monthly rental yield. Sell anytime on the secondary market.</p>
         </div>
 
@@ -32,7 +32,7 @@ export function Investments() {
               transition={{ duration: 0.5, delay: i * 0.1 }}
               className="group relative overflow-hidden rounded-3xl border border-border bg-card p-6 shadow-soft transition-all hover:shadow-elegant"
             >
-              <div className={`absolute -right-20 -top-20 h-48 w-48 rounded-full bg-gradient-to-br ${t.color} opacity-20 blur-3xl transition-opacity group-hover:opacity-40`} />
+              <div className={`absolute -right-20 -top-20 h-48 w-48 rounded-full bg-${t.color} opacity-20 blur-3xl transition-opacity group-hover:opacity-40`} />
 
               <div className="relative">
                 <div className="flex items-center justify-between">
@@ -66,7 +66,7 @@ export function Investments() {
                     <span className="font-semibold">{t.raised}% of {t.target}</span>
                   </div>
                   <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-secondary">
-                    <div className={`h-full rounded-full bg-gradient-to-r ${t.color}`} style={{ width: `${t.raised}%` }} />
+                    <div className={`h-full rounded-full bg-${t.color}`} style={{ width: `${t.raised}%` }} />
                   </div>
                 </div>
 

@@ -17,7 +17,7 @@ export function Manage() {
       <div className="mx-auto max-w-7xl px-4">
         <div className="mx-auto max-w-2xl text-center">
           <div className="text-sm font-medium text-emerald">Operations</div>
-          <h2 className="mt-2 font-display text-4xl font-bold md:text-5xl">A complete <span className="gradient-text">management ecosystem</span></h2>
+          <h2 className="mt-2 font-display text-4xl font-bold md:text-5xl">A complete <span className="text-emerald">management ecosystem</span></h2>
           <p className="mt-4 text-muted-foreground">Every workflow your portfolio needs — automated, observable, accountable.</p>
         </div>
 
@@ -33,7 +33,7 @@ export function Manage() {
             >
               <div className="absolute -right-12 -top-12 h-32 w-32 rounded-full bg-emerald/10 opacity-0 blur-2xl transition-opacity group-hover:opacity-100" />
               <div className="relative">
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald/15 to-skyblue/15">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald/15">
                   <f.icon className="h-5 w-5 text-emerald" />
                 </div>
                 <h3 className="mt-4 font-display text-lg font-semibold">{f.title}</h3>

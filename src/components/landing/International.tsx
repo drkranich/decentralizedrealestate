@@ -14,7 +14,7 @@ export function International() {
   return (
     <section className="py-24">
       <div className="mx-auto max-w-7xl px-4">
-        <div className="rounded-[2rem] border border-border bg-gradient-to-br from-foreground to-foreground/90 p-10 text-background md:p-16">
+        <div className="rounded-[2rem] border border-border bg-foreground p-10 text-background md:p-16">
           <div className="grid gap-10 lg:grid-cols-2">
             <div>
               <div className="inline-flex items-center gap-2 rounded-full border border-background/15 px-4 py-1.5 text-xs font-medium">

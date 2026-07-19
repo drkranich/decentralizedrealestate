@@ -18,7 +18,7 @@ export function SmartSearch() {
     <section className="relative py-24">
       <div className="mx-auto max-w-7xl px-4">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="font-display text-4xl font-bold md:text-5xl">Smart search, <span className="gradient-text">infinite results</span></h2>
+          <h2 className="font-display text-4xl font-bold md:text-5xl">Smart search, <span className="text-emerald">infinite results</span></h2>
           <p className="mt-4 text-muted-foreground">Filter across 84 countries, with live map data and AI-curated matches.</p>
         </div>
 
@@ -51,7 +51,7 @@ export function SmartSearch() {
               {["Lisbon, Portugal", "Tokyo, Japan", "New York, USA", "Bali, Indonesia"].map((c, i) => (
                 <div key={c} className="flex items-center justify-between rounded-2xl border border-border/50 bg-card/50 p-4 transition-all hover:border-emerald/40 hover:shadow-soft">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald/15 to-skyblue/15">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald/15">
                       <MapPin className="h-4 w-4 text-emerald" />
                     </div>
                     <div>
@@ -64,7 +64,7 @@ export function SmartSearch() {
               ))}
             </div>
 
-            <div className="relative overflow-hidden bg-gradient-to-br from-emerald/10 via-skyblue/5 to-transparent p-6">
+            <div className="relative overflow-hidden bg-skyblue/5 p-6">
               <div className="absolute inset-0 grid-bg opacity-50" />
               <div className="relative flex h-full min-h-[280px] flex-col items-center justify-center text-center">
                 <div className="flex h-14 w-14 items-center justify-center rounded-2xl glass-strong shadow-glow">

@@ -14,10 +14,10 @@ export function Footer() {
   return (
     <footer id="cta" className="border-t border-border">
       <div className="mx-auto max-w-7xl px-4 py-16">
-        <div className="rounded-[2rem] bg-gradient-to-br from-emerald/10 via-skyblue/5 to-transparent p-10 md:p-14">
+        <div className="rounded-[2rem] bg-skyblue/5 p-10 md:p-14">
           <div className="grid items-center gap-8 lg:grid-cols-2">
             <div>
-              <h3 className="font-display text-3xl font-bold md:text-4xl">Ready to operate real estate <span className="gradient-text">like a global tech company?</span></h3>
+              <h3 className="font-display text-3xl font-bold md:text-4xl">Ready to operate real estate <span className="text-emerald">like a global tech company?</span></h3>
               <p className="mt-3 text-muted-foreground">Join 84,000+ owners, hosts and investors using {brand.name}.</p>
             </div>
             <div className="flex flex-wrap gap-3 lg:justify-end">

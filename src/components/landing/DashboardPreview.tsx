@@ -42,7 +42,7 @@ export function DashboardPreview() {
       <div className="mx-auto max-w-7xl px-4">
         <div className="mx-auto max-w-2xl text-center">
           <div className="text-sm font-medium text-emerald">Dashboards</div>
-          <h2 className="mt-2 font-display text-4xl font-bold md:text-5xl">One platform. <span className="gradient-text">Every role.</span></h2>
+          <h2 className="mt-2 font-display text-4xl font-bold md:text-5xl">One platform. <span className="text-emerald">Every role.</span></h2>
           <p className="mt-4 text-muted-foreground">Tailored interfaces for tenants, owners, investors and platform admins.</p>
         </div>
 

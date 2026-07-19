@@ -45,7 +45,7 @@ function Settings() {
               <Card>
                 <SectionTitle title="Profile" />
                 <div className="flex items-center gap-4">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald to-skyblue text-xl font-bold text-white">JD</div>
+                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald text-xl font-bold text-white">JD</div>
                   <div>
                     <button className="rounded-full border border-border bg-secondary/40 px-4 py-2 text-sm font-medium hover:bg-secondary">Upload</button>
                     <button className="ml-2 text-sm text-muted-foreground hover:text-foreground">Remove</button>
@@ -110,7 +110,7 @@ function Settings() {
           {tab === "billing" && (
             <Card>
               <SectionTitle title="Plan" />
-              <div className="rounded-2xl border border-emerald/30 bg-gradient-to-br from-emerald/10 to-skyblue/10 p-5">
+              <div className="rounded-2xl border border-emerald/30 bg-emerald/10 p-5">
                 <Badge variant="emerald">Pro</Badge>
                 <div className="mt-2 font-display text-2xl font-bold">€89/month</div>
                 <div className="text-xs text-muted-foreground">Renews on Jan 12, 2026</div>

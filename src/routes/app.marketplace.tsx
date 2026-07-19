@@ -55,7 +55,7 @@ function Marketplace() {
     <>
       <PageHeader title="Service Marketplace" subtitle={`${brand.name} · decentralized network of vetted professionals.`}>
         <button className="rounded-full border border-border bg-card px-4 py-2 text-sm font-medium hover:bg-secondary">My bookings</button>
-        <button className="rounded-full bg-gradient-to-r from-emerald to-skyblue px-4 py-2 text-sm font-semibold text-white shadow-glow">Become a provider</button>
+        <button className="rounded-full bg-emerald px-4 py-2 text-sm font-semibold text-white shadow-glow">Become a provider</button>
       </PageHeader>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
@@ -80,7 +80,7 @@ function Marketplace() {
           <button className="flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2.5 text-sm font-medium hover:bg-secondary">
             <SlidersHorizontal className="h-4 w-4" /> Filters
           </button>
-          <button className="flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald to-emerald-glow px-4 py-2.5 text-sm font-semibold text-white shadow-glow">
+          <button className="flex items-center gap-2 rounded-full bg-emerald px-4 py-2.5 text-sm font-semibold text-white shadow-glow">
             <Zap className="h-4 w-4" /> Instant quote
           </button>
         </div>
@@ -110,7 +110,7 @@ function Marketplace() {
           return (
             <Card key={p.id} className="group flex flex-col gap-4 transition-all hover:-translate-y-1 hover:shadow-elegant">
               <div className="flex items-start gap-3">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald to-skyblue text-white shadow-glow">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald text-white shadow-glow">
                   <Cat className="h-6 w-6" />
                 </div>
                 <div className="min-w-0 flex-1">
@@ -186,7 +186,7 @@ function Marketplace() {
           <div className="space-y-2">
             {messages.map((m, i) => (
               <button key={i} className="flex w-full items-center gap-3 rounded-2xl p-2.5 text-left transition hover:bg-secondary/50">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-emerald to-skyblue text-xs font-bold text-white">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald text-xs font-bold text-white">
                   {m.who.split(" ").map((s) => s[0]).slice(0, 2).join("")}
                 </div>
                 <div className="min-w-0 flex-1">
@@ -212,7 +212,7 @@ function Marketplace() {
               { svc: "AC repair", price: 180, eta: "2h", from: "FixIt Pro" },
               { svc: "Smart lock install", price: 240, eta: "48h", from: "Nest" },
             ].map((q, i) => (
-              <div key={i} className="rounded-2xl border border-emerald/20 bg-gradient-to-br from-emerald/5 to-skyblue/5 p-3">
+              <div key={i} className="rounded-2xl border border-emerald/20 bg-emerald/5 p-3">
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="text-sm font-semibold">{q.svc}</div>
@@ -238,7 +238,7 @@ function Marketplace() {
               <div key={i} className="rounded-2xl border border-border/40 p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-skyblue to-emerald text-xs font-bold text-white">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-skyblue text-xs font-bold text-white">
                       {r.who.split(" ").map((s) => s[0]).join("")}
                     </div>
                     <div>

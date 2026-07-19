@@ -28,7 +28,7 @@ function Properties() {
         <button className="flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium hover:bg-secondary">
           <Filter className="h-4 w-4" /> Filters
         </button>
-        <button onClick={() => setOpen(true)} className="flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald to-emerald-glow px-4 py-2 text-sm font-semibold text-white shadow-glow">
+        <button onClick={() => setOpen(true)} className="flex items-center gap-2 rounded-full bg-emerald px-4 py-2 text-sm font-semibold text-white shadow-glow">
           <Plus className="h-4 w-4" /> Add property
         </button>
       </PageHeader>
@@ -68,7 +68,7 @@ function Properties() {
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {filtered.map((p) => (
             <Link key={p.id} to="/app/properties/$id" params={{ id: p.id }} className="group overflow-hidden rounded-3xl border border-border bg-card transition-all hover:-translate-y-1 hover:shadow-elegant">
-              <div className={`relative aspect-[4/3] bg-gradient-to-br ${p.gradient}`}>
+              <div className={`relative aspect-[4/3] bg-${p.gradient}`}>
                 <div className="absolute inset-0 grid-bg opacity-40" />
                 <div className="absolute left-4 top-4">
                   <Badge variant={p.status === "Active" ? "emerald" : p.status === "Maintenance" ? "warn" : "muted"}>{p.status}</Badge>
@@ -122,7 +122,7 @@ function Properties() {
                 <tr key={p.id} className="border-b border-border last:border-0 hover:bg-secondary/30">
                   <td className="px-5 py-4">
                     <Link to="/app/properties/$id" params={{ id: p.id }} className="flex items-center gap-3">
-                      <div className={`h-10 w-10 rounded-xl bg-gradient-to-br ${p.gradient}`} />
+                      <div className={`h-10 w-10 rounded-xl bg-${p.gradient}`} />
                       <span className="font-semibold">{p.name}</span>
                     </Link>
                   </td>

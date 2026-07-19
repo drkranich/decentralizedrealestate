@@ -128,7 +128,7 @@ function Investor() {
           ))}
         </div>
         <button className="rounded-full border border-border bg-card px-4 py-2 text-sm font-medium hover:bg-secondary">Withdraw</button>
-        <button className="rounded-full bg-gradient-to-r from-emerald to-emerald-glow px-4 py-2 text-sm font-semibold text-white shadow-glow">Invest more</button>
+        <button className="rounded-full bg-emerald px-4 py-2 text-sm font-semibold text-white shadow-glow">Invest more</button>
       </PageHeader>
 
       {/* Hero KPIs */}
@@ -253,7 +253,7 @@ function Investor() {
                     <span className="font-mono text-xs text-muted-foreground">{g.v}%</span>
                   </div>
                   <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-muted">
-                    <div className="h-full rounded-full bg-gradient-to-r from-emerald to-skyblue" style={{ width: `${g.v * 2.6}%` }} />
+                    <div className="h-full rounded-full bg-emerald" style={{ width: `${g.v * 2.6}%` }} />
                   </div>
                 </div>
               </div>
@@ -370,7 +370,7 @@ function Investor() {
                   <Badge variant="emerald">{o.apy}% APY</Badge>
                 </div>
                 <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-background">
-                  <div className="h-full rounded-full bg-gradient-to-r from-emerald to-emerald-glow" style={{ width: `${o.raised}%` }} />
+                  <div className="h-full rounded-full bg-emerald" style={{ width: `${o.raised}%` }} />
                 </div>
                 <div className="mt-2 flex items-center justify-between text-[11px] text-muted-foreground">
                   <span>{o.raised}% raised · min {fmt(o.min, ccy)}</span>
@@ -397,7 +397,7 @@ function Investor() {
               { i: Shield, who: "Custodian", what: "Rebalanced risk allocation", t: "3h ago", v: "muted" as const },
             ].map((a, i) => (
               <div key={i} className="flex items-start gap-3 rounded-2xl border border-border/40 p-3">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-emerald/15 to-skyblue/15">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald/15">
                   <a.i className="h-4 w-4 text-emerald" />
                 </div>
                 <div className="min-w-0 flex-1">

@@ -61,7 +61,7 @@ function CalendarPage() {
             return (
               <div key={p.id} className="grid grid-cols-[200px_repeat(30,minmax(28px,1fr))] border-b border-border last:border-0">
                 <div className="flex items-center gap-2 px-4 py-2 text-xs">
-                  <div className={`h-7 w-7 shrink-0 rounded-lg bg-gradient-to-br ${p.gradient}`} />
+                  <div className={`h-7 w-7 shrink-0 rounded-lg bg-${p.gradient}`} />
                   <div className="min-w-0">
                     <div className="truncate font-semibold">{p.name}</div>
                     <div className="text-[10px] text-muted-foreground">{p.city}</div>

@@ -14,7 +14,7 @@ export function Hero() {
     <section className="relative min-h-screen overflow-hidden pt-28 pb-20">
       <div className="absolute inset-0 -z-10">
         <img src={heroImg} alt="Futuristic city skyline" width={1920} height={1080} className="h-full w-full object-cover opacity-90" />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/60 to-background" />
+        <div className="absolute inset-0 bg-background/40" />
         <div className="absolute inset-0 grid-bg opacity-30" />
       </div>
 
@@ -37,7 +37,7 @@ export function Hero() {
             className="mt-6 font-display text-5xl font-bold leading-[1.05] tracking-tight md:text-7xl"
           >
             Own, host & invest in{" "}
-            <span className="gradient-text">real estate</span>{" "}
+            <span className="text-emerald">real estate</span>{" "}
             without borders.
           </motion.h1>
 
@@ -64,7 +64,7 @@ export function Hero() {
                   placeholder="Lisbon, Tokyo, NYC, Bali…"
                 />
               </div>
-              <Button className="rounded-full bg-gradient-to-r from-emerald to-emerald-glow px-5 shadow-glow">
+              <Button className="rounded-full bg-emerald px-5 shadow-glow">
                 <Search className="h-4 w-4" />
                 Search
               </Button>
@@ -90,7 +90,7 @@ export function Hero() {
               style={{ animationDelay: `${s.delay}s` }}
             >
               <div className="flex items-center gap-3 rounded-2xl glass-strong px-5 py-3 shadow-soft">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald/20 to-skyblue/20">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald/20">
                   <s.icon className="h-5 w-5 text-emerald" />
                 </div>
                 <div className="text-left">

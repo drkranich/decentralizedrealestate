@@ -71,7 +71,7 @@ function AICenter() {
       <PageHeader title="AI Automation Center" subtitle={`${brand.name} intelligence layer · learning from every transaction.`}>
         <Badge variant="emerald"><span className="mr-1 inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-emerald" /> Online</Badge>
         <button className="rounded-full border border-border bg-card px-4 py-2 text-sm font-medium hover:bg-secondary">Models</button>
-        <button className="rounded-full bg-gradient-to-r from-emerald to-skyblue px-4 py-2 text-sm font-semibold text-white shadow-glow">Train</button>
+        <button className="rounded-full bg-emerald px-4 py-2 text-sm font-semibold text-white shadow-glow">Train</button>
       </PageHeader>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
@@ -86,7 +86,7 @@ function AICenter() {
         <Card className="lg:col-span-2 flex flex-col">
           <div className="mb-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald to-skyblue shadow-glow">
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald shadow-glow">
                 <Bot className="h-5 w-5 text-white" />
               </div>
               <div>
@@ -124,7 +124,7 @@ function AICenter() {
                 className="w-full bg-transparent text-sm placeholder:text-muted-foreground focus:outline-none"
               />
             </div>
-            <button onClick={send} className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-emerald to-skyblue text-white shadow-glow hover:opacity-90">
+            <button onClick={send} className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald text-white shadow-glow hover:opacity-90">
               <Send className="h-4 w-4" />
             </button>
           </div>
@@ -141,7 +141,7 @@ function AICenter() {
             {insights.map((r, i) => (
               <div key={i} className="rounded-2xl border border-border/60 bg-secondary/20 p-3">
                 <div className="flex items-start gap-3">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-emerald/15 to-skyblue/15">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald/15">
                     <r.i className="h-4 w-4 text-emerald" />
                   </div>
                   <div className="min-w-0 flex-1">
@@ -216,7 +216,7 @@ function AICenter() {
               <div key={m.l}>
                 <div className="flex justify-between"><span className="text-muted-foreground">{m.l}</span><span className="font-mono font-semibold">{m.v}%</span></div>
                 <div className="mt-1 h-1 overflow-hidden rounded-full bg-muted">
-                  <div className="h-full rounded-full bg-gradient-to-r from-emerald to-skyblue" style={{ width: `${m.v}%` }} />
+                  <div className="h-full rounded-full bg-emerald" style={{ width: `${m.v}%` }} />
                 </div>
               </div>
             ))}
@@ -231,7 +231,7 @@ function AICenter() {
           <div className="space-y-3">
             {tenants.map((t) => (
               <div key={t.n} className="flex items-center gap-3 rounded-2xl border border-border/40 p-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-emerald to-skyblue text-xs font-bold text-white">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald text-xs font-bold text-white">
                   {t.n.split(" ").map((p) => p[0]).join("")}
                 </div>
                 <div className="min-w-0 flex-1">
@@ -303,7 +303,7 @@ function AICenter() {
                   </div>
                 </div>
                 <div className="mt-2 h-1 overflow-hidden rounded-full bg-muted">
-                  <div className="h-full rounded-full bg-gradient-to-r from-emerald to-skyblue" style={{ width: `${m.conf}%` }} />
+                  <div className="h-full rounded-full bg-emerald" style={{ width: `${m.conf}%` }} />
                 </div>
               </div>
             ))}
@@ -321,7 +321,7 @@ function AICenter() {
           <div className="space-y-2">
             {workflows.map((w, i) => (
               <div key={i} className="flex items-center gap-3 rounded-2xl border border-border/40 bg-secondary/20 p-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-emerald/15 to-skyblue/15">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald/15">
                   <Workflow className="h-4 w-4 text-emerald" />
                 </div>
                 <div className="min-w-0 flex-1">
@@ -339,7 +339,7 @@ function AICenter() {
 
         <Card>
           <SectionTitle title="Pricing AI" action={<DollarSign className="h-4 w-4 text-emerald" />} />
-          <div className="rounded-2xl border border-emerald/20 bg-gradient-to-br from-emerald/10 to-skyblue/5 p-4">
+          <div className="rounded-2xl border border-emerald/20 bg-emerald/10 p-4">
             <div className="text-xs uppercase tracking-wide text-emerald">Today's net uplift</div>
             <div className="mt-1 font-display text-3xl font-bold">+$3,820</div>
             <div className="text-xs text-muted-foreground">Across 12 active properties</div>
@@ -372,7 +372,7 @@ function AICenter() {
             { t: "Token-holder distribution", d: "Quarterly dividend smart contract", icon: FileSignature },
           ].map((c) => (
             <div key={c.t} className="group rounded-2xl border border-border/60 bg-secondary/20 p-4 transition hover:-translate-y-0.5 hover:border-emerald/40 hover:shadow-glow">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald to-skyblue text-white">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald text-white">
                 <c.icon className="h-5 w-5" />
               </div>
               <div className="mt-3 text-sm font-semibold">{c.t}</div>

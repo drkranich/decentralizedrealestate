@@ -156,7 +156,7 @@ export function AppSidebar() {
           <div className="px-2 pb-2">
             <button className="flex w-full items-center justify-between rounded-xl border border-border bg-secondary/50 px-2.5 py-2 text-xs hover:bg-secondary">
               <div className="flex items-center gap-2 min-w-0">
-                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-emerald to-skyblue text-[10px] font-bold text-white">
+                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-emerald text-[10px] font-bold text-white">
                   {brand.shortName}
                 </div>
                 <div className="text-left min-w-0">
@@ -227,7 +227,7 @@ export function AppSidebar() {
         })}
 
         {!collapsed && (
-          <div className="m-3 rounded-2xl bg-gradient-to-br from-emerald/15 to-skyblue/15 p-4">
+          <div className="m-3 rounded-2xl bg-emerald/15 p-4">
             <div className="font-display text-sm font-semibold">Upgrade to Pro</div>
             <div className="mt-1 text-xs text-muted-foreground">Unlimited AI pricing & contracts.</div>
             <button className="mt-3 w-full rounded-full bg-foreground py-2 text-xs font-semibold text-background">Upgrade</button>

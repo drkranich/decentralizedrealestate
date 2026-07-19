@@ -170,7 +170,7 @@ function Dashboard() {
         </Card>
 
         <Card className="relative overflow-hidden">
-          <div className="absolute -right-16 -top-16 h-44 w-44 rounded-full bg-gradient-to-br from-emerald/20 to-skyblue/20 blur-3xl" />
+          <div className="absolute -right-16 -top-16 h-44 w-44 rounded-full bg-emerald/20 blur-3xl" />
           <SectionTitle
             title="AI insights"
             action={<span className="flex items-center gap-1 text-xs text-emerald"><Sparkles className="h-3.5 w-3.5" /> Live</span>}
@@ -179,7 +179,7 @@ function Dashboard() {
             {aiInsights.map((a, i) => (
               <div key={i} className="rounded-2xl border border-border/60 bg-background/60 p-3 backdrop-blur">
                 <div className="flex items-start gap-3">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-emerald to-skyblue text-white">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald text-white">
                     <a.icon className="h-4 w-4" />
                   </div>
                   <div className="min-w-0 flex-1">
@@ -232,7 +232,7 @@ function Dashboard() {
                 </div>
                 <div className="mt-1 text-xs text-muted-foreground">€{s.from} → <span className="font-semibold text-foreground">€{s.to}</span> · {s.conf}% confidence</div>
                 <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
-                  <div className="h-full rounded-full bg-gradient-to-r from-emerald to-skyblue" style={{ width: `${s.conf}%` }} />
+                  <div className="h-full rounded-full bg-emerald" style={{ width: `${s.conf}%` }} />
                 </div>
               </div>
             ))}
@@ -273,7 +273,7 @@ function Dashboard() {
           <div className="space-y-3">
             {tenantRequests.map((r, i) => (
               <div key={i} className="flex items-start gap-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-skyblue to-emerald text-xs font-bold text-white">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-skyblue text-xs font-bold text-white">
                   {r.who.split(" ").map((n) => n[0]).join("")}
                 </div>
                 <div className="min-w-0 flex-1">
@@ -338,7 +338,7 @@ function Dashboard() {
                 to="/app/marketplace"
                 className="group rounded-2xl border border-border/60 bg-secondary/30 p-4 transition-all hover:-translate-y-0.5 hover:border-emerald/50 hover:shadow-glow"
               >
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald/15 to-skyblue/15">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald/15">
                   <s.icon className="h-5 w-5 text-emerald" />
                 </div>
                 <div className="mt-3 text-sm font-semibold">{s.label}</div>

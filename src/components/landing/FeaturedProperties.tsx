@@ -3,12 +3,12 @@ import { Heart, Star, TrendingUp, Users } from "lucide-react";
 import { useState } from "react";
 
 const properties = [
-  { city: "Lisbon", country: "Portugal", price: "€2,450", roi: 14.2, income: "€3,200", occ: 92, rating: 4.9, gradient: "from-emerald/40 to-skyblue/30" },
-  { city: "Tokyo", country: "Japan", price: "¥320,000", roi: 11.8, income: "¥480k", occ: 88, rating: 4.8, gradient: "from-skyblue/40 to-emerald/30" },
-  { city: "Tulum", country: "Mexico", price: "$1,850", roi: 16.5, income: "$2,900", occ: 95, rating: 5.0, gradient: "from-emerald-glow/50 to-emerald/20" },
-  { city: "Dubai", country: "UAE", price: "AED 8,200", roi: 13.1, income: "AED 12k", occ: 90, rating: 4.9, gradient: "from-silver/40 to-skyblue/30" },
-  { city: "Barcelona", country: "Spain", price: "€2,100", roi: 12.4, income: "€2,750", occ: 89, rating: 4.7, gradient: "from-skyblue/40 to-emerald-glow/30" },
-  { city: "Bali", country: "Indonesia", price: "$1,250", roi: 17.8, income: "$2,100", occ: 94, rating: 4.9, gradient: "from-emerald/50 to-skyblue/20" },
+  { city: "Lisbon", country: "Portugal", price: "€2,450", roi: 14.2, income: "€3,200", occ: 92, rating: 4.9, gradient: "emerald/40" },
+  { city: "Tokyo", country: "Japan", price: "¥320,000", roi: 11.8, income: "¥480k", occ: 88, rating: 4.8, gradient: "skyblue/40" },
+  { city: "Tulum", country: "Mexico", price: "$1,850", roi: 16.5, income: "$2,900", occ: 95, rating: 5.0, gradient: "emerald-glow/50" },
+  { city: "Dubai", country: "UAE", price: "AED 8,200", roi: 13.1, income: "AED 12k", occ: 90, rating: 4.9, gradient: "silver/40" },
+  { city: "Barcelona", country: "Spain", price: "€2,100", roi: 12.4, income: "€2,750", occ: 89, rating: 4.7, gradient: "skyblue/40" },
+  { city: "Bali", country: "Indonesia", price: "$1,250", roi: 17.8, income: "$2,100", occ: 94, rating: 4.9, gradient: "emerald/50" },
 ];
 
 export function FeaturedProperties() {
@@ -42,7 +42,7 @@ export function FeaturedProperties() {
               transition={{ duration: 0.5, delay: i * 0.05 }}
               className="group overflow-hidden rounded-3xl border border-border bg-card shadow-soft transition-all hover:-translate-y-1 hover:shadow-elegant"
             >
-              <div className={`relative aspect-[4/3] overflow-hidden bg-gradient-to-br ${p.gradient}`}>
+              <div className={`relative aspect-[4/3] overflow-hidden bg-${p.gradient}`}>
                 <div className="absolute inset-0 grid-bg opacity-40" />
                 <button
                   onClick={() => toggle(i)}

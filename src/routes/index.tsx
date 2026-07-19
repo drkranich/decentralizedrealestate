@@ -24,7 +24,7 @@ function Index() {
       <div className="flex justify-center">
         <Link
           to="/app/dashboard"
-          className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald to-skyblue px-6 py-3 text-sm font-semibold text-white shadow-glow transition-transform hover:scale-105"
+          className="inline-flex items-center gap-2 rounded-full bg-emerald px-6 py-3 text-sm font-semibold text-white shadow-glow transition-transform hover:scale-105"
         >
           Open the live app demo <ArrowRight className="h-4 w-4" />
         </Link>

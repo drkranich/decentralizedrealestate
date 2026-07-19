@@ -43,7 +43,7 @@ function PropertyDetails() {
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <div className={`relative aspect-[16/10] overflow-hidden rounded-3xl bg-gradient-to-br ${property.gradient}`}>
+          <div className={`relative aspect-[16/10] overflow-hidden rounded-3xl bg-${property.gradient}`}>
             <div className="absolute inset-0 grid-bg opacity-40" />
             <div className="absolute right-4 top-4 flex gap-2">
               <button className="flex h-9 w-9 items-center justify-center rounded-full glass-strong"><Heart className="h-4 w-4" /></button>
@@ -97,7 +97,7 @@ function PropertyDetails() {
                 <Card>
                   <div className="mb-3 flex items-center justify-between">
                     <h2 className="font-display text-lg font-semibold">Description</h2>
-                    <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-emerald/15 to-skyblue/15 px-2.5 py-1 text-[10px] font-semibold text-emerald">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald/15 px-2.5 py-1 text-[10px] font-semibold text-emerald">
                       <Sparkles className="h-3 w-3" /> AI generated
                     </span>
                   </div>
@@ -124,7 +124,7 @@ function PropertyDetails() {
 
                 <Card>
                   <SectionTitle title="Location" />
-                  <div className="relative h-72 overflow-hidden rounded-2xl bg-gradient-to-br from-skyblue/20 via-emerald/10 to-emerald-glow/20">
+                  <div className="relative h-72 overflow-hidden rounded-2xl bg-emerald/10">
                     <div className="absolute inset-0 grid-bg opacity-30" />
                     <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
                       <div className="relative">
@@ -289,7 +289,7 @@ function PropertyDetails() {
                   ].map((b, i) => (
                     <div key={i} className="flex items-center justify-between rounded-2xl border border-border/50 bg-secondary/30 p-4">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-emerald to-skyblue text-xs font-bold text-white">{b.g}</div>
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald text-xs font-bold text-white">{b.g}</div>
                         <div>
                           <div className="font-semibold">{b.n}</div>
                           <div className="text-xs text-muted-foreground">{b.d}</div>
@@ -322,7 +322,7 @@ function PropertyDetails() {
           </Card>
 
           <Card>
-            <button onClick={() => setShowBook(true)} className="w-full rounded-full bg-gradient-to-r from-emerald to-emerald-glow py-3 text-sm font-semibold text-white shadow-glow">Book a stay</button>
+            <button onClick={() => setShowBook(true)} className="w-full rounded-full bg-emerald py-3 text-sm font-semibold text-white shadow-glow">Book a stay</button>
             <button className="mt-2 flex w-full items-center justify-center gap-2 rounded-full border border-border py-3 text-sm font-medium hover:bg-secondary">
               <MessageSquare className="h-4 w-4" /> Message host
             </button>
@@ -370,7 +370,7 @@ function PropertyDetails() {
 
       {show3d && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 animate-in fade-in" onClick={() => setShow3d(false)}>
-          <div className="relative aspect-video w-full max-w-4xl overflow-hidden rounded-3xl bg-gradient-to-br from-emerald/40 via-skyblue/30 to-emerald-glow/40 shadow-elegant" onClick={(e) => e.stopPropagation()}>
+          <div className="relative aspect-video w-full max-w-4xl overflow-hidden rounded-3xl bg-skyblue/30 shadow-elegant" onClick={(e) => e.stopPropagation()}>
             <div className="absolute inset-0 grid-bg opacity-40" />
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-center">
               <div className="flex h-16 w-16 items-center justify-center rounded-2xl glass-strong">

@@ -39,7 +39,7 @@ function CRM() {
         <button className="flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm hover:bg-secondary">
           <Filter className="h-4 w-4" /> Filter
         </button>
-        <button className="flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald to-emerald-glow px-4 py-2 text-sm font-semibold text-white shadow-glow">
+        <button className="flex items-center gap-2 rounded-full bg-emerald px-4 py-2 text-sm font-semibold text-white shadow-glow">
           <Plus className="h-4 w-4" /> New lead
         </button>
       </PageHeader>
@@ -62,7 +62,7 @@ function CRM() {
               {board[s].map((l) => (
                 <div key={l.id} className="cursor-pointer rounded-2xl border border-border/50 bg-secondary/30 p-3 transition-all hover:border-emerald/40 hover:shadow-soft">
                   <div className="flex items-center gap-2">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-emerald to-skyblue text-[10px] font-bold text-white">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald text-[10px] font-bold text-white">
                       {l.name.split(" ").map((n) => n[0]).join("")}
                     </div>
                     <div className="min-w-0 flex-1">

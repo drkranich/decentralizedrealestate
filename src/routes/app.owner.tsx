@@ -52,7 +52,7 @@ function OwnerHub() {
               { n: "James P.", p: "NYC Studio", d: "Dec 20" },
             ].map((b, i) => (
               <div key={i} className="flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald/20 to-skyblue/20">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald/20">
                   <Calendar className="h-4 w-4 text-emerald" />
                 </div>
                 <div className="flex-1">
@@ -100,7 +100,7 @@ function OwnerHub() {
                 <div className="flex-1">
                   <div className="text-sm font-semibold">{p.p}</div>
                   <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-secondary">
-                    <div className="h-full rounded-full bg-gradient-to-r from-emerald to-emerald-glow" style={{ width: `${p.occ}%` }} />
+                    <div className="h-full rounded-full bg-emerald" style={{ width: `${p.occ}%` }} />
                   </div>
                 </div>
                 <div className="text-right">

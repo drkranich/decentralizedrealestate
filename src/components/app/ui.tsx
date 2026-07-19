@@ -22,11 +22,10 @@ export function PageHeader({ title, subtitle, children }: { title: string; subti
 
 export function StatCard({
   label, value, change, icon: Icon, accent = "emerald", delay = 0,
-}: { label: string; value: string; change?: string; icon: any; accent?: "emerald" | "skyblue" | "gold"; delay?: number }) {
+}: { label: string; value: string; change?: string; icon: any; accent?: "emerald" | "skyblue"; delay?: number }) {
   const accentClass =
-    accent === "emerald" ? "from-emerald/15 to-emerald-glow/15 text-emerald"
-    : accent === "gold" ? "from-gold/20 to-emerald/10 text-gold"
-    : "from-skyblue/15 to-emerald/15 text-skyblue";
+    accent === "emerald" ? "bg-emerald/15 text-emerald"
+    : "bg-skyblue/15 text-skyblue";
   return (
     <motion.div
       initial={{ opacity: 0, y: 14 }}
@@ -36,11 +35,11 @@ export function StatCard({
       whileHover={{ y: -3 }}
       className="group relative overflow-hidden rounded-3xl border border-white/10 bg-card/60 p-5 shadow-soft backdrop-blur-xl transition-colors duration-300 hover:border-emerald/30 hover:shadow-elegant"
     >
-      <div className="pointer-events-none absolute inset-0 opacity-70" style={{ backgroundImage: "var(--gradient-glass)" }} />
+      <div className="pointer-events-none absolute inset-0 bg-glass-tint opacity-70" />
       <div className="relative">
         <div className="flex items-center justify-between">
           <span className="text-xs uppercase tracking-wide text-muted-foreground">{label}</span>
-          <div className={`flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br transition-transform duration-300 group-hover:scale-110 ${accentClass}`}>
+          <div className={`flex h-9 w-9 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 ${accentClass}`}>
             <Icon className="h-4 w-4" />
           </div>
         </div>
@@ -60,7 +59,7 @@ export function Card({ children, className = "" }: { children: ReactNode; classN
       transition={{ duration: 0.45, ease: "easeOut" }}
       className={`group relative overflow-hidden rounded-3xl border border-white/10 bg-card/60 p-6 shadow-soft backdrop-blur-xl transition-all duration-300 hover:border-emerald/20 hover:shadow-elegant ${className}`}
     >
-      <div className="pointer-events-none absolute inset-0 opacity-60" style={{ backgroundImage: "var(--gradient-glass)" }} />
+      <div className="pointer-events-none absolute inset-0 bg-glass-tint opacity-60" />
       <div className="relative">{children}</div>
     </motion.div>
   );
@@ -75,12 +74,11 @@ export function SectionTitle({ title, action }: { title: string; action?: ReactN
   );
 }
 
-export function Badge({ children, variant = "default" }: { children: ReactNode; variant?: "default" | "emerald" | "blue" | "gold" | "warn" | "muted" }) {
+export function Badge({ children, variant = "default" }: { children: ReactNode; variant?: "default" | "emerald" | "blue" | "warn" | "muted" }) {
   const map = {
     default: "bg-secondary/70 text-foreground backdrop-blur-sm",
     emerald: "bg-emerald/10 text-emerald backdrop-blur-sm",
     blue: "bg-skyblue/15 text-skyblue backdrop-blur-sm",
-    gold: "bg-gold/15 text-gold backdrop-blur-sm",
     warn: "bg-destructive/15 text-destructive backdrop-blur-sm",
     muted: "bg-muted/70 text-muted-foreground backdrop-blur-sm",
   };

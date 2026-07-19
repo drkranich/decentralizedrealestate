@@ -21,7 +21,7 @@ export function LogoMark({ size = "md", className, glow = true }: { size?: Size;
     <div
       className={cn(
         s.box,
-        "flex items-center justify-center bg-gradient-to-br from-primary to-accent text-primary-foreground",
+        "flex items-center justify-center bg-primary text-primary-foreground",
         glow && "shadow-glow",
         className
       )}
@@ -37,7 +37,7 @@ export function BrandName({ className }: { className?: string }) {
     return (
       <span className={cn("font-display font-bold tracking-tight", className)}>
         {brand.nameParts.plain}
-        <span className="gradient-text">{brand.nameParts.accent}</span>
+        <span className="text-emerald">{brand.nameParts.accent}</span>
       </span>
     );
   }

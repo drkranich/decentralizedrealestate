@@ -33,7 +33,7 @@ function Contracts() {
         <button className="flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm hover:bg-secondary">
           <Download className="h-4 w-4" /> Export
         </button>
-        <button onClick={() => setShowNew(true)} className="flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald to-emerald-glow px-4 py-2 text-sm font-semibold text-white shadow-glow">
+        <button onClick={() => setShowNew(true)} className="flex items-center gap-2 rounded-full bg-emerald px-4 py-2 text-sm font-semibold text-white shadow-glow">
           <Plus className="h-4 w-4" /> New contract
         </button>
       </PageHeader>

@@ -13,7 +13,7 @@ export function AI() {
   const brand = useBrand();
   return (
     <section id="ai" className="relative overflow-hidden py-24">
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-transparent via-skyblue/5 to-transparent" />
+      <div className="absolute inset-0 -z-10 bg-skyblue/5" />
       <div className="absolute inset-0 -z-10 grid-bg opacity-30" />
       <div className="mx-auto max-w-7xl px-4">
         <div className="grid items-center gap-12 lg:grid-cols-2">
@@ -22,7 +22,7 @@ export function AI() {
               <Sparkles className="h-3.5 w-3.5 text-emerald" />
               Powered by AI
             </div>
-            <h2 className="mt-4 font-display text-4xl font-bold md:text-5xl">Intelligence at <span className="gradient-text">every layer</span></h2>
+            <h2 className="mt-4 font-display text-4xl font-bold md:text-5xl">Intelligence at <span className="text-emerald">every layer</span></h2>
             <p className="mt-4 text-muted-foreground">{brand.name} embeds proprietary models across pricing, risk, recommendation and operations — so the platform learns and improves with every transaction.</p>
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
@@ -52,7 +52,7 @@ export function AI() {
           >
             <div className="rounded-3xl glass-strong p-6 shadow-elegant">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald to-skyblue shadow-glow">
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald shadow-glow">
                   <Bot className="h-5 w-5 text-white" />
                 </div>
                 <div>
@@ -77,7 +77,7 @@ export function AI() {
                 </div>
               </div>
             </div>
-            <div className="absolute -inset-4 -z-10 rounded-3xl bg-gradient-to-br from-emerald/20 to-skyblue/20 blur-3xl" />
+            <div className="absolute -inset-4 -z-10 rounded-3xl bg-emerald/20 blur-3xl" />
           </motion.div>
         </div>
       </div>

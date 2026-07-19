@@ -16,7 +16,7 @@ function ComingSoon() {
     <>
       <PageHeader title={page} subtitle={section} />
       <Card className="flex flex-col items-center justify-center gap-4 py-16 text-center">
-        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald to-skyblue shadow-glow">
+        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald shadow-glow">
           <Sparkles className="h-6 w-6 text-white" />
         </div>
         <h2 className="font-display text-2xl font-bold">{page} — coming soon</h2>
