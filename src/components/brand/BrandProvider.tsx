@@ -14,13 +14,18 @@ export function BrandProvider({ brand, children }: Props) {
   // Global, DB-backed overrides (logo/favicon) set by the super admin in
   // /admin/settings → Branding. Applies platform-wide, to every visitor,
   // regardless of role or auth state.
-  const [globalOverride, setGlobalOverride] = useState<{ logo_url?: string | null; favicon_url?: string | null }>({});
+  const [globalOverride, setGlobalOverride] = useState<{
+    logo_url?: string | null;
+    favicon_url?: string | null;
+    brand_name?: string | null;
+    hero_image_url?: string | null;
+  }>({});
 
   useEffect(() => {
     let cancelled = false;
     supabase
       .from("app_settings")
-      .select("logo_url, favicon_url")
+      .select("logo_url, favicon_url, brand_name, hero_image_url")
       .eq("id", true)
       .maybeSingle()
       .then(({ data }) => {
@@ -47,8 +52,11 @@ export function BrandProvider({ brand, children }: Props) {
           legal: { ...defaultBrand.legal, ...(brand.legal ?? {}) },
         };
 
-    if (!globalOverride.logo_url) return base;
-    return { ...base, logo: { ...base.logo, src: globalOverride.logo_url } };
+    return {
+      ...base,
+      name: globalOverride.brand_name || base.name,
+      logo: globalOverride.logo_url ? { ...base.logo, src: globalOverride.logo_url } : base.logo,
+    };
   }, [brand, globalOverride]);
 
   // Inject brand tokens into CSS variables so Tailwind utilities (bg-primary,
@@ -86,3 +94,28 @@ export function BrandProvider({ brand, children }: Props) {
 
   return <BrandContext.Provider value={value}>{children}</BrandContext.Provider>;
 }
+
+/**
+ * Public-site cover image (Hero background), set by the super admin in
+ * /admin/settings → Branding. Falls back to the bundled default image when
+ * no override has been uploaded yet.
+ */
+export function useHeroImageUrl(): string | null {
+  const [url, setUrl] = useState<string | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    supabase
+      .from("app_settings")
+      .select("hero_image_url")
+      .eq("id", true)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (!cancelled) setUrl(data?.hero_image_url ?? null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+  return url;
+}
+

@@ -2,6 +2,7 @@ import { Search, MapPin, Sparkles, TrendingUp, Globe2, Home } from "lucide-react
 import { Button } from "@/components/ui/button";
 import heroImg from "@/assets/hero.jpg";
 import { usePublicContent } from "@/lib/siteContent";
+import { useHeroImageUrl } from "@/components/brand/BrandProvider";
 
 const statIcons = [Home, TrendingUp, Globe2];
 const statPositions = [
@@ -26,6 +27,7 @@ const heroDefaults = {
 
 export function Hero() {
   const c = usePublicContent("hero", heroDefaults);
+  const heroImageOverride = useHeroImageUrl();
   const stats = [
     { label: c.stat1_label, value: c.stat1_value },
     { label: c.stat2_label, value: c.stat2_value },
@@ -34,7 +36,7 @@ export function Hero() {
   return (
     <section className="relative min-h-screen overflow-hidden pt-28 pb-20">
       <div className="absolute inset-0 -z-10">
-        <img src={heroImg} alt="Futuristic city skyline" width={1920} height={1080} className="h-full w-full object-cover opacity-90" />
+        <img src={heroImageOverride || heroImg} alt="Futuristic city skyline" width={1920} height={1080} className="h-full w-full object-cover opacity-90" />
         <div className="absolute inset-0 bg-background/75" />
         <div className="absolute inset-0 grid-bg opacity-30" />
       </div>

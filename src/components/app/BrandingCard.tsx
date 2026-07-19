@@ -9,38 +9,60 @@ export function BrandingCard() {
   const brand = useBrand();
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [faviconUrl, setFaviconUrl] = useState<string | null>(null);
+  const [heroImageUrl, setHeroImageUrl] = useState<string | null>(null);
+  const [brandName, setBrandName] = useState("");
   const [loading, setLoading] = useState(true);
+  const [savingName, setSavingName] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [uploadingFavicon, setUploadingFavicon] = useState(false);
+  const [uploadingHero, setUploadingHero] = useState(false);
   const logoInputRef = useRef<HTMLInputElement>(null);
   const faviconInputRef = useRef<HTMLInputElement>(null);
+  const heroInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     supabase
       .from("app_settings")
-      .select("logo_url, favicon_url")
+      .select("logo_url, favicon_url, brand_name, hero_image_url")
       .eq("id", true)
       .maybeSingle()
       .then(({ data }) => {
         setLogoUrl(data?.logo_url ?? null);
         setFaviconUrl(data?.favicon_url ?? null);
+        setHeroImageUrl(data?.hero_image_url ?? null);
+        setBrandName(data?.brand_name ?? "");
         setLoading(false);
       });
   }, []);
 
+  const saveName = async () => {
+    setSavingName(true);
+    const { error } = await supabase
+      .from("app_settings")
+      .update({ brand_name: brandName.trim() || null, updated_at: new Date().toISOString() })
+      .eq("id", true);
+    setSavingName(false);
+    if (error) {
+      toast.error(error.message || "Não foi possível salvar o nome.");
+      return;
+    }
+    toast.success("Nome da plataforma atualizado para toda a plataforma.");
+  };
+
   const upload = async (
     file: File,
-    kind: "logo" | "favicon",
+    kind: "logo" | "favicon" | "hero",
     setUploading: (v: boolean) => void,
     setUrl: (v: string) => void,
-    column: "logo_url" | "favicon_url"
+    column: "logo_url" | "favicon_url" | "hero_image_url",
+    maxMb = 2
   ) => {
     if (!file.type.startsWith("image/")) {
       toast.error("Selecione um arquivo de imagem.");
       return;
     }
-    if (file.size > 2 * 1024 * 1024) {
-      toast.error("A imagem deve ter no máximo 2MB.");
+    if (file.size > maxMb * 1024 * 1024) {
+      toast.error(`A imagem deve ter no máximo ${maxMb}MB.`);
       return;
     }
     setUploading(true);
@@ -66,7 +88,8 @@ export function BrandingCard() {
       return;
     }
     setUrl(cacheBustedUrl);
-    toast.success(kind === "logo" ? "Logo atualizado para toda a plataforma." : "Favicon atualizado para toda a plataforma.");
+    const labels = { logo: "Logo", favicon: "Favicon", hero: "Imagem de capa" };
+    toast.success(`${labels[kind]} atualizado(a) para toda a plataforma.`);
   };
 
   if (loading) {
@@ -79,7 +102,7 @@ export function BrandingCard() {
 
   return (
     <Card>
-      <SectionTitle title="Marca (logo e favicon)" />
+      <SectionTitle title="Marca (nome, logo, favicon e capa)" />
       <p className="mb-6 -mt-2 text-xs text-muted-foreground">
         Alterações aqui valem para toda a plataforma — admin, painel de donos/inquilinos e site público.
       </p>
@@ -154,9 +177,59 @@ export function BrandingCard() {
         </div>
       </div>
 
-      <p className="mt-6 text-xs text-muted-foreground">
-        Nome atual da plataforma: <span className="font-medium text-foreground">{brand.name}</span>
-      </p>
+      <div className="mt-6">
+        <label className="text-xs font-medium text-muted-foreground">Imagem de capa (Hero da página pública)</label>
+        <div className="mt-2 flex items-center gap-4">
+          <div className="flex h-16 w-28 items-center justify-center overflow-hidden rounded-2xl border border-glass-border bg-glass-fill">
+            {heroImageUrl ? (
+              <img src={heroImageUrl} alt="Capa" className="h-full w-full object-cover" />
+            ) : (
+              <ImageIcon className="h-6 w-6 text-muted-foreground" />
+            )}
+          </div>
+          <div>
+            <button
+              onClick={() => heroInputRef.current?.click()}
+              disabled={uploadingHero}
+              className="rounded-xl border border-glass-border bg-glass-fill px-4 py-2 text-sm font-medium backdrop-blur-sm disabled:opacity-50"
+            >
+              {uploadingHero ? <Loader2 className="h-4 w-4 animate-spin" /> : "Enviar imagem de capa"}
+            </button>
+            <p className="mt-1 text-xs text-muted-foreground">Paisagem, JPG/PNG, até 8MB. Aparece atrás do título na página inicial.</p>
+          </div>
+        </div>
+        <input
+          ref={heroInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            if (f) upload(f, "hero", setUploadingHero, setHeroImageUrl, "hero_image_url", 8);
+            e.target.value = "";
+          }}
+        />
+      </div>
+
+      <div className="mt-6">
+        <label className="text-xs font-medium text-muted-foreground">Nome da plataforma</label>
+        <div className="mt-2 flex max-w-md items-center gap-2">
+          <input
+            value={brandName}
+            onChange={(e) => setBrandName(e.target.value)}
+            placeholder={brand.name}
+            className="w-full rounded-xl border border-glass-border bg-glass-fill p-2.5 text-sm outline-none focus:border-emerald/40"
+          />
+          <button
+            onClick={saveName}
+            disabled={savingName}
+            className="shrink-0 rounded-xl bg-emerald px-4 py-2.5 text-sm font-semibold text-white shadow-glow disabled:opacity-60"
+          >
+            {savingName ? <Loader2 className="h-4 w-4 animate-spin" /> : "Salvar"}
+          </button>
+        </div>
+        <p className="mt-1 text-xs text-muted-foreground">Aparece no logo, título da aba e em toda a página pública.</p>
+      </div>
     </Card>
   );
 }
