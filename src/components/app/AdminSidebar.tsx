@@ -58,18 +58,18 @@ const groups: Group[] = [
     items: [
       { title: "Revenue", icon: TrendingUp, to: "/admin/finance", section: "Financial" },
       { title: "Transactions", icon: ArrowLeftRight, to: "/admin/transactions", section: "Financial" },
-      { title: "Payouts", icon: Banknote, section: "Financial" },
-      { title: "Investor Reports", icon: FileBarChart, section: "Financial" },
+      { title: "Payouts", icon: Banknote, to: "/admin/payouts", section: "Financial" },
+      { title: "Investor Reports", icon: FileBarChart, to: "/admin/investor-reports", section: "Financial" },
       { title: "ROI Analytics", icon: PieChart, to: "/admin/investor", section: "Financial" },
     ],
   },
   {
     label: "Investors",
     items: [
-      { title: "Fractional Ownership", icon: Layers, section: "Investors" },
+      { title: "Fractional Ownership", icon: Layers, to: "/admin/fractional-ownership", section: "Investors" },
       { title: "Tokenized Assets", icon: Coins, to: "/admin/investor", section: "Investors" },
       { title: "Investment Opportunities", icon: Sparkles, to: "/admin/investor", section: "Investors" },
-      { title: "Portfolio", icon: Boxes, section: "Investors" },
+      { title: "Portfolio", icon: Boxes, to: "/admin/portfolio", section: "Investors" },
     ],
   },
   {
@@ -85,10 +85,10 @@ const groups: Group[] = [
   {
     label: "Automation",
     items: [
-      { title: "Workflows", icon: Workflow, section: "Automation" },
+      { title: "Workflows", icon: Workflow, to: "/admin/workflows", section: "Automation" },
       { title: "AI Automations", icon: Bot, to: "/admin/ai", section: "Automation" },
-      { title: "Notifications", icon: Bell, section: "Automation" },
-      { title: "Webhooks", icon: Webhook, section: "Automation" },
+      { title: "Notifications", icon: Bell, to: "/admin/notifications", section: "Automation" },
+      { title: "Webhooks", icon: Webhook, to: "/admin/webhooks", section: "Automation" },
     ],
   },
   {
@@ -96,17 +96,17 @@ const groups: Group[] = [
     items: [
       { title: "Leads", icon: Users, to: "/admin/crm", section: "CRM" },
       { title: "Pipeline", icon: GitBranch, to: "/admin/crm", section: "CRM" },
-      { title: "Follow-up", icon: ClipboardList, section: "CRM" },
-      { title: "Tenant Scoring", icon: UserCheck, section: "CRM" },
+      { title: "Follow-up", icon: ClipboardList, to: "/admin/follow-up", section: "CRM" },
+      { title: "Tenant Scoring", icon: UserCheck, to: "/admin/tenant-scoring", section: "CRM" },
     ],
   },
   {
     label: "Admin",
     items: [
       { title: "Users", icon: Users, to: "/admin/users", section: "Admin" },
-      { title: "Permissions", icon: KeyRound, section: "Admin" },
+      { title: "Permissions", icon: KeyRound, to: "/admin/permissions", section: "Admin" },
       { title: "Security", icon: Lock, to: "/admin/settings", search: { tab: "security" }, section: "Admin" },
-      { title: "Logs", icon: ScrollText, section: "Admin" },
+      { title: "Logs", icon: ScrollText, to: "/admin/logs", section: "Admin" },
       { title: "Settings", icon: Settings, to: "/admin/settings", section: "Admin" },
     ],
   },
