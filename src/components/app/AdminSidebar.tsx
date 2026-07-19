@@ -1,7 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, Building2, Coins, ShoppingBag, FileText, CreditCard, BarChart3,
-  MessageSquare, Calendar, Hotel, Home, Sparkles, Wrench, Brush,
+  MessageSquare, Calendar, Sparkles, Wrench, Brush,
   TrendingUp, ArrowLeftRight, Banknote, FileBarChart, Layers,
   Boxes, Lightbulb, ShieldCheck, Truck, Workflow, Bot, Bell,
   Webhook, Users, UserCheck, ClipboardList, KeyRound, ScrollText,
@@ -45,8 +45,6 @@ const groups: Group[] = [
     label: "Property Management",
     items: [
       { title: "All Properties", icon: Building2, to: "/admin/properties", section: "Property Management" },
-      { title: "Short Stay", icon: Hotel, to: "/admin/properties", search: { type: "Short stay" }, section: "Property Management" },
-      { title: "Long Stay", icon: Home, to: "/admin/properties", search: { type: "Long stay" }, section: "Property Management" },
       { title: "Smart Pricing", icon: Sparkles, to: "/admin/smart-pricing", section: "Property Management" },
       { title: "Maintenance", icon: Wrench, to: "/admin/maintenance", section: "Property Management" },
     ],

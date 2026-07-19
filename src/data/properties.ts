@@ -91,7 +91,6 @@ export const properties: Property[] = [
   },
 ];
 
-export const propertyTypes: PropertyType[] = ["Short stay", "Long stay", "Mixed"];
 
 export function getProperty(id: string): Property | undefined {
   return properties.find((p) => p.id === id);

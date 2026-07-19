@@ -23,7 +23,6 @@ type PropertyDetail = {
   description: string | null;
   price: number | null;
   status: string | null;
-  property_type: string | null;
   listing_type: string | null;
   bedrooms: number | null;
   bathrooms: number | null;
@@ -47,7 +46,7 @@ function PropertyDetails() {
     (async () => {
       const { data } = await supabase
         .from("properties")
-        .select("id, title, description, price, status, property_type, listing_type, bedrooms, bathrooms, area_sqm, year_built, formatted_address, latitude, longitude, owner_id, property_media(storage_path, media_type, position)")
+        .select("id, title, description, price, status, listing_type, bedrooms, bathrooms, area_sqm, year_built, formatted_address, latitude, longitude, owner_id, property_media(storage_path, media_type, position)")
         .eq("id", id)
         .maybeSingle();
       setProperty(data as PropertyDetail | null);

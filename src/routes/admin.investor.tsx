@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { PageHeader, StatCard, Card, SectionTitle, Badge, DemoDataBadge } from "@/components/app/ui";
+import { useMarketData } from "@/lib/market";
 import { useBrand } from "@/components/brand/BrandProvider";
 import { toast } from "sonner";
 
@@ -67,62 +68,77 @@ const yieldProjection = Array.from({ length: 10 }, (_, i) => ({
   aggressive: 184320 * Math.pow(1.13, i),
 }));
 
-const fxRates: Record<string, { sym: string; rate: number }> = {
+const defaultFxRates: Record<string, { sym: string; rate: number }> = {
   USD: { sym: "$", rate: 1 },
   EUR: { sym: "€", rate: 0.92 },
   GBP: { sym: "£", rate: 0.79 },
   BTC: { sym: "₿", rate: 0.0000148 },
   ETH: { sym: "Ξ", rate: 0.000312 },
-  AED: { sym: "د.إ", rate: 3.67 },
+  AED: { sym: "د.إ", rate: 3.6725 },
 };
-
-function fmt(v: number, ccy: string) {
-  const r = fxRates[ccy];
-  const val = v * r.rate;
-  if (ccy === "BTC" || ccy === "ETH") return `${r.sym}${val.toFixed(4)}`;
-  return `${r.sym}${Math.round(val).toLocaleString("en-US")}`;
-}
-
-const tickerData = [
-  { sym: "REIT-EU", v: "+2.14%", up: true },
-  { sym: "BTC", v: "+1.08%", up: true },
-  { sym: "S&P 500", v: "−0.42%", up: false },
-  { sym: "EUR/USD", v: "+0.18%", up: true },
-  { sym: "GOLD", v: "+0.62%", up: true },
-  { sym: "OIL", v: "−1.20%", up: false },
-  { sym: "10Y BOND", v: "4.18%", up: true },
-];
 
 function Investor() {
   const brand = useBrand();
-  const [ccy, setCcy] = useState<keyof typeof fxRates>("USD");
+  const [ccy, setCcy] = useState<keyof typeof defaultFxRates>("USD");
   const [period, setPeriod] = useState("1Y");
+  const { ticker, fx, changes, error: marketError, updatedAt } = useMarketData();
 
   const totalValue = 184320;
   const monthlyIncome = 1742;
 
+  const rates: Record<string, { sym: string; rate: number }> = {
+    ...defaultFxRates,
+    ...(fx
+      ? {
+          EUR: { sym: "€", rate: fx.EUR },
+          GBP: { sym: "£", rate: fx.GBP },
+          BTC: { sym: "₿", rate: fx.BTC },
+          ETH: { sym: "Ξ", rate: fx.ETH },
+        }
+      : {}),
+  };
+
+  function fmt(v: number, c: string) {
+    const r = rates[c];
+    const val = v * r.rate;
+    if (c === "BTC" || c === "ETH") return `${r.sym}${val.toFixed(4)}`;
+    return `${r.sym}${Math.round(val).toLocaleString("en-US")}`;
+  }
+
+  function fmtPrice(sym: string, price: number) {
+    if (sym === "BTC/USD" || sym === "GOLD/oz") return `$${price.toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
+    return price.toFixed(4);
+  }
+
   return (
     <>
-      {/* Bloomberg-style ticker */}
+      {/* Live market ticker */}
       <div className="-mx-4 mb-6 overflow-hidden border-y border-border bg-background/60 backdrop-blur md:-mx-8">
         <div className="flex animate-marquee gap-8 whitespace-nowrap px-4 py-2 font-mono text-xs md:px-8">
-          {[...tickerData, ...tickerData].map((t, i) => (
-            <span key={i} className="flex items-center gap-2">
-              <span className="font-semibold tracking-wider">{t.sym}</span>
-              <span className={t.up ? "text-emerald" : "text-red-500"}>
-                {t.up ? "▲" : "▼"} {t.v}
-              </span>
+          {ticker.length === 0 ? (
+            <span className="flex items-center gap-2 text-muted-foreground">
+              {marketError ? `Cotações indisponíveis: ${marketError}` : "Carregando cotações ao vivo…"}
             </span>
-          ))}
+          ) : (
+            [...ticker, ...ticker].map((t, i) => (
+              <span key={i} className="flex items-center gap-2">
+                <span className="font-semibold tracking-wider">{t.sym}</span>
+                <span>{fmtPrice(t.sym, t.price)}</span>
+                <span className={t.changePct >= 0 ? "text-emerald" : "text-red-500"}>
+                  {t.changePct >= 0 ? "▲" : "▼"} {Math.abs(t.changePct).toFixed(2)}%
+                </span>
+              </span>
+            ))
+          )}
         </div>
       </div>
 
       <PageHeader title="Investor Terminal" subtitle={`${brand.name} · tokenized real estate, global yields, real-time.`}>
         <div className="flex items-center gap-1 rounded-full border border-border bg-card p-1 text-xs">
-          {Object.keys(fxRates).map((c) => (
+          {Object.keys(defaultFxRates).map((c) => (
             <button
               key={c}
-              onClick={() => setCcy(c as keyof typeof fxRates)}
+              onClick={() => setCcy(c as keyof typeof defaultFxRates)}
               className={`rounded-full px-2.5 py-1 font-medium transition ${ccy === c ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"}`}
             >
               {c}
@@ -423,17 +439,30 @@ function Investor() {
         </Card>
 
         <Card>
-          <SectionTitle title="Currency desk" action={<span className="font-mono text-xs text-muted-foreground">câmbio de demonstração</span>} />
+          <SectionTitle
+            title="Currency desk"
+            action={
+              <span className="font-mono text-xs text-muted-foreground">
+                {marketError ? "câmbio indisponível" : updatedAt ? `câmbio ao vivo · ${updatedAt.toLocaleTimeString("pt-PT", { hour: "2-digit", minute: "2-digit" })}` : "carregando…"}
+              </span>
+            }
+          />
           <div className="grid grid-cols-2 gap-3">
-            {Object.entries(fxRates).map(([k, v]) => (
-              <div key={k} className="rounded-2xl border border-border/50 bg-secondary/20 p-3">
-                <div className="flex items-center justify-between text-xs text-muted-foreground">
-                  <span className="font-mono font-semibold tracking-wider">{k}/USD</span>
-                  <span className={k === "USD" ? "text-muted-foreground" : "text-emerald"}>{k === "USD" ? "—" : "▲"}</span>
+            {Object.entries(rates).map(([k, v]) => {
+              const change = (changes as Record<string, number | undefined>)[k];
+              const up = change === undefined ? null : change >= 0;
+              return (
+                <div key={k} className="rounded-2xl border border-border/50 bg-secondary/20 p-3">
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <span className="font-mono font-semibold tracking-wider">{k}/USD</span>
+                    <span className={up === null ? "text-muted-foreground" : up ? "text-emerald" : "text-red-500"}>
+                      {up === null ? "—" : up ? "▲" : "▼"} {change !== undefined ? `${Math.abs(change).toFixed(2)}%` : ""}
+                    </span>
+                  </div>
+                  <div className="mt-1 font-display text-xl font-bold">{v.sym} {v.rate < 0.001 ? v.rate.toExponential(2) : v.rate.toFixed(k === "USD" ? 2 : 4)}</div>
                 </div>
-                <div className="mt-1 font-display text-xl font-bold">{v.sym} {v.rate < 0.001 ? v.rate.toExponential(2) : v.rate.toFixed(k === "USD" ? 2 : 4)}</div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </Card>
       </div>

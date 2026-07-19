@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { X, Sparkles, Upload, MapPin, Loader2, Trash2, Film } from "lucide-react";
 import { toast } from "sonner";
-import { propertyTypes } from "@/data/properties";
 import { supabase } from "@/lib/supabase";
 
 type Props = { open: boolean; onClose: () => void };
@@ -19,7 +18,6 @@ const emptyForm = {
   title: "",
   description: "",
   listingType: "aluguel" as "aluguel" | "venda",
-  type: "Short stay",
   addressQuery: "",
   street: "",
   number: "",
@@ -158,7 +156,6 @@ export function AddPropertyModal({ open, onClose }: Props) {
           status: "available",
           owner_id: user.id,
           listing_type: form.listingType,
-          property_type: form.type,
           street: form.street || null,
           number: form.number || null,
           complement: form.complement || null,
@@ -249,13 +246,6 @@ export function AddPropertyModal({ open, onClose }: Props) {
                     >
                       {lt === "aluguel" ? "Aluguel" : "Venda"}
                     </button>
-                  ))}
-                </div>
-              </Field>
-              <Field label="Property type">
-                <div className="flex flex-wrap gap-2">
-                  {propertyTypes.map((t) => (
-                    <button key={t} type="button" onClick={() => set("type", t)} className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-colors ${form.type === t ? "bg-foreground text-background" : "border border-glass-border bg-secondary/40"}`}>{t}</button>
                   ))}
                 </div>
               </Field>

@@ -16,11 +16,10 @@ const performance = [
   { name: "Dubai", v: 70 }, { name: "Barcelona", v: 89 }, { name: "NYC", v: 76 },
 ];
 const tenant = [
-  { n: "Short stay (1-7d)", v: 48 },
-  { n: "Mid stay (8-30d)", v: 27 },
-  { n: "Long stay (30d+)", v: 25 },
+  { n: "Aluguel", v: 58 },
+  { n: "Venda", v: 42 },
 ];
-const colors = ["var(--emerald)", "var(--skyblue)", "var(--emerald-glow)"];
+const colors = ["var(--emerald)", "var(--skyblue)"];
 const costs = Array.from({ length: 12 }, (_, i) => ({
   m: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][i],
   cleaning: 800 + Math.round(Math.sin(i) * 120),
@@ -67,7 +66,7 @@ function PropertiesAnalytics() {
         </Card>
 
         <Card>
-          <SectionTitle title="Tenant behavior" />
+          <SectionTitle title="Listing mix" />
           <div className="h-64">
             <ResponsiveContainer>
               <PieChart>

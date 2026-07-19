@@ -5,8 +5,8 @@ const filters = [
   { icon: MapPin, label: "City" },
   { icon: Globe, label: "Country" },
   { icon: Building2, label: "Property type" },
-  { icon: Calendar, label: "Short stay" },
-  { icon: Calendar, label: "Long stay" },
+  { icon: Calendar, label: "For sale" },
+  { icon: Calendar, label: "For rent" },
   { icon: Sofa, label: "Furnished" },
   { icon: TrendingUp, label: "Investment" },
 ];

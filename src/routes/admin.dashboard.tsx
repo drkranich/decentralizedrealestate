@@ -33,9 +33,8 @@ const occupancy = [
 ];
 
 const split = [
-  { name: "Short stay", v: 48, c: "var(--emerald)" },
-  { name: "Long stay", v: 32, c: "var(--skyblue)" },
-  { name: "Tokenized", v: 20, c: "var(--emerald-glow)" },
+  { name: "Aluguel", v: 55, c: "var(--emerald)" },
+  { name: "Venda", v: 45, c: "var(--skyblue)" },
 ];
 
 const roiTrend = Array.from({ length: 12 }, (_, i) => ({

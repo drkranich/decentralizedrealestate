@@ -9,7 +9,6 @@ export const Route = createFileRoute("/admin/properties")({
   validateSearch: (s: Record<string, unknown>) => ({
     q: typeof s.q === "string" ? s.q : "",
     add: typeof s.add === "string" ? s.add : "",
-    type: typeof s.type === "string" ? s.type : "",
   }),
   component: Properties,
 });
@@ -21,7 +20,6 @@ type PropertyRow = {
   country: string | null;
   price: number | null;
   status: string | null;
-  property_type: string | null;
   listing_type: string | null;
   bedrooms: number | null;
   bathrooms: number | null;
@@ -54,7 +52,7 @@ function Properties() {
 
     const { data, error } = await supabase
       .from("properties")
-      .select("id, title, city, country, price, status, property_type, listing_type, bedrooms, bathrooms, area_sqm, owner_id, property_media(storage_path, media_type, position)")
+      .select("id, title, city, country, price, status, listing_type, bedrooms, bathrooms, area_sqm, owner_id, property_media(storage_path, media_type, position)")
       .order("created_at", { ascending: false });
 
     if (!error && data) {
@@ -78,8 +76,7 @@ function Properties() {
 
   const byStatus = filter === "All" ? rows : rows.filter((p) => (p.status ?? "").toLowerCase() === filter.toLowerCase());
   const byListing = listingFilter === "Todos" ? byStatus : byStatus.filter((p) => p.listing_type === listingFilter.toLowerCase());
-  const byStayType = search.type ? byListing.filter((p) => p.property_type === search.type) : byListing;
-  const filtered = textQuery ? byStayType.filter((p) => p.title.toLowerCase().includes(textQuery.toLowerCase())) : byStayType;
+  const filtered = textQuery ? byListing.filter((p) => p.title.toLowerCase().includes(textQuery.toLowerCase())) : byListing;
   const total = rows.length;
   const available = rows.filter((p) => p.status === "available").length;
   const own = userId ? rows.filter((p) => p.owner_id === userId).length : 0;
@@ -87,8 +84,8 @@ function Properties() {
   return (
     <>
       <PageHeader
-        title={search.type ? `Properties — ${search.type}` : "Properties"}
-        subtitle={loading ? "Loading your portfolio…" : `${filtered.length} ${filtered.length === 1 ? "property" : "properties"}${search.type ? ` (${search.type.toLowerCase()})` : " on the platform right now"}.`}
+        title="Properties"
+        subtitle={loading ? "Loading your portfolio…" : `${filtered.length} ${filtered.length === 1 ? "property" : "properties"} on the platform right now.`}
       >
         <button
           onClick={() => setShowFilters((v) => !v)}
@@ -195,7 +192,6 @@ function Properties() {
                   <span className="text-muted-foreground">
                     {p.bedrooms ?? "—"} bd · {p.bathrooms ?? "—"} ba · {p.area_sqm ?? "—"} m²
                   </span>
-                  {p.property_type && <Badge variant="blue">{p.property_type}</Badge>}
                 </div>
               </div>
             </Link>
@@ -208,7 +204,6 @@ function Properties() {
               <tr className="border-b border-glass-border bg-secondary/30 text-left text-xs uppercase tracking-wide text-muted-foreground">
                 <th className="px-5 py-3 font-medium">Property</th>
                 <th className="px-5 py-3 font-medium">Location</th>
-                <th className="px-5 py-3 font-medium">Type</th>
                 <th className="px-5 py-3 font-medium">Listing</th>
                 <th className="px-5 py-3 font-medium">Status</th>
                 <th className="px-5 py-3 font-medium text-right">Price</th>
@@ -221,7 +216,6 @@ function Properties() {
                     <Link to="/admin/properties/$id" params={{ id: p.id }} className="font-semibold">{p.title}</Link>
                   </td>
                   <td className="px-5 py-4 text-muted-foreground">{[p.city, p.country].filter(Boolean).join(", ") || "—"}</td>
-                  <td className="px-5 py-4">{p.property_type && <Badge variant="blue">{p.property_type}</Badge>}</td>
                   <td className="px-5 py-4">{p.listing_type && <Badge variant={p.listing_type === "venda" ? "warn" : "blue"}>{p.listing_type}</Badge>}</td>
                   <td className="px-5 py-4"><Badge variant={p.status === "available" ? "emerald" : "muted"}>{p.status ?? "unknown"}</Badge></td>
                   <td className="px-5 py-4 text-right font-semibold">{p.price != null ? `€${Number(p.price).toLocaleString("en-US")}` : "—"}</td>
