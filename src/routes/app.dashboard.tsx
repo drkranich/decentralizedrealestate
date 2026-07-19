@@ -10,6 +10,9 @@ import {
 } from "lucide-react";
 import { PageHeader, StatCard, Card, SectionTitle, Badge, DemoDataBadge } from "@/components/app/ui";
 import { useBrand } from "@/components/brand/BrandProvider";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { downloadTablePdf } from "@/lib/pdf";
+import { FileSpreadsheet, FileDown } from "lucide-react";
 
 export const Route = createFileRoute("/app/dashboard")({
   component: Dashboard,
@@ -113,28 +116,52 @@ function Dashboard() {
         >
           Last 30 days
         </button>
-        <button
-          onClick={() => {
-            const rows = [
-              ["metrica", "valor"],
-              ["total_imoveis", String(counts.total)],
-              ["disponiveis", String(counts.available)],
-              ["leads_recebidos", String(counts.leads)],
-              ["contratos", String(counts.contracts)],
-            ];
-            const csv = rows.map((r) => r.map((v) => `"${v}"`).join(",")).join("\n");
-            const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "resumo-dashboard.csv";
-            a.click();
-            URL.revokeObjectURL(url);
-          }}
-          className="rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background"
-        >
-          Export
-        </button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background">Export</button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem
+              onClick={() => {
+                const rows = [
+                  ["metrica", "valor"],
+                  ["total_imoveis", String(counts.total)],
+                  ["disponiveis", String(counts.available)],
+                  ["leads_recebidos", String(counts.leads)],
+                  ["contratos", String(counts.contracts)],
+                ];
+                const csv = rows.map((r) => r.map((v) => `"${v}"`).join(",")).join("\n");
+                const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "resumo-dashboard.csv";
+                a.click();
+                URL.revokeObjectURL(url);
+              }}
+            >
+              <FileSpreadsheet className="mr-2 h-4 w-4" /> Exportar CSV
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() =>
+                downloadTablePdf({
+                  title: "Resumo do portfólio",
+                  subtitle: `Exportado em ${new Date().toLocaleDateString("pt-BR")}`,
+                  header: ["Métrica", "Valor"],
+                  rows: [
+                    ["Total de imóveis", counts.total],
+                    ["Disponíveis", counts.available],
+                    ["Leads recebidos", counts.leads],
+                    ["Contratos", counts.contracts],
+                  ],
+                  filename: "resumo-dashboard.pdf",
+                })
+              }
+            >
+              <FileDown className="mr-2 h-4 w-4" /> Exportar PDF
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </PageHeader>
 
       {/* KPIs — dados reais do Supabase */}

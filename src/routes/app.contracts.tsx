@@ -5,6 +5,9 @@ import { PageHeader, Card, Badge, StatCard, DemoDataBadge } from "@/components/a
 import { CheckCircle2, Clock, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { downloadTablePdf } from "@/lib/pdf";
+import { FileSpreadsheet, FileDown } from "lucide-react";
 
 export const Route = createFileRoute("/app/contracts")({
   component: Contracts,
@@ -52,21 +55,22 @@ function Contracts() {
     !q || (c.properties?.title ?? "").toLowerCase().includes(q.toLowerCase()) || c.id.includes(q)
   );
 
+  const contractRows = () => filtered.map((c) => [
+    c.id.slice(0, 8),
+    c.properties?.title ?? "",
+    c.properties?.price ?? "",
+    c.status ?? "",
+    c.start_date ?? "",
+    c.end_date ?? "",
+  ]);
+
   const exportCsv = () => {
     if (filtered.length === 0) {
       toast.info("Não há contratos reais para exportar ainda.");
       return;
     }
     const header = ["id", "imovel", "preco", "status", "inicio", "fim"];
-    const rows = filtered.map((c) => [
-      c.id,
-      c.properties?.title ?? "",
-      c.properties?.price ?? "",
-      c.status ?? "",
-      c.start_date ?? "",
-      c.end_date ?? "",
-    ]);
-    const csv = [header, ...rows].map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const csv = [header, ...contractRows()].map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -74,6 +78,20 @@ function Contracts() {
     a.download = "contratos.csv";
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  const exportPdf = () => {
+    if (filtered.length === 0) {
+      toast.info("Não há contratos reais para exportar ainda.");
+      return;
+    }
+    downloadTablePdf({
+      title: "Contratos",
+      subtitle: `Exportado em ${new Date().toLocaleDateString("pt-BR")}`,
+      header: ["ID", "Imóvel", "Preço", "Status", "Início", "Fim"],
+      rows: contractRows(),
+      filename: "contratos.pdf",
+    });
   };
 
   const active = contracts.filter((c) => c.status === "active").length;
@@ -87,9 +105,17 @@ function Contracts() {
   return (
     <>
       <PageHeader title="Contracts" subtitle="Contratos reais entre proprietários e inquilinos/investidores.">
-        <button onClick={exportCsv} className="flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm hover:bg-secondary">
-          <Download className="h-4 w-4" /> Export
-        </button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm hover:bg-secondary">
+              <Download className="h-4 w-4" /> Export
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={exportCsv}><FileSpreadsheet className="mr-2 h-4 w-4" /> Exportar CSV</DropdownMenuItem>
+            <DropdownMenuItem onClick={exportPdf}><FileDown className="mr-2 h-4 w-4" /> Exportar PDF</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <button
           onClick={() => toast.info("A geração automática de contratos via IA ainda não está disponível.")}
           className="flex items-center gap-2 rounded-full bg-emerald px-4 py-2 text-sm font-semibold text-white shadow-glow"
