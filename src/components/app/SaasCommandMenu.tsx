@@ -3,6 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import {
   Archive,
   BadgeCheck,
+  BriefcaseBusiness,
   Building2,
   Coins,
   FileText,
@@ -17,6 +18,7 @@ import {
   Search,
   Settings,
   ShieldCheck,
+  ShoppingBag,
   Signature,
   ScrollText,
   TrendingUp,
@@ -69,6 +71,7 @@ const iconByPath: Record<string, typeof Search> = {
   "/admin/escrow-reconciliation": Landmark,
   "/admin/audit-evidence": Archive,
   "/admin/cms": LayoutTemplate,
+  "/admin/marketplace": ShoppingBag,
   "/admin/settings": Settings,
   "/app/dashboard": LayoutDashboard,
   "/app/properties": Building2,
@@ -79,6 +82,8 @@ const iconByPath: Record<string, typeof Search> = {
   "/app/investor-earnings": TrendingUp,
   "/app/investor-documents": ScrollText,
   "/app/investor-compliance": ShieldCheck,
+  "/app/service-marketplace": ShoppingBag,
+  "/app/service-provider": BriefcaseBusiness,
 };
 
 const adminQuickActions: SearchIntent[] = [

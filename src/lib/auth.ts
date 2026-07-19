@@ -24,7 +24,7 @@ export function useAuthUser() {
   return { user, loading, signOut };
 }
 
-export type UserRole = "admin" | "owner" | "tenant" | "investor";
+export type UserRole = "admin" | "owner" | "tenant" | "investor" | "service_provider";
 
 /**
  * Real role for the current session, read from public.users.role (the

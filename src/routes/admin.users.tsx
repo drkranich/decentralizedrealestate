@@ -3,7 +3,13 @@ import { useEffect, useState } from "react";
 import { Users as UsersIcon, Loader2, Search } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader, Card, Badge, StatCard } from "@/components/app/ui";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/admin/users")({
@@ -19,10 +25,22 @@ type UserRow = {
   created_at: string;
 };
 
-const roleLabels: Record<string, string> = { admin: "Super admin", owner: "Dono de imóvel", tenant: "Inquilino", investor: "Investidor" };
+const roleLabels: Record<string, string> = {
+  admin: "Super admin",
+  owner: "Dono de imóvel",
+  tenant: "Inquilino",
+  investor: "Investidor",
+  service_provider: "Prestador",
+};
 
 function initials(name: string | null) {
-  return (name || "?").split(" ").filter(Boolean).map((n) => n[0]).slice(0, 2).join("").toUpperCase();
+  return (name || "?")
+    .split(" ")
+    .filter(Boolean)
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
 }
 
 function AdminUsers() {
@@ -71,33 +89,57 @@ function AdminUsers() {
   const owners = users.filter((u) => u.role === "owner").length;
   const tenants = users.filter((u) => u.role === "tenant").length;
   const investors = users.filter((u) => u.role === "investor").length;
+  const providers = users.filter((u) => u.role === "service_provider").length;
 
   const filtered = users
     .filter((u) => roleFilter === "all" || u.role === roleFilter)
-    .filter((u) => !q || (u.name ?? "").toLowerCase().includes(q.toLowerCase()) || (u.email ?? "").toLowerCase().includes(q.toLowerCase()));
+    .filter(
+      (u) =>
+        !q ||
+        (u.name ?? "").toLowerCase().includes(q.toLowerCase()) ||
+        (u.email ?? "").toLowerCase().includes(q.toLowerCase()),
+    );
 
   return (
     <>
       <PageHeader title="Users" subtitle="Todos os usuários cadastrados na plataforma." />
 
-      <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         <StatCard label="Super admins" value={String(admins)} icon={UsersIcon} />
-        <StatCard label="Donos de imóvel" value={String(owners)} icon={UsersIcon} accent="skyblue" />
+        <StatCard
+          label="Donos de imóvel"
+          value={String(owners)}
+          icon={UsersIcon}
+          accent="skyblue"
+        />
         <StatCard label="Inquilinos" value={String(tenants)} icon={UsersIcon} accent="emerald" />
-        <StatCard label="Investidores" value={String(investors)} icon={UsersIcon} accent="skyblue" />
+        <StatCard
+          label="Investidores"
+          value={String(investors)}
+          icon={UsersIcon}
+          accent="skyblue"
+        />
+        <StatCard label="Prestadores" value={String(providers)} icon={UsersIcon} accent="emerald" />
       </div>
 
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <div className="flex items-center gap-2 rounded-xl border border-glass-border bg-glass-fill px-3 py-2">
           <Search className="h-4 w-4 text-muted-foreground" />
-          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar por nome ou e-mail…" className="w-56 bg-transparent text-sm outline-none" />
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Buscar por nome ou e-mail…"
+            className="w-56 bg-transparent text-sm outline-none"
+          />
         </div>
-        {["all", "admin", "owner", "tenant", "investor"].map((r) => (
+        {["all", "admin", "owner", "tenant", "investor", "service_provider"].map((r) => (
           <button
             key={r}
             onClick={() => setRoleFilter(r)}
             className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors ${
-              roleFilter === r ? "border-emerald/40 bg-emerald/10 text-emerald" : "border-glass-border bg-secondary/40"
+              roleFilter === r
+                ? "border-emerald/40 bg-emerald/10 text-emerald"
+                : "border-glass-border bg-secondary/40"
             }`}
           >
             {r === "all" ? "Todos" : roleLabels[r]}
@@ -129,7 +171,11 @@ function AdminUsers() {
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-3">
                       {u.avatar_url ? (
-                        <img src={u.avatar_url} alt="" className="h-8 w-8 rounded-full object-cover" />
+                        <img
+                          src={u.avatar_url}
+                          alt=""
+                          className="h-8 w-8 rounded-full object-cover"
+                        />
                       ) : (
                         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald/15 text-xs font-semibold text-emerald">
                           {initials(u.name)}
@@ -139,7 +185,9 @@ function AdminUsers() {
                     </div>
                   </td>
                   <td className="px-5 py-4 text-muted-foreground">{u.email || "—"}</td>
-                  <td className="px-5 py-4 text-muted-foreground">{new Date(u.created_at).toLocaleDateString()}</td>
+                  <td className="px-5 py-4 text-muted-foreground">
+                    {new Date(u.created_at).toLocaleDateString()}
+                  </td>
                   <td className="px-5 py-4">
                     <Select value={u.role} onValueChange={(v) => changeRole(u.id, v)}>
                       <SelectTrigger className="h-auto w-auto gap-2 rounded-full border-glass-border bg-secondary/50 px-3 py-1 text-xs">
@@ -150,6 +198,7 @@ function AdminUsers() {
                         <SelectItem value="owner">Dono de imóvel</SelectItem>
                         <SelectItem value="tenant">Inquilino</SelectItem>
                         <SelectItem value="investor">Investidor</SelectItem>
+                        <SelectItem value="service_provider">Prestador de serviço</SelectItem>
                       </SelectContent>
                     </Select>
                   </td>

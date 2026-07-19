@@ -14,6 +14,8 @@ import {
   ScrollText,
   BadgeCheck,
   WalletCards,
+  ShoppingBag,
+  BriefcaseBusiness,
   type LucideIcon,
 } from "lucide-react";
 import {
@@ -42,6 +44,7 @@ const ownerItems: Item[] = [
   { title: "Financeiro", icon: TrendingUp, to: "/app/finance" },
   { title: "Contratos", icon: FileText, to: "/app/contracts" },
   { title: "Manutenção", icon: Wrench, to: "/app/maintenance" },
+  { title: "Marketplace", icon: ShoppingBag, to: "/app/service-marketplace" },
   { title: "Perfil", icon: UserRound, to: "/app/profile" },
 ];
 
@@ -50,6 +53,7 @@ const tenantItems: Item[] = [
   { title: "Meu contrato", icon: FileText, to: "/app/contract" },
   { title: "Pagamentos", icon: CreditCard, to: "/app/payments" },
   { title: "Manutenção", icon: Wrench, to: "/app/maintenance" },
+  { title: "Marketplace", icon: ShoppingBag, to: "/app/service-marketplace" },
   { title: "Mensagens", icon: MessageSquare, to: "/app/messages" },
   { title: "Perfil", icon: UserRound, to: "/app/profile" },
 ];
@@ -64,6 +68,12 @@ const investorItems: Item[] = [
   { title: "Perfil", icon: UserRound, to: "/app/profile" },
 ];
 
+const serviceProviderItems: Item[] = [
+  { title: "Dashboard", icon: LayoutDashboard, to: "/app/dashboard" },
+  { title: "Painel do prestador", icon: BriefcaseBusiness, to: "/app/service-provider" },
+  { title: "Perfil", icon: UserRound, to: "/app/profile" },
+];
+
 export function UserSidebar({ role }: { role: UserRole | null }) {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
@@ -72,13 +82,25 @@ export function UserSidebar({ role }: { role: UserRole | null }) {
   const avatarUrl = useAvatarUrl();
   const { permissions } = useRolePermissions();
   const baseItems =
-    role === "owner" ? ownerItems : role === "investor" ? investorItems : tenantItems;
+    role === "owner"
+      ? ownerItems
+      : role === "investor"
+        ? investorItems
+        : role === "service_provider"
+          ? serviceProviderItems
+          : tenantItems;
   const items = role
     ? baseItems.filter((item) => isPathAllowedForRole(role, item.to, permissions))
     : baseItems;
   const displayName = (user?.user_metadata?.name as string | undefined) ?? user?.email ?? "";
   const roleLabel =
-    role === "owner" ? "Dono de imóvel" : role === "investor" ? "Investidor" : "Inquilino";
+    role === "owner"
+      ? "Dono de imóvel"
+      : role === "investor"
+        ? "Investidor"
+        : role === "service_provider"
+          ? "Prestador"
+          : "Inquilino";
 
   return (
     <Sidebar

@@ -34,13 +34,14 @@ export type RoleCapability = {
 
 export const ROLE_PERMISSIONS_SECTION_KEY = "role_permissions";
 
-export const roleOrder: UserRole[] = ["admin", "owner", "tenant", "investor"];
+export const roleOrder: UserRole[] = ["admin", "owner", "tenant", "investor", "service_provider"];
 
 export const roleLabels: Record<UserRole, string> = {
   admin: "Super admin",
   owner: "Dono de imóvel",
   tenant: "Inquilino",
   investor: "Investidor",
+  service_provider: "Prestador de serviço",
 };
 
 export const roleAreas: Record<UserRole, string> = {
@@ -48,6 +49,7 @@ export const roleAreas: Record<UserRole, string> = {
   owner: "/app/*",
   tenant: "/app/*",
   investor: "/app/*",
+  service_provider: "/app/*",
 };
 
 export const roleSummaries: Record<UserRole, string> = {
@@ -55,6 +57,7 @@ export const roleSummaries: Record<UserRole, string> = {
   owner: "Opera os próprios imóveis, contratos, calendário, financeiro e manutenção.",
   tenant: "Acompanha contrato, pagamentos, chamados de manutenção e mensagens.",
   investor: "Acompanha portfólio tokenizado, rendimentos, documentos e oportunidades.",
+  service_provider: "Cadastra serviços, escolhe plano comercial, responde leads e recebe cotações.",
 };
 
 export const permissionRoutes: PermissionRoute[] = [
@@ -411,8 +414,8 @@ export const permissionRoutes: PermissionRoute[] = [
     area: "app",
     section: "Portal",
     description: "Resumo inicial do papel ativo.",
-    defaultRoles: ["owner", "tenant", "investor"],
-    lockedFor: ["owner", "tenant", "investor"],
+    defaultRoles: ["owner", "tenant", "investor", "service_provider"],
+    lockedFor: ["owner", "tenant", "investor", "service_provider"],
   },
   {
     id: "app.properties",
@@ -478,6 +481,15 @@ export const permissionRoutes: PermissionRoute[] = [
     defaultRoles: ["owner", "tenant"],
   },
   {
+    id: "app.service_marketplace",
+    label: "Marketplace de serviços",
+    path: "/app/service-marketplace",
+    area: "app",
+    section: "Serviços",
+    description: "Contratação de prestadores para imóveis, contratos, mudança e manutenção.",
+    defaultRoles: ["owner", "tenant"],
+  },
+  {
     id: "app.messages",
     label: "Mensagens",
     path: "/app/messages",
@@ -532,14 +544,23 @@ export const permissionRoutes: PermissionRoute[] = [
     defaultRoles: ["investor"],
   },
   {
+    id: "app.service_provider",
+    label: "Painel do prestador",
+    path: "/app/service-provider",
+    area: "app",
+    section: "Prestador",
+    description: "Cadastro comercial, plano, serviços anunciados, leads e cotações.",
+    defaultRoles: ["service_provider"],
+  },
+  {
     id: "app.profile",
     label: "Perfil",
     path: "/app/profile",
     area: "app",
     section: "Conta",
     description: "Dados da conta, contato e preferências pessoais.",
-    defaultRoles: ["owner", "tenant", "investor"],
-    lockedFor: ["owner", "tenant", "investor"],
+    defaultRoles: ["owner", "tenant", "investor", "service_provider"],
+    lockedFor: ["owner", "tenant", "investor", "service_provider"],
   },
 ];
 
@@ -615,6 +636,14 @@ export const roleCapabilities: RoleCapability[] = [
     id: "admin.manage_operations",
     label: "Gerenciar operação imobiliária",
     description: "Imóveis, contratos, manutenção, calendário, CRM e marketplace.",
+    section: "Operação",
+    defaultRoles: ["admin"],
+    availableFor: ["admin"],
+  },
+  {
+    id: "admin.manage_service_marketplace",
+    label: "Gerenciar Service Marketplace",
+    description: "Pode aprovar prestadores, categorias, planos, anúncios, leads e comissões.",
     section: "Operação",
     defaultRoles: ["admin"],
     availableFor: ["admin"],
@@ -700,6 +729,14 @@ export const roleCapabilities: RoleCapability[] = [
     availableFor: ["tenant"],
   },
   {
+    id: "marketplace.request_services",
+    label: "Solicitar serviços",
+    description: "Pode enviar pedidos de orçamento para prestadores aprovados.",
+    section: "Serviços",
+    defaultRoles: ["owner", "tenant"],
+    availableFor: ["owner", "tenant"],
+  },
+  {
     id: "investor.view_portfolio",
     label: "Ver portfólio de investimentos",
     description: "Pode acessar frações, tokens e ativos em carteira.",
@@ -747,6 +784,30 @@ export const roleCapabilities: RoleCapability[] = [
     defaultRoles: ["investor"],
     availableFor: ["investor"],
   },
+  {
+    id: "provider.manage_profile",
+    label: "Gerenciar perfil comercial",
+    description: "Pode manter cadastro, área de atendimento e plano comercial.",
+    section: "Prestador",
+    defaultRoles: ["service_provider"],
+    availableFor: ["service_provider"],
+  },
+  {
+    id: "provider.manage_listings",
+    label: "Cadastrar serviços",
+    description: "Pode criar, editar e arquivar anúncios de serviço antes da aprovação.",
+    section: "Prestador",
+    defaultRoles: ["service_provider"],
+    availableFor: ["service_provider"],
+  },
+  {
+    id: "provider.respond_leads",
+    label: "Responder leads e cotações",
+    description: "Pode acompanhar solicitações recebidas e enviar orçamentos.",
+    section: "Prestador",
+    defaultRoles: ["service_provider"],
+    availableFor: ["service_provider"],
+  },
 ];
 
 export const defaultRolePermissions: RolePermissions = roleOrder.reduce((acc, role) => {
@@ -767,19 +828,27 @@ export const defaultRolePermissions: RolePermissions = roleOrder.reduce((acc, ro
 const introducedDefaultPermissions: RolePermissions = {
   admin: {
     routes: ["admin.investor", "admin.legal_compliance", "admin.legal_vault"],
-    capabilities: ["admin.manage_investors", "admin.manage_legal_compliance"],
+    capabilities: [
+      "admin.manage_investors",
+      "admin.manage_legal_compliance",
+      "admin.manage_service_marketplace",
+    ],
   },
   owner: {
-    routes: [],
-    capabilities: [],
+    routes: ["app.service_marketplace"],
+    capabilities: ["marketplace.request_services"],
   },
   tenant: {
-    routes: [],
-    capabilities: [],
+    routes: ["app.service_marketplace"],
+    capabilities: ["marketplace.request_services"],
   },
   investor: {
     routes: ["app.investor_opportunities", "app.investor_compliance"],
     capabilities: ["investor.register_interest", "investor.manage_compliance_profile"],
+  },
+  service_provider: {
+    routes: ["app.service_provider"],
+    capabilities: ["provider.manage_profile", "provider.manage_listings", "provider.respond_leads"],
   },
 };
 

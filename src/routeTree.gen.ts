@@ -89,6 +89,8 @@ import { Route as AppMessagesRouteImport } from './routes/app.messages'
 import { Route as AppPaymentsRouteImport } from './routes/app.payments'
 import { Route as AppProfileRouteImport } from './routes/app.profile'
 import { Route as AppPropertiesRouteImport } from './routes/app.properties'
+import { Route as AppServiceMarketplaceRouteImport } from './routes/app.service-marketplace'
+import { Route as AppServiceProviderRouteImport } from './routes/app.service-provider'
 import { Route as ListingIdRouteImport } from './routes/listing.$id'
 import { Route as AdminPropertiesIdRouteImport } from './routes/admin.properties.$id'
 
@@ -497,6 +499,16 @@ const AppPropertiesRoute = AppPropertiesRouteImport.update({
   path: '/properties',
   getParentRoute: () => AppRoute,
 } as any)
+const AppServiceMarketplaceRoute = AppServiceMarketplaceRouteImport.update({
+  id: '/service-marketplace',
+  path: '/service-marketplace',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppServiceProviderRoute = AppServiceProviderRouteImport.update({
+  id: '/service-provider',
+  path: '/service-provider',
+  getParentRoute: () => AppRoute,
+} as any)
 const ListingIdRoute = ListingIdRouteImport.update({
   id: '/listing/$id',
   path: '/listing/$id',
@@ -589,6 +601,8 @@ export interface FileRoutesByFullPath {
   '/app/payments': typeof AppPaymentsRoute
   '/app/profile': typeof AppProfileRoute
   '/app/properties': typeof AppPropertiesRoute
+  '/app/service-marketplace': typeof AppServiceMarketplaceRoute
+  '/app/service-provider': typeof AppServiceProviderRoute
   '/listing/$id': typeof ListingIdRoute
   '/admin/properties/$id': typeof AdminPropertiesIdRoute
 }
@@ -673,6 +687,8 @@ export interface FileRoutesByTo {
   '/app/payments': typeof AppPaymentsRoute
   '/app/profile': typeof AppProfileRoute
   '/app/properties': typeof AppPropertiesRoute
+  '/app/service-marketplace': typeof AppServiceMarketplaceRoute
+  '/app/service-provider': typeof AppServiceProviderRoute
   '/listing/$id': typeof ListingIdRoute
   '/admin/properties/$id': typeof AdminPropertiesIdRoute
 }
@@ -758,6 +774,8 @@ export interface FileRoutesById {
   '/app/payments': typeof AppPaymentsRoute
   '/app/profile': typeof AppProfileRoute
   '/app/properties': typeof AppPropertiesRoute
+  '/app/service-marketplace': typeof AppServiceMarketplaceRoute
+  '/app/service-provider': typeof AppServiceProviderRoute
   '/listing/$id': typeof ListingIdRoute
   '/admin/properties/$id': typeof AdminPropertiesIdRoute
 }
@@ -844,6 +862,8 @@ export interface FileRouteTypes {
     | '/app/payments'
     | '/app/profile'
     | '/app/properties'
+    | '/app/service-marketplace'
+    | '/app/service-provider'
     | '/listing/$id'
     | '/admin/properties/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -928,6 +948,8 @@ export interface FileRouteTypes {
     | '/app/payments'
     | '/app/profile'
     | '/app/properties'
+    | '/app/service-marketplace'
+    | '/app/service-provider'
     | '/listing/$id'
     | '/admin/properties/$id'
   id:
@@ -1012,6 +1034,8 @@ export interface FileRouteTypes {
     | '/app/payments'
     | '/app/profile'
     | '/app/properties'
+    | '/app/service-marketplace'
+    | '/app/service-provider'
     | '/listing/$id'
     | '/admin/properties/$id'
   fileRoutesById: FileRoutesById
@@ -1607,6 +1631,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppPropertiesRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/service-marketplace': {
+      id: '/app/service-marketplace'
+      path: '/service-marketplace'
+      fullPath: '/app/service-marketplace'
+      preLoaderRoute: typeof AppServiceMarketplaceRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/service-provider': {
+      id: '/app/service-provider'
+      path: '/service-provider'
+      fullPath: '/app/service-provider'
+      preLoaderRoute: typeof AppServiceProviderRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/listing/$id': {
       id: '/listing/$id'
       path: '/listing/$id'
@@ -1740,6 +1778,8 @@ interface AppRouteChildren {
   AppPaymentsRoute: typeof AppPaymentsRoute
   AppProfileRoute: typeof AppProfileRoute
   AppPropertiesRoute: typeof AppPropertiesRoute
+  AppServiceMarketplaceRoute: typeof AppServiceMarketplaceRoute
+  AppServiceProviderRoute: typeof AppServiceProviderRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -1758,6 +1798,8 @@ const AppRouteChildren: AppRouteChildren = {
   AppPaymentsRoute: AppPaymentsRoute,
   AppProfileRoute: AppProfileRoute,
   AppPropertiesRoute: AppPropertiesRoute,
+  AppServiceMarketplaceRoute: AppServiceMarketplaceRoute,
+  AppServiceProviderRoute: AppServiceProviderRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)

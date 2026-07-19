@@ -9,6 +9,8 @@ const roleLabels: Record<UserRole, string> = {
   admin: "Super admin",
   owner: "Dono de imóvel",
   tenant: "Inquilino",
+  investor: "Investidor",
+  service_provider: "Prestador de serviço",
 };
 
 export function ProfileCard() {
@@ -129,7 +131,10 @@ export function ProfileCard() {
   return (
     <div className="space-y-6">
       <Card>
-        <SectionTitle title="Perfil" action={role && <Badge variant="emerald">{roleLabels[role]}</Badge>} />
+        <SectionTitle
+          title="Perfil"
+          action={role && <Badge variant="emerald">{roleLabels[role]}</Badge>}
+        />
 
         <div className="flex items-center gap-5">
           <div className="group relative">
@@ -150,7 +155,11 @@ export function ProfileCard() {
               className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black/50 text-white opacity-0 transition-opacity group-hover:opacity-100 disabled:opacity-100"
               title="Alterar foto"
             >
-              {uploading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Camera className="h-5 w-5" />}
+              {uploading ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : (
+                <Camera className="h-5 w-5" />
+              )}
             </button>
             <input
               ref={fileInputRef}
@@ -229,7 +238,9 @@ export function ProfileCard() {
             />
           </div>
           <div>
-            <label className="text-xs font-medium text-muted-foreground">Confirmar nova senha</label>
+            <label className="text-xs font-medium text-muted-foreground">
+              Confirmar nova senha
+            </label>
             <input
               type="password"
               value={confirmPassword}

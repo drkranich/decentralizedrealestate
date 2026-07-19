@@ -2,11 +2,13 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { type ComponentType, useEffect, useState } from "react";
 import {
   ArrowRight,
+  BriefcaseBusiness,
   Building2,
   Coins,
   CreditCard,
   FileText,
   TrendingUp,
+  WalletCards,
   Wrench,
 } from "lucide-react";
 import { Card, PageHeader, StatCard } from "@/components/app/ui";
@@ -44,6 +46,18 @@ type TenantContractSummary = {
   properties?: { title: string | null } | null;
 };
 
+type ServiceProviderProfileSummary = {
+  id: string;
+  status: string;
+  subscription_status: string;
+  service_marketplace_plans?: { name: string | null; currency: string | null } | null;
+};
+
+type ServiceCommissionSummary = {
+  amount: number | string | null;
+  currency: string | null;
+};
+
 function UserDashboard() {
   const { user } = useAuthUser();
   const { role, loading: roleLoading } = useUserRole();
@@ -62,13 +76,17 @@ function UserDashboard() {
             ? "Resumo dos seus imóveis"
             : role === "investor"
               ? "Resumo do seu portfólio"
-              : "Resumo do seu aluguel"
+              : role === "service_provider"
+                ? "Resumo dos seus serviços"
+                : "Resumo do seu aluguel"
         }
       />
       {role === "owner" ? (
         <OwnerDashboard userId={user?.id ?? null} />
       ) : role === "investor" ? (
         <InvestorDashboard userId={user?.id ?? null} />
+      ) : role === "service_provider" ? (
+        <ServiceProviderDashboard userId={user?.id ?? null} />
       ) : (
         <TenantDashboard userId={user?.id ?? null} />
       )}
@@ -173,6 +191,12 @@ function OwnerDashboard({ userId }: { userId: string | null }) {
           icon={Wrench}
           title="Manutenção"
           subtitle="Solicitar serviços"
+        />
+        <QuickLink
+          to="/app/service-marketplace"
+          icon={BriefcaseBusiness}
+          title="Marketplace"
+          subtitle="Contratar prestadores"
         />
       </div>
     </>
@@ -334,8 +358,118 @@ function statusLabel(status: string | null | undefined) {
     approved: "Aprovado",
     approved_with_conditions: "Condicionado",
     blocked: "Bloqueado",
+    archived: "Arquivado",
+    not_started: "Não iniciado",
+    trialing: "Teste",
+    active: "Ativo",
+    past_due: "Atrasado",
+    cancelled: "Cancelado",
   };
   return status ? (labels[status] ?? status) : "Pendente";
+}
+
+function ServiceProviderDashboard({ userId }: { userId: string | null }) {
+  const [stats, setStats] = useState<{
+    profileStatus: string;
+    subscriptionStatus: string;
+    plan: string;
+    activeListings: number;
+    openLeads: number;
+    commission: number;
+    currency: string;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!userId) return;
+
+    (async () => {
+      const { data: profileData, error } = await supabase
+        .from("service_provider_profiles")
+        .select("id, status, subscription_status, service_marketplace_plans(name, currency)")
+        .eq("user_id", userId)
+        .maybeSingle();
+
+      if (error || !profileData) {
+        setStats({
+          profileStatus: "Pendente",
+          subscriptionStatus: "Não iniciado",
+          plan: "Sem plano",
+          activeListings: 0,
+          openLeads: 0,
+          commission: 0,
+          currency: "BRL",
+        });
+        return;
+      }
+
+      const profile = profileData as ServiceProviderProfileSummary;
+      const [{ count: activeListings }, { count: openLeads }, { data: commissionRows }] =
+        await Promise.all([
+          supabase
+            .from("service_listings")
+            .select("id", { count: "exact", head: true })
+            .eq("provider_id", profile.id)
+            .eq("status", "approved"),
+          supabase
+            .from("service_requests")
+            .select("id, service_listings!inner(provider_id)", { count: "exact", head: true })
+            .eq("service_listings.provider_id", profile.id)
+            .in("status", ["requested", "provider_contacted", "quoted"]),
+          supabase
+            .from("service_commission_ledger")
+            .select("amount, currency")
+            .eq("provider_id", profile.id),
+        ]);
+
+      const rows = (commissionRows as ServiceCommissionSummary[]) ?? [];
+      setStats({
+        profileStatus: statusLabel(profile.status),
+        subscriptionStatus: statusLabel(profile.subscription_status),
+        plan: profile.service_marketplace_plans?.name ?? "Sem plano",
+        activeListings: activeListings ?? 0,
+        openLeads: openLeads ?? 0,
+        commission: rows.reduce((sum, row) => sum + Number(row.amount ?? 0), 0),
+        currency: rows[0]?.currency ?? profile.service_marketplace_plans?.currency ?? "BRL",
+      });
+    })();
+  }, [userId]);
+
+  return (
+    <>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <StatCard label="Cadastro" value={stats?.profileStatus ?? "..."} icon={BriefcaseBusiness} />
+        <StatCard label="Plano" value={stats?.plan ?? "..."} icon={WalletCards} accent="skyblue" />
+        <StatCard
+          label="Serviços ativos"
+          value={stats ? String(stats.activeListings) : "..."}
+          icon={BriefcaseBusiness}
+        />
+        <StatCard
+          label="Leads abertos"
+          value={stats ? String(stats.openLeads) : "..."}
+          icon={FileText}
+          accent="skyblue"
+        />
+      </div>
+      <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+        <QuickLink
+          to="/app/service-provider"
+          icon={BriefcaseBusiness}
+          title="Painel do prestador"
+          subtitle="Cadastro, serviços e propostas"
+        />
+        <QuickLink
+          to="/app/service-provider"
+          icon={WalletCards}
+          title="Comissões"
+          subtitle={`Total gerado: ${
+            stats ? formatMoney(stats.commission, stats.currency) : "..."
+          }`}
+        />
+        <QuickLink to="/app/profile" icon={FileText} title="Perfil" subtitle="Dados da sua conta" />
+      </div>
+    </>
+  );
 }
 
 function TenantDashboard({ userId }: { userId: string | null }) {
@@ -419,6 +553,12 @@ function TenantDashboard({ userId }: { userId: string | null }) {
           subtitle="Abrir chamado"
         />
         <QuickLink
+          to="/app/service-marketplace"
+          icon={BriefcaseBusiness}
+          title="Marketplace"
+          subtitle="Contratar prestadores"
+        />
+        <QuickLink
           to="/app/messages"
           icon={FileText}
           title="Mensagens"
@@ -427,6 +567,14 @@ function TenantDashboard({ userId }: { userId: string | null }) {
       </div>
     </>
   );
+}
+
+function formatMoney(value: number, currency: string) {
+  return value.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: currency || "BRL",
+    maximumFractionDigits: 0,
+  });
 }
 
 function QuickLink({

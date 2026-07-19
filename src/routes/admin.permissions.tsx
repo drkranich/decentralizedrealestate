@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   ArrowRight,
+  BriefcaseBusiness,
   CheckCircle2,
   Home,
   KeyRound,
@@ -45,6 +46,7 @@ const roleIcons: Record<UserRole, typeof ShieldCheck> = {
   owner: Home,
   tenant: UserRound,
   investor: WalletCards,
+  service_provider: BriefcaseBusiness,
 };
 
 const roleNotes: Record<UserRole, string[]> = {
@@ -68,6 +70,11 @@ const roleNotes: Record<UserRole, string[]> = {
     "Pode consultar portfólio, rendimentos e documentos de investimento.",
     "Fica separado das abas de proprietário e inquilino.",
   ],
+  service_provider: [
+    "Acessa o painel próprio para cadastro comercial, anúncios e leads.",
+    "Pode operar por plano pago, comissão ou modelo híbrido aprovado pela plataforma.",
+    "Não acessa dados internos de proprietários, inquilinos ou investidores.",
+  ],
 };
 
 function Permissions() {
@@ -89,7 +96,13 @@ function Permissions() {
   useEffect(() => {
     (async () => {
       const { data } = await supabase.from("users").select("role");
-      const next: Record<UserRole, number> = { admin: 0, owner: 0, tenant: 0, investor: 0 };
+      const next: Record<UserRole, number> = {
+        admin: 0,
+        owner: 0,
+        tenant: 0,
+        investor: 0,
+        service_provider: 0,
+      };
       for (const row of data ?? []) {
         if (roleOrder.includes(row.role as UserRole)) {
           next[row.role as UserRole] += 1;
