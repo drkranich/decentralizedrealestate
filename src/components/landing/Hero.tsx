@@ -3,9 +3,9 @@ import { Button } from "@/components/ui/button";
 import heroImg from "@/assets/hero.jpg";
 
 const stats = [
-  { label: "Properties", value: "120K+", icon: Home, position: "top-12 left-4 md:top-16 md:left-12", delay: 0.4 },
-  { label: "Avg ROI", value: "12.8%", icon: TrendingUp, position: "top-32 right-4 md:top-24 md:right-16", delay: 0.6 },
-  { label: "Countries", value: "84", icon: Globe2, position: "bottom-12 left-6 md:bottom-20 md:left-20", delay: 0.8 },
+  { label: "Properties", value: "120K+", icon: Home, position: "top-0 left-0 md:top-4 md:left-8", delay: 0.2 },
+  { label: "Avg ROI", value: "12.8%", icon: TrendingUp, position: "top-0 right-0 md:top-4 md:right-8", delay: 0.6 },
+  { label: "Countries", value: "84", icon: Globe2, position: "bottom-0 left-1/2 -translate-x-1/2", delay: 1 },
 ];
 
 export function Hero() {
