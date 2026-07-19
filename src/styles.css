@@ -171,6 +171,41 @@
       linear-gradient(90deg, oklch(1 0 0 / 0.04) 1px, transparent 1px);
     background-size: 48px 48px;
   }
+
+  .dark .seravie-public [class*="bg-white"],
+  .dark .seravie-public [class*="bg-[#fbfcfb]"],
+  .dark .seravie-public [class*="bg-[#f7f8f5]"],
+  .dark .seravie-public [class*="bg-[#f4f6f2]"] {
+    background-color: oklch(0.15 0.018 250 / 0.94);
+  }
+
+  .dark .seravie-public [class*="bg-[#eef3f5]"],
+  .dark .seravie-public [class*="bg-[#f7faf9]"] {
+    background-color: oklch(0.11 0.018 250);
+  }
+
+  .dark .seravie-public [class*="border-[#dfe3dc]"],
+  .dark .seravie-public [class*="border-[#e7ebe5]"] {
+    border-color: oklch(1 0 0 / 0.1);
+  }
+
+  .dark .seravie-public [class*="text-[#111510]"],
+  .dark .seravie-public [class*="text-[#111820]"],
+  .dark .seravie-public [class*="text-[#141914]"],
+  .dark .seravie-public [class*="text-[#151711]"],
+  .dark .seravie-public [class*="text-[#252b24]"] {
+    color: oklch(0.98 0.005 240);
+  }
+
+  .dark .seravie-public [class*="text-[#3d433c]"],
+  .dark .seravie-public [class*="text-[#4b514a]"],
+  .dark .seravie-public [class*="text-[#4e574f]"],
+  .dark .seravie-public [class*="text-[#5a6259]"],
+  .dark .seravie-public [class*="text-[#5b6470]"],
+  .dark .seravie-public [class*="text-[#5b665d]"],
+  .dark .seravie-public [class*="text-[#667064]"] {
+    color: oklch(0.78 0.018 240);
+  }
 }
 
 @keyframes float {

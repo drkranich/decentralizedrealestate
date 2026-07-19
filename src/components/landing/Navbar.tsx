@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useLocation } from "@tanstack/react-router";
 import { LogIn, Menu, Moon, Sun, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/brand/Logo";
 
 export function Navbar() {
+  const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const [dark, setDark] = useState(false);
+  const [dark, setDark] = useState<boolean | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -16,27 +17,41 @@ export function Navbar() {
   }, []);
 
   useEffect(() => {
+    const stored = window.localStorage.getItem("seravie-theme");
+    if (stored === "dark" || stored === "light") {
+      setDark(stored === "dark");
+      return;
+    }
+    setDark(window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false);
+  }, []);
+
+  useEffect(() => {
+    if (dark === null) return;
     document.documentElement.classList.toggle("dark", dark);
+    document.documentElement.style.colorScheme = dark ? "dark" : "light";
+    window.localStorage.setItem("seravie-theme", dark ? "dark" : "light");
   }, [dark]);
 
   const links = [
     { label: "Plataforma", href: "/#platform" },
-    { label: "Tokenizacao", href: "/#token" },
+    { label: "Tokenização", href: "/#token" },
     { label: "Investimentos", href: "/#invest" },
     { label: "Infraestrutura", href: "/#infrastructure" },
     { label: "Internacional", href: "/#international" },
   ];
 
-  const shellTone = scrolled ? "glass-strong shadow-soft text-foreground" : "text-white";
-  const navLinkTone = scrolled
+  const overHero = location.pathname === "/" && !scrolled;
+  const shellTone = overHero ? "text-white" : "glass-strong shadow-soft text-foreground";
+  const navLinkTone = !overHero
     ? "text-muted-foreground hover:bg-secondary hover:text-foreground"
     : "text-white/80 hover:bg-white/10 hover:text-white";
-  const iconButtonTone = scrolled
+  const iconButtonTone = !overHero
     ? "text-muted-foreground hover:bg-secondary hover:text-foreground"
     : "text-white/80 hover:bg-white/10 hover:text-white";
-  const ctaTone = scrolled
+  const ctaTone = !overHero
     ? "hidden rounded-full bg-foreground text-background hover:bg-foreground/90 md:inline-flex"
     : "hidden rounded-full bg-white text-[#111510] hover:bg-white/90 md:inline-flex";
+  const darkEnabled = dark ?? false;
 
   return (
     <header
@@ -64,11 +79,13 @@ export function Navbar() {
 
           <div className="flex items-center gap-2">
             <button
-              onClick={() => setDark(!dark)}
+              type="button"
+              onClick={() => setDark((value) => !(value ?? false))}
               className={`hidden h-9 w-9 items-center justify-center rounded-full transition-colors md:flex ${iconButtonTone}`}
-              aria-label="Toggle theme"
+              aria-label={darkEnabled ? "Ativar tema claro" : "Ativar tema escuro"}
+              title={darkEnabled ? "Ativar tema claro" : "Ativar tema escuro"}
             >
-              {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              {darkEnabled ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </button>
             <Button asChild size="sm" className={ctaTone}>
               <Link to="/login">
@@ -99,6 +116,14 @@ export function Navbar() {
                   {l.label}
                 </a>
               ))}
+              <button
+                type="button"
+                onClick={() => setDark((value) => !(value ?? false))}
+                className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-medium hover:bg-secondary"
+              >
+                {darkEnabled ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                {darkEnabled ? "Tema claro" : "Tema escuro"}
+              </button>
               <Button asChild className="mt-2 rounded-full">
                 <Link to="/login" onClick={() => setOpen(false)}>
                   Entrar

@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
+import { useHeroImageUrl } from "@/components/brand/BrandProvider";
 import heroImg from "@/assets/hero.jpg";
 
 export const Route = createFileRoute("/")({
@@ -55,40 +56,40 @@ const modules: Module[] = [
     name: "Heritage Marketplace",
     label: "Compra e venda",
     description:
-      "Imoveis completos, oportunidades selecionadas e transacoes tradicionais com dados de mercado.",
+      "Imóveis completos, oportunidades selecionadas e transações tradicionais com dados de mercado.",
     icon: Store,
   },
   {
     name: "Heritage Token",
-    label: "Tokenizacao",
+    label: "Tokenização",
     description:
-      "Ativos reais convertidos em participacoes digitais com registro, regras e transparencia operacional.",
+      "Ativos reais convertidos em participações digitais com registro, regras e transparência operacional.",
     icon: Layers,
   },
   {
     name: "Heritage Invest",
-    label: "Fracoes imobiliarias",
+    label: "Frações imobiliárias",
     description:
-      "Acesso a casas, hoteis, fazendas, apartamentos e projetos exclusivos por participacao.",
+      "Acesso a casas, hotéis, fazendas, apartamentos e projetos exclusivos por participação.",
     icon: WalletCards,
   },
   {
     name: "Heritage Exchange",
-    label: "Mercado secundario",
+    label: "Mercado secundário",
     description:
-      "Ambiente para negociar participacoes e destravar liquidez em ativos antes pouco moveis.",
+      "Ambiente para negociar participações e destravar liquidez em ativos antes pouco móveis.",
     icon: Repeat2,
   },
   {
     name: "Heritage Capital",
-    label: "Credito e capital",
+    label: "Crédito e capital",
     description:
-      "Financiamento, antecipacao de recebiveis e estruturas de capital para ativos imobiliarios.",
+      "Financiamento, antecipação de recebíveis e estruturas de capital para ativos imobiliários.",
     icon: Banknote,
   },
   {
     name: "Heritage Registry",
-    label: "Historico digital",
+    label: "Histórico digital",
     description:
       "Documentos, contratos, auditoria e trilha de propriedade conectados ao ciclo de vida do ativo.",
     icon: FileCheck2,
@@ -98,8 +99,8 @@ const modules: Module[] = [
 const assetClasses = [
   { label: "Casas", icon: Home },
   { label: "Apartamentos", icon: Building2 },
-  { label: "Hoteis", icon: Hotel },
-  { label: "Chales", icon: KeyRound },
+  { label: "Hotéis", icon: Hotel },
+  { label: "Chalés", icon: KeyRound },
   { label: "Fazendas", icon: Landmark },
   { label: "Comercial", icon: Store },
 ];
@@ -109,30 +110,30 @@ const discoveryTabs: DiscoveryTab[] = [
     id: "city",
     label: "City",
     icon: MapPin,
-    summary: "Mapa vivo por cidade com liquidez, demanda e sinais de valorizacao.",
-    metric: "+14% media YoY",
+    summary: "Mapa vivo por cidade com liquidez, demanda e sinais de valorização.",
+    metric: "+14% média YoY",
     items: [
-      { title: "Lisbon, Portugal", detail: "1240 ativos monitorados", signal: "+12% YoY" },
-      { title: "Tokyo, Japan", detail: "1027 ativos monitorados", signal: "+13% YoY" },
-      { title: "New York, USA", detail: "814 ativos monitorados", signal: "+14% YoY" },
-      { title: "Bali, Indonesia", detail: "601 ativos monitorados", signal: "+15% YoY" },
+      { title: "Lisboa, Portugal", detail: "1240 ativos monitorados", signal: "+12% YoY" },
+      { title: "Tóquio, Japão", detail: "1027 ativos monitorados", signal: "+13% YoY" },
+      { title: "Nova York, EUA", detail: "814 ativos monitorados", signal: "+14% YoY" },
+      { title: "Bali, Indonésia", detail: "601 ativos monitorados", signal: "+15% YoY" },
     ],
   },
   {
     id: "country",
     label: "Country",
     icon: Globe2,
-    summary: "Comparacao internacional para compra, investimento e diversificacao patrimonial.",
+    summary: "Comparação internacional para compra, investimento e diversificação patrimonial.",
     metric: "32 mercados",
     items: [
       { title: "Portugal", detail: "Residencial, turismo e renda curta", signal: "Alta procura" },
-      { title: "Brazil", detail: "Praia, campo, incorporacao e renda", signal: "Ciclo inicial" },
+      { title: "Brasil", detail: "Praia, campo, incorporação e renda", signal: "Ciclo inicial" },
       {
         title: "United States",
         detail: "Multifamily, comercial e portfolios",
         signal: "Liquidez alta",
       },
-      { title: "Japan", detail: "Urbano, hotelaria e retrofit", signal: "Estavel" },
+      { title: "Japão", detail: "Urbano, hotelaria e retrofit", signal: "Estável" },
     ],
   },
   {
@@ -143,7 +144,7 @@ const discoveryTabs: DiscoveryTab[] = [
     metric: "8 classes",
     items: [
       { title: "Residencial urbano", detail: "Apartamentos, studios e casas", signal: "Core" },
-      { title: "Hospitality", detail: "Hoteis, pousadas e chales", signal: "Renda flexivel" },
+      { title: "Hospitality", detail: "Hotéis, pousadas e chalés", signal: "Renda flexível" },
       { title: "Rural e lifestyle", detail: "Fazendas, vilas e retiros", signal: "Oferta rara" },
       { title: "Comercial", detail: "Lojas, salas e ativos operacionais", signal: "Yield" },
     ],
@@ -153,22 +154,22 @@ const discoveryTabs: DiscoveryTab[] = [
     label: "For sale",
     icon: Calendar,
     summary:
-      "Pipeline de venda com preco, documentos, apetite de compra e potencial de tokenizacao.",
+      "Pipeline de venda com preço, documentos, apetite de compra e potencial de tokenização.",
     metric: "Compra direta",
     items: [
       {
-        title: "Imovel completo",
-        detail: "Aquisicao tradicional com due diligence",
-        signal: "Disponivel",
+        title: "Imóvel completo",
+        detail: "Aquisição tradicional com due diligence",
+        signal: "Disponível",
       },
       {
         title: "Portfolio familiar",
-        detail: "Venda estruturada em multiplos ativos",
-        signal: "Em analise",
+        detail: "Venda estruturada em múltiplos ativos",
+        signal: "Em análise",
       },
       {
         title: "Projeto exclusivo",
-        detail: "Terreno, incorporacao ou retrofit",
+        detail: "Terreno, incorporação ou retrofit",
         signal: "Selecionado",
       },
       {
@@ -182,46 +183,46 @@ const discoveryTabs: DiscoveryTab[] = [
     id: "rent",
     label: "For rent",
     icon: KeyRound,
-    summary: "Gestao de locacao, ocupacao e fluxo de caixa para proprietarios e investidores.",
+    summary: "Gestão de locação, ocupação e fluxo de caixa para proprietários e investidores.",
     metric: "Renda recorrente",
     items: [
-      { title: "Long stay", detail: "Contratos, reajustes e ocupacao", signal: "Estavel" },
-      { title: "Short stay", detail: "Precificacao dinamica e calendario", signal: "Alta margem" },
-      { title: "Corporate", detail: "Empresas, equipes e relocacao", signal: "Baixo atrito" },
-      { title: "Hospitality", detail: "Unidades operadas por parceiros", signal: "Escalavel" },
+      { title: "Long stay", detail: "Contratos, reajustes e ocupação", signal: "Estável" },
+      { title: "Short stay", detail: "Precificação dinâmica e calendário", signal: "Alta margem" },
+      { title: "Corporate", detail: "Empresas, equipes e relocação", signal: "Baixo atrito" },
+      { title: "Hospitality", detail: "Unidades operadas por parceiros", signal: "Escalável" },
     ],
   },
   {
     id: "furnished",
     label: "Furnished",
     icon: BadgeCheck,
-    summary: "Padronizacao de ativos prontos para morar, hospedar ou operar.",
+    summary: "Padronização de ativos prontos para morar, hospedar ou operar.",
     metric: "Turnkey",
     items: [
       {
         title: "Pronto para morar",
-        detail: "Inventario, fotos e vistoria digital",
+        detail: "Inventário, fotos e vistoria digital",
         signal: "Verificado",
       },
-      { title: "Pronto para renda", detail: "Operacao, manutencao e limpeza", signal: "Operavel" },
+      { title: "Pronto para renda", detail: "Operação, manutenção e limpeza", signal: "Operável" },
       {
         title: "Design upgrade",
-        detail: "Capex leve para elevar diaria e valor",
+        detail: "Capex leve para elevar diária e valor",
         signal: "Otimizado",
       },
-      { title: "Asset care", detail: "Historico de manutencao e seguros", signal: "Seguro" },
+      { title: "Asset care", detail: "Histórico de manutenção e seguros", signal: "Seguro" },
     ],
   },
   {
     id: "investment",
     label: "Investment",
     icon: TrendingUp,
-    summary: "Fracoes tokenizadas, mercado secundario e inteligencia para alocacao global.",
+    summary: "Frações tokenizadas, mercado secundário e inteligência para alocação global.",
     metric: "Token ready",
     items: [
       {
-        title: "Fracao imobiliaria",
-        detail: "Participacao em ativo selecionado",
+        title: "Fração imobiliária",
+        detail: "Participação em ativo selecionado",
         signal: "Acesso",
       },
       {
@@ -229,10 +230,10 @@ const discoveryTabs: DiscoveryTab[] = [
         detail: "Fluxo do ativo acompanhado por painel",
         signal: "Yield",
       },
-      { title: "Mercado secundario", detail: "Negociacao de participacoes", signal: "Liquidez" },
+      { title: "Mercado secundário", detail: "Negociação de participações", signal: "Liquidez" },
       {
         title: "Portfolio global",
-        detail: "Diversificacao por pais, moeda e classe",
+        detail: "Diversificação por país, moeda e classe",
         signal: "Balanceado",
       },
     ],
@@ -241,7 +242,7 @@ const discoveryTabs: DiscoveryTab[] = [
 
 function Index() {
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#f7f8f5] text-[#111510]">
+    <div className="seravie-public min-h-screen overflow-x-hidden bg-[#f7f8f5] text-[#111510] transition-colors dark:bg-[#07100d] dark:text-white">
       <Navbar />
       <main>
         <HeroSection />
@@ -257,17 +258,19 @@ function Index() {
 }
 
 function HeroSection() {
+  const heroImageOverride = useHeroImageUrl();
+
   return (
     <section className="relative min-h-[92svh] overflow-hidden pt-28 text-white">
       <img
-        src={heroImg}
+        src={heroImageOverride || heroImg}
         alt="Global real estate skyline"
         className="absolute inset-0 h-full w-full object-cover"
         width={1920}
         height={1080}
       />
-      <div className="absolute inset-0 bg-[#07100d]/70" />
-      <div className="absolute inset-x-0 bottom-0 h-28 bg-[#f7f8f5]" />
+      <div className="absolute inset-0 bg-[#07100d]/70 dark:bg-[#030605]/85" />
+      <div className="absolute inset-x-0 bottom-0 h-28 bg-[#f7f8f5] dark:bg-[#07100d]" />
 
       <div className="relative mx-auto flex min-h-[calc(92svh-7rem)] max-w-7xl flex-col justify-end px-4 pb-10">
         <div className="max-w-4xl pb-10">
@@ -279,11 +282,11 @@ function HeroSection() {
             Seravie Heritage
           </h1>
           <p className="mt-6 max-w-2xl text-xl font-medium text-white md:text-2xl">
-            Patrimonio imobiliario para a era digital.
+            Patrimônio imobiliário para a era digital.
           </p>
           <p className="mt-5 max-w-3xl text-base leading-8 text-white/75 md:text-lg">
             Uma infraestrutura global para comprar, vender, investir, administrar e tokenizar ativos
-            imobiliarios reais com seguranca, transparencia e acesso simplificado.
+            imobiliários reais com segurança, transparência e acesso simplificado.
           </p>
           <div className="mt-9 flex flex-wrap gap-3">
             <a
@@ -303,11 +306,11 @@ function HeroSection() {
 
         <div className="grid gap-px overflow-hidden rounded-lg border border-white/15 bg-white/15 text-[#111510] shadow-2xl md:grid-cols-3">
           {[
-            ["Ativos reais", "Casas, apartamentos, hoteis, fazendas e projetos exclusivos."],
-            ["Propriedade digital", "Fracionamento, registro, contratos e historico operacional."],
+            ["Ativos reais", "Casas, apartamentos, hotéis, fazendas e projetos exclusivos."],
+            ["Propriedade digital", "Fracionamento, registro, contratos e histórico operacional."],
             [
               "Capital global",
-              "Investidores, proprietarios e empreendedores em um unico ecossistema.",
+              "Investidores, proprietários e empreendedores em um único ecossistema.",
             ],
           ].map(([title, text]) => (
             <div key={title} className="bg-[#f7f8f5]/95 p-5">
@@ -329,18 +332,18 @@ function MissionSection() {
       <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.85fr_1.15fr]">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.24em] text-[#9b7423]">
-            Nossa missao
+            Nossa missão
           </p>
           <h2 className="mt-4 max-w-lg font-display text-5xl font-semibold leading-tight tracking-normal text-[#151711] md:text-6xl">
-            Transformar o imovel em um ativo mais acessivel, liquido e conectado.
+            Transformar o imóvel em um ativo mais acessível, líquido e conectado.
           </h2>
         </div>
         <div className="grid gap-5 md:grid-cols-2">
           {[
-            "Conectar proprietarios, investidores e empreendedores em um ecossistema imobiliario global.",
-            "Unir a seguranca dos ativos reais a eficiencia da propriedade digital.",
+            "Conectar proprietários, investidores e empreendedores em um ecossistema imobiliário global.",
+            "Unir a segurança dos ativos reais à eficiência da propriedade digital.",
             "Abrir oportunidades antes restritas a grandes investidores.",
-            "Criar transparencia em cada operacao, do documento ao mercado secundario.",
+            "Criar transparência em cada operação, do documento ao mercado secundário.",
           ].map((item) => (
             <div key={item} className="rounded-lg border border-[#dfe3dc] bg-white p-6 shadow-sm">
               <ShieldCheck className="h-5 w-5 text-[#b88a2b]" />
@@ -370,8 +373,8 @@ function DiscoveryConsole() {
             </h2>
           </div>
           <p className="max-w-xl text-sm leading-7 text-[#5a6259]">
-            A busca publica deixa de ser uma lista estatica. Ela cruza localizacao, tipo de ativo,
-            finalidade, mobiliario e perfil de investimento para revelar oportunidades com contexto.
+            A busca pública deixa de ser uma lista estática. Ela cruza localização, tipo de ativo,
+            finalidade, mobiliário e perfil de investimento para revelar oportunidades com contexto.
           </p>
         </div>
 
@@ -476,7 +479,7 @@ function InfrastructureSection() {
             Global Real Estate Infrastructure
           </p>
           <h2 className="mt-4 font-display text-5xl font-semibold leading-tight tracking-normal text-[#151711] md:text-6xl">
-            Uma companhia de infraestrutura para a proxima geracao do mercado imobiliario.
+            Uma companhia de infraestrutura para a próxima geração do mercado imobiliário.
           </h2>
         </div>
 
@@ -514,12 +517,12 @@ function InvestmentSection() {
             Heritage Token + Heritage Invest
           </p>
           <h2 className="mt-4 font-display text-5xl font-semibold leading-tight tracking-normal md:text-6xl">
-            Imoveis completos ou participacoes tokenizadas no mesmo ecossistema.
+            Imóveis completos ou participações tokenizadas no mesmo ecossistema.
           </h2>
           <p className="mt-6 max-w-2xl text-base leading-8 text-white/70">
-            A Seravie Heritage permite que o investidor escolha entre aquisicao direta, participacao
-            fracionada, renda recorrente e negociacao secundaria, sempre com ativos reais como base
-            economica.
+            A Seravie Heritage permite que o investidor escolha entre aquisição direta, participação
+            fracionada, renda recorrente e negociação secundária, sempre com ativos reais como base
+            econômica.
           </p>
           <div className="mt-8 flex flex-wrap gap-3" id="invest">
             {assetClasses.map((asset) => {
@@ -540,9 +543,9 @@ function InvestmentSection() {
         <div id="exchange" className="rounded-lg border border-white/15 bg-white/[0.04] p-6">
           {[
             { label: "Compra direta", value: "Ativo completo", icon: Home },
-            { label: "Tokenizacao", value: "Fracoes digitais", icon: Layers },
+            { label: "Tokenização", value: "Frações digitais", icon: Layers },
             { label: "Renda", value: "Fluxo acompanhado", icon: LineChart },
-            { label: "Exchange", value: "Saida secundaria", icon: Repeat2 },
+            { label: "Exchange", value: "Saída secundária", icon: Repeat2 },
           ].map((row) => {
             const Icon = row.icon;
             return (
@@ -578,7 +581,7 @@ function InternationalSection() {
             </p>
           </div>
           <div className="mt-8 grid grid-cols-2 gap-3">
-            {["Brasil", "Portugal", "Estados Unidos", "Japao", "Indonesia", "Europa"].map(
+            {["Brasil", "Portugal", "Estados Unidos", "Japão", "Indonésia", "Europa"].map(
               (market) => (
                 <div
                   key={market}
@@ -592,20 +595,20 @@ function InternationalSection() {
         </div>
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.24em] text-[#9b7423]">
-            Nossa visao
+            Nossa visão
           </p>
           <h2 className="mt-4 font-display text-5xl font-semibold leading-tight tracking-normal text-[#151711] md:text-6xl">
-            Permitir que pessoas de qualquer lugar participem da valorizacao de imoveis com
-            confianca.
+            Permitir que pessoas de qualquer lugar participem da valorização de imóveis com
+            confiança.
           </h2>
           <p className="mt-6 text-base leading-8 text-[#4e574f]">
-            A plataforma nasce para reunir proprietarios, compradores, investidores, gestores e
+            A plataforma nasce para reunir proprietários, compradores, investidores, gestores e
             operadores em uma rede internacional, conectando dados, contratos, capital e ativos
             reais.
           </p>
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
             {[
-              { label: "Transparencia", icon: ShieldCheck },
+              { label: "Transparência", icon: ShieldCheck },
               { label: "Liquidez", icon: BarChart3 },
               { label: "Acesso global", icon: Globe2 },
             ].map((item) => {

@@ -12,10 +12,10 @@ const cols = [
     title: "Plataforma",
     links: [
       { label: "Marketplace", href: "/#platform" },
-      { label: "Tokenizacao", href: "/#token" },
+      { label: "Tokenização", href: "/#token" },
       { label: "Investimentos", href: "/#invest" },
-      { label: "Mercado secundario", href: "/#exchange" },
-      { label: "Gestao patrimonial", href: "/#infrastructure" },
+      { label: "Mercado secundário", href: "/#exchange" },
+      { label: "Gestão patrimonial", href: "/#infrastructure" },
       { label: "Internacional", href: "/#international" },
     ],
   },
@@ -23,7 +23,7 @@ const cols = [
     title: "Infraestrutura",
     links: [
       { label: "API", to: "/api" },
-      { label: "Documentacao", to: "/docs" },
+      { label: "Documentação", to: "/docs" },
       { label: "SDKs", to: "/sdks" },
       { label: "Webhooks", to: "/webhooks" },
       { label: "Status", to: "/status" },
@@ -36,29 +36,29 @@ const cols = [
       { label: "Sobre", to: "/about" },
       { label: "Carreiras", to: "/careers" },
       { label: "Blog", to: "/blog" },
-      { label: "Press", to: "/press" },
-      { label: "Investor relations", to: "/investor-relations" },
+      { label: "Imprensa", to: "/press" },
+      { label: "Relações com investidores", to: "/investor-relations" },
       { label: "White-label", to: "/white-label" },
     ],
   },
   {
     title: "Legal",
     links: [
-      { label: "Terms", to: "/terms" },
-      { label: "Privacy", to: "/privacy" },
+      { label: "Termos", to: "/terms" },
+      { label: "Privacidade", to: "/privacy" },
       { label: "Cookies", to: "/cookies" },
       { label: "Compliance", to: "/compliance" },
-      { label: "Licenses", to: "/licenses" },
-      { label: "Security", to: "/security" },
+      { label: "Licenças", to: "/licenses" },
+      { label: "Segurança", to: "/security" },
     ],
   },
 ];
 
 const footerCtaDefaults = {
-  heading_prefix: "Construa patrimonio imobiliario",
+  heading_prefix: "Construa patrimônio imobiliário",
   heading_emphasis: "com infraestrutura digital.",
   subheading:
-    "A Seravie Heritage conecta ativos reais, capital global e tecnologia para a proxima geracao do mercado imobiliario.",
+    "A Seravie Heritage conecta ativos reais, capital global e tecnologia para a próxima geração do mercado imobiliário.",
 };
 
 export function Footer() {
