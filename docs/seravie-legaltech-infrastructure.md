@@ -63,6 +63,33 @@ O sistema não deve:
 - **Tokenization Engine**: emissão, cap table, whitelist, restrições, governança, distribuição e transferência, somente após aprovação.
 - **Audit & Evidence Service**: eventos append-only, exportação de evidências e cadeia de custódia.
 
+## Implementação no admin
+
+Rotas criadas para transformar o documento em operação navegável:
+
+- `/admin/legal-compliance`: cockpit executivo de LegalTech, RegTech, gates, proibições e decisões pendentes.
+- `/admin/jurisdictions`: Jurisdiction Rule Packs.
+- `/admin/token-classifications`: Legal Token Classification Record.
+- `/admin/compliance-engine`: Heritage Compliance Engine.
+- `/admin/legal-vault`: Heritage Legal Vault.
+- `/admin/contract-lifecycle`: Contract Lifecycle Management.
+- `/admin/identity-aml`: KYC, KYB, AML e Sanctions Layer.
+- `/admin/escrow-reconciliation`: Payments, Escrow e Reconciliation.
+- `/admin/audit-evidence`: Audit & Evidence Service.
+
+Todas as telas foram registradas no menu administrativo, busca do SaaS e matriz de permissões. As ações que dependeriam de banco, assinatura, KYC, escrow, custódia, AML, tokenização real ou aprovação jurídica permanecem em modo de infraestrutura/blueprint.
+
+## Blueprint de banco
+
+O arquivo `docs/seravie-legaltech-schema-blueprint.sql` descreve a estrutura inicial de tabelas, enums e relacionamentos para revisão. Ele não deve ser aplicado em produção antes de:
+
+- revisão jurídica;
+- revisão de segurança;
+- desenho definitivo de RLS;
+- decisão sobre exposição via Supabase Data API;
+- execução de advisors do Supabase;
+- testes de isolamento por papel, documento, jurisdição e legal hold.
+
 ## Estados mínimos
 
 ### Documento ou contrato

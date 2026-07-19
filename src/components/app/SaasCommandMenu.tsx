@@ -1,15 +1,23 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import {
+  Archive,
+  BadgeCheck,
   Building2,
   FileText,
+  FileLock2,
+  Globe2,
   KeyRound,
+  Landmark,
   LayoutDashboard,
   LayoutTemplate,
   Plus,
   Scale,
   Search,
   Settings,
+  ShieldCheck,
+  Signature,
+  UserCheck,
   Users,
 } from "lucide-react";
 import type { UserRole } from "@/lib/auth";
@@ -48,6 +56,14 @@ const iconByPath: Record<string, typeof Search> = {
   "/admin/users": Users,
   "/admin/permissions": KeyRound,
   "/admin/legal-compliance": Scale,
+  "/admin/jurisdictions": Globe2,
+  "/admin/token-classifications": BadgeCheck,
+  "/admin/compliance-engine": ShieldCheck,
+  "/admin/legal-vault": FileLock2,
+  "/admin/contract-lifecycle": Signature,
+  "/admin/identity-aml": UserCheck,
+  "/admin/escrow-reconciliation": Landmark,
+  "/admin/audit-evidence": Archive,
   "/admin/cms": LayoutTemplate,
   "/admin/settings": Settings,
   "/app/dashboard": LayoutDashboard,

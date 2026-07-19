@@ -35,17 +35,24 @@ import { Route as TermsRouteImport } from './routes/terms'
 import { Route as WebhooksRouteImport } from './routes/webhooks'
 import { Route as WhiteLabelRouteImport } from './routes/white-label'
 import { Route as AdminAiRouteImport } from './routes/admin.ai'
+import { Route as AdminAuditEvidenceRouteImport } from './routes/admin.audit-evidence'
 import { Route as AdminCmsRouteImport } from './routes/admin.cms'
 import { Route as AdminComingSoonRouteImport } from './routes/admin.coming-soon'
+import { Route as AdminComplianceEngineRouteImport } from './routes/admin.compliance-engine'
+import { Route as AdminContractLifecycleRouteImport } from './routes/admin.contract-lifecycle'
 import { Route as AdminContractsRouteImport } from './routes/admin.contracts'
 import { Route as AdminCrmRouteImport } from './routes/admin.crm'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
+import { Route as AdminEscrowReconciliationRouteImport } from './routes/admin.escrow-reconciliation'
 import { Route as AdminFinanceRouteImport } from './routes/admin.finance'
 import { Route as AdminFollowUpRouteImport } from './routes/admin.follow-up'
 import { Route as AdminFractionalOwnershipRouteImport } from './routes/admin.fractional-ownership'
+import { Route as AdminIdentityAmlRouteImport } from './routes/admin.identity-aml'
 import { Route as AdminInvestorRouteImport } from './routes/admin.investor'
 import { Route as AdminInvestorReportsRouteImport } from './routes/admin.investor-reports'
+import { Route as AdminJurisdictionsRouteImport } from './routes/admin.jurisdictions'
 import { Route as AdminLegalComplianceRouteImport } from './routes/admin.legal-compliance'
+import { Route as AdminLegalVaultRouteImport } from './routes/admin.legal-vault'
 import { Route as AdminLogsRouteImport } from './routes/admin.logs'
 import { Route as AdminMaintenanceRouteImport } from './routes/admin.maintenance'
 import { Route as AdminMarketplaceRouteImport } from './routes/admin.marketplace'
@@ -62,6 +69,7 @@ import { Route as AdminPropertiesCalendarRouteImport } from './routes/admin.prop
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminSmartPricingRouteImport } from './routes/admin.smart-pricing'
 import { Route as AdminTenantScoringRouteImport } from './routes/admin.tenant-scoring'
+import { Route as AdminTokenClassificationsRouteImport } from './routes/admin.token-classifications'
 import { Route as AdminTransactionsRouteImport } from './routes/admin.transactions'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminWebhooksRouteImport } from './routes/admin.webhooks'
@@ -212,6 +220,11 @@ const AdminAiRoute = AdminAiRouteImport.update({
   path: '/ai',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminAuditEvidenceRoute = AdminAuditEvidenceRouteImport.update({
+  id: '/audit-evidence',
+  path: '/audit-evidence',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminCmsRoute = AdminCmsRouteImport.update({
   id: '/cms',
   path: '/cms',
@@ -220,6 +233,16 @@ const AdminCmsRoute = AdminCmsRouteImport.update({
 const AdminComingSoonRoute = AdminComingSoonRouteImport.update({
   id: '/coming-soon',
   path: '/coming-soon',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminComplianceEngineRoute = AdminComplianceEngineRouteImport.update({
+  id: '/compliance-engine',
+  path: '/compliance-engine',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminContractLifecycleRoute = AdminContractLifecycleRouteImport.update({
+  id: '/contract-lifecycle',
+  path: '/contract-lifecycle',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminContractsRoute = AdminContractsRouteImport.update({
@@ -237,6 +260,12 @@ const AdminDashboardRoute = AdminDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminEscrowReconciliationRoute =
+  AdminEscrowReconciliationRouteImport.update({
+    id: '/escrow-reconciliation',
+    path: '/escrow-reconciliation',
+    getParentRoute: () => AdminRoute,
+  } as any)
 const AdminFinanceRoute = AdminFinanceRouteImport.update({
   id: '/finance',
   path: '/finance',
@@ -253,6 +282,11 @@ const AdminFractionalOwnershipRoute =
     path: '/fractional-ownership',
     getParentRoute: () => AdminRoute,
   } as any)
+const AdminIdentityAmlRoute = AdminIdentityAmlRouteImport.update({
+  id: '/identity-aml',
+  path: '/identity-aml',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminInvestorRoute = AdminInvestorRouteImport.update({
   id: '/investor',
   path: '/investor',
@@ -263,9 +297,19 @@ const AdminInvestorReportsRoute = AdminInvestorReportsRouteImport.update({
   path: '/investor-reports',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminJurisdictionsRoute = AdminJurisdictionsRouteImport.update({
+  id: '/jurisdictions',
+  path: '/jurisdictions',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminLegalComplianceRoute = AdminLegalComplianceRouteImport.update({
   id: '/legal-compliance',
   path: '/legal-compliance',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLegalVaultRoute = AdminLegalVaultRouteImport.update({
+  id: '/legal-vault',
+  path: '/legal-vault',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminLogsRoute = AdminLogsRouteImport.update({
@@ -349,6 +393,12 @@ const AdminTenantScoringRoute = AdminTenantScoringRouteImport.update({
   path: '/tenant-scoring',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminTokenClassificationsRoute =
+  AdminTokenClassificationsRouteImport.update({
+    id: '/token-classifications',
+    path: '/token-classifications',
+    getParentRoute: () => AdminRoute,
+  } as any)
 const AdminTransactionsRoute = AdminTransactionsRouteImport.update({
   id: '/transactions',
   path: '/transactions',
@@ -472,17 +522,24 @@ export interface FileRoutesByFullPath {
   '/webhooks': typeof WebhooksRoute
   '/white-label': typeof WhiteLabelRoute
   '/admin/ai': typeof AdminAiRoute
+  '/admin/audit-evidence': typeof AdminAuditEvidenceRoute
   '/admin/cms': typeof AdminCmsRoute
   '/admin/coming-soon': typeof AdminComingSoonRoute
+  '/admin/compliance-engine': typeof AdminComplianceEngineRoute
+  '/admin/contract-lifecycle': typeof AdminContractLifecycleRoute
   '/admin/contracts': typeof AdminContractsRoute
   '/admin/crm': typeof AdminCrmRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/escrow-reconciliation': typeof AdminEscrowReconciliationRoute
   '/admin/finance': typeof AdminFinanceRoute
   '/admin/follow-up': typeof AdminFollowUpRoute
   '/admin/fractional-ownership': typeof AdminFractionalOwnershipRoute
+  '/admin/identity-aml': typeof AdminIdentityAmlRoute
   '/admin/investor': typeof AdminInvestorRoute
   '/admin/investor-reports': typeof AdminInvestorReportsRoute
+  '/admin/jurisdictions': typeof AdminJurisdictionsRoute
   '/admin/legal-compliance': typeof AdminLegalComplianceRoute
+  '/admin/legal-vault': typeof AdminLegalVaultRoute
   '/admin/logs': typeof AdminLogsRoute
   '/admin/maintenance': typeof AdminMaintenanceRoute
   '/admin/marketplace': typeof AdminMarketplaceRoute
@@ -499,6 +556,7 @@ export interface FileRoutesByFullPath {
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/smart-pricing': typeof AdminSmartPricingRoute
   '/admin/tenant-scoring': typeof AdminTenantScoringRoute
+  '/admin/token-classifications': typeof AdminTokenClassificationsRoute
   '/admin/transactions': typeof AdminTransactionsRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/webhooks': typeof AdminWebhooksRoute
@@ -546,17 +604,24 @@ export interface FileRoutesByTo {
   '/webhooks': typeof WebhooksRoute
   '/white-label': typeof WhiteLabelRoute
   '/admin/ai': typeof AdminAiRoute
+  '/admin/audit-evidence': typeof AdminAuditEvidenceRoute
   '/admin/cms': typeof AdminCmsRoute
   '/admin/coming-soon': typeof AdminComingSoonRoute
+  '/admin/compliance-engine': typeof AdminComplianceEngineRoute
+  '/admin/contract-lifecycle': typeof AdminContractLifecycleRoute
   '/admin/contracts': typeof AdminContractsRoute
   '/admin/crm': typeof AdminCrmRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/escrow-reconciliation': typeof AdminEscrowReconciliationRoute
   '/admin/finance': typeof AdminFinanceRoute
   '/admin/follow-up': typeof AdminFollowUpRoute
   '/admin/fractional-ownership': typeof AdminFractionalOwnershipRoute
+  '/admin/identity-aml': typeof AdminIdentityAmlRoute
   '/admin/investor': typeof AdminInvestorRoute
   '/admin/investor-reports': typeof AdminInvestorReportsRoute
+  '/admin/jurisdictions': typeof AdminJurisdictionsRoute
   '/admin/legal-compliance': typeof AdminLegalComplianceRoute
+  '/admin/legal-vault': typeof AdminLegalVaultRoute
   '/admin/logs': typeof AdminLogsRoute
   '/admin/maintenance': typeof AdminMaintenanceRoute
   '/admin/marketplace': typeof AdminMarketplaceRoute
@@ -573,6 +638,7 @@ export interface FileRoutesByTo {
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/smart-pricing': typeof AdminSmartPricingRoute
   '/admin/tenant-scoring': typeof AdminTenantScoringRoute
+  '/admin/token-classifications': typeof AdminTokenClassificationsRoute
   '/admin/transactions': typeof AdminTransactionsRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/webhooks': typeof AdminWebhooksRoute
@@ -621,17 +687,24 @@ export interface FileRoutesById {
   '/webhooks': typeof WebhooksRoute
   '/white-label': typeof WhiteLabelRoute
   '/admin/ai': typeof AdminAiRoute
+  '/admin/audit-evidence': typeof AdminAuditEvidenceRoute
   '/admin/cms': typeof AdminCmsRoute
   '/admin/coming-soon': typeof AdminComingSoonRoute
+  '/admin/compliance-engine': typeof AdminComplianceEngineRoute
+  '/admin/contract-lifecycle': typeof AdminContractLifecycleRoute
   '/admin/contracts': typeof AdminContractsRoute
   '/admin/crm': typeof AdminCrmRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/escrow-reconciliation': typeof AdminEscrowReconciliationRoute
   '/admin/finance': typeof AdminFinanceRoute
   '/admin/follow-up': typeof AdminFollowUpRoute
   '/admin/fractional-ownership': typeof AdminFractionalOwnershipRoute
+  '/admin/identity-aml': typeof AdminIdentityAmlRoute
   '/admin/investor': typeof AdminInvestorRoute
   '/admin/investor-reports': typeof AdminInvestorReportsRoute
+  '/admin/jurisdictions': typeof AdminJurisdictionsRoute
   '/admin/legal-compliance': typeof AdminLegalComplianceRoute
+  '/admin/legal-vault': typeof AdminLegalVaultRoute
   '/admin/logs': typeof AdminLogsRoute
   '/admin/maintenance': typeof AdminMaintenanceRoute
   '/admin/marketplace': typeof AdminMarketplaceRoute
@@ -648,6 +721,7 @@ export interface FileRoutesById {
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/smart-pricing': typeof AdminSmartPricingRoute
   '/admin/tenant-scoring': typeof AdminTenantScoringRoute
+  '/admin/token-classifications': typeof AdminTokenClassificationsRoute
   '/admin/transactions': typeof AdminTransactionsRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/webhooks': typeof AdminWebhooksRoute
@@ -697,17 +771,24 @@ export interface FileRouteTypes {
     | '/webhooks'
     | '/white-label'
     | '/admin/ai'
+    | '/admin/audit-evidence'
     | '/admin/cms'
     | '/admin/coming-soon'
+    | '/admin/compliance-engine'
+    | '/admin/contract-lifecycle'
     | '/admin/contracts'
     | '/admin/crm'
     | '/admin/dashboard'
+    | '/admin/escrow-reconciliation'
     | '/admin/finance'
     | '/admin/follow-up'
     | '/admin/fractional-ownership'
+    | '/admin/identity-aml'
     | '/admin/investor'
     | '/admin/investor-reports'
+    | '/admin/jurisdictions'
     | '/admin/legal-compliance'
+    | '/admin/legal-vault'
     | '/admin/logs'
     | '/admin/maintenance'
     | '/admin/marketplace'
@@ -724,6 +805,7 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/smart-pricing'
     | '/admin/tenant-scoring'
+    | '/admin/token-classifications'
     | '/admin/transactions'
     | '/admin/users'
     | '/admin/webhooks'
@@ -771,17 +853,24 @@ export interface FileRouteTypes {
     | '/webhooks'
     | '/white-label'
     | '/admin/ai'
+    | '/admin/audit-evidence'
     | '/admin/cms'
     | '/admin/coming-soon'
+    | '/admin/compliance-engine'
+    | '/admin/contract-lifecycle'
     | '/admin/contracts'
     | '/admin/crm'
     | '/admin/dashboard'
+    | '/admin/escrow-reconciliation'
     | '/admin/finance'
     | '/admin/follow-up'
     | '/admin/fractional-ownership'
+    | '/admin/identity-aml'
     | '/admin/investor'
     | '/admin/investor-reports'
+    | '/admin/jurisdictions'
     | '/admin/legal-compliance'
+    | '/admin/legal-vault'
     | '/admin/logs'
     | '/admin/maintenance'
     | '/admin/marketplace'
@@ -798,6 +887,7 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/smart-pricing'
     | '/admin/tenant-scoring'
+    | '/admin/token-classifications'
     | '/admin/transactions'
     | '/admin/users'
     | '/admin/webhooks'
@@ -845,17 +935,24 @@ export interface FileRouteTypes {
     | '/webhooks'
     | '/white-label'
     | '/admin/ai'
+    | '/admin/audit-evidence'
     | '/admin/cms'
     | '/admin/coming-soon'
+    | '/admin/compliance-engine'
+    | '/admin/contract-lifecycle'
     | '/admin/contracts'
     | '/admin/crm'
     | '/admin/dashboard'
+    | '/admin/escrow-reconciliation'
     | '/admin/finance'
     | '/admin/follow-up'
     | '/admin/fractional-ownership'
+    | '/admin/identity-aml'
     | '/admin/investor'
     | '/admin/investor-reports'
+    | '/admin/jurisdictions'
     | '/admin/legal-compliance'
+    | '/admin/legal-vault'
     | '/admin/logs'
     | '/admin/maintenance'
     | '/admin/marketplace'
@@ -872,6 +969,7 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/smart-pricing'
     | '/admin/tenant-scoring'
+    | '/admin/token-classifications'
     | '/admin/transactions'
     | '/admin/users'
     | '/admin/webhooks'
@@ -1106,6 +1204,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAiRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/audit-evidence': {
+      id: '/admin/audit-evidence'
+      path: '/audit-evidence'
+      fullPath: '/admin/audit-evidence'
+      preLoaderRoute: typeof AdminAuditEvidenceRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/cms': {
       id: '/admin/cms'
       path: '/cms'
@@ -1118,6 +1223,20 @@ declare module '@tanstack/react-router' {
       path: '/coming-soon'
       fullPath: '/admin/coming-soon'
       preLoaderRoute: typeof AdminComingSoonRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/compliance-engine': {
+      id: '/admin/compliance-engine'
+      path: '/compliance-engine'
+      fullPath: '/admin/compliance-engine'
+      preLoaderRoute: typeof AdminComplianceEngineRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/contract-lifecycle': {
+      id: '/admin/contract-lifecycle'
+      path: '/contract-lifecycle'
+      fullPath: '/admin/contract-lifecycle'
+      preLoaderRoute: typeof AdminContractLifecycleRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/contracts': {
@@ -1141,6 +1260,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDashboardRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/escrow-reconciliation': {
+      id: '/admin/escrow-reconciliation'
+      path: '/escrow-reconciliation'
+      fullPath: '/admin/escrow-reconciliation'
+      preLoaderRoute: typeof AdminEscrowReconciliationRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/finance': {
       id: '/admin/finance'
       path: '/finance'
@@ -1162,6 +1288,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminFractionalOwnershipRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/identity-aml': {
+      id: '/admin/identity-aml'
+      path: '/identity-aml'
+      fullPath: '/admin/identity-aml'
+      preLoaderRoute: typeof AdminIdentityAmlRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/investor': {
       id: '/admin/investor'
       path: '/investor'
@@ -1176,11 +1309,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminInvestorReportsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/jurisdictions': {
+      id: '/admin/jurisdictions'
+      path: '/jurisdictions'
+      fullPath: '/admin/jurisdictions'
+      preLoaderRoute: typeof AdminJurisdictionsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/legal-compliance': {
       id: '/admin/legal-compliance'
       path: '/legal-compliance'
       fullPath: '/admin/legal-compliance'
       preLoaderRoute: typeof AdminLegalComplianceRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/legal-vault': {
+      id: '/admin/legal-vault'
+      path: '/legal-vault'
+      fullPath: '/admin/legal-vault'
+      preLoaderRoute: typeof AdminLegalVaultRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/logs': {
@@ -1293,6 +1440,13 @@ declare module '@tanstack/react-router' {
       path: '/tenant-scoring'
       fullPath: '/admin/tenant-scoring'
       preLoaderRoute: typeof AdminTenantScoringRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/token-classifications': {
+      id: '/admin/token-classifications'
+      path: '/token-classifications'
+      fullPath: '/admin/token-classifications'
+      preLoaderRoute: typeof AdminTokenClassificationsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/transactions': {
@@ -1445,17 +1599,24 @@ const AdminPropertiesRouteWithChildren = AdminPropertiesRoute._addFileChildren(
 
 interface AdminRouteChildren {
   AdminAiRoute: typeof AdminAiRoute
+  AdminAuditEvidenceRoute: typeof AdminAuditEvidenceRoute
   AdminCmsRoute: typeof AdminCmsRoute
   AdminComingSoonRoute: typeof AdminComingSoonRoute
+  AdminComplianceEngineRoute: typeof AdminComplianceEngineRoute
+  AdminContractLifecycleRoute: typeof AdminContractLifecycleRoute
   AdminContractsRoute: typeof AdminContractsRoute
   AdminCrmRoute: typeof AdminCrmRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminEscrowReconciliationRoute: typeof AdminEscrowReconciliationRoute
   AdminFinanceRoute: typeof AdminFinanceRoute
   AdminFollowUpRoute: typeof AdminFollowUpRoute
   AdminFractionalOwnershipRoute: typeof AdminFractionalOwnershipRoute
+  AdminIdentityAmlRoute: typeof AdminIdentityAmlRoute
   AdminInvestorRoute: typeof AdminInvestorRoute
   AdminInvestorReportsRoute: typeof AdminInvestorReportsRoute
+  AdminJurisdictionsRoute: typeof AdminJurisdictionsRoute
   AdminLegalComplianceRoute: typeof AdminLegalComplianceRoute
+  AdminLegalVaultRoute: typeof AdminLegalVaultRoute
   AdminLogsRoute: typeof AdminLogsRoute
   AdminMaintenanceRoute: typeof AdminMaintenanceRoute
   AdminMarketplaceRoute: typeof AdminMarketplaceRoute
@@ -1472,6 +1633,7 @@ interface AdminRouteChildren {
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminSmartPricingRoute: typeof AdminSmartPricingRoute
   AdminTenantScoringRoute: typeof AdminTenantScoringRoute
+  AdminTokenClassificationsRoute: typeof AdminTokenClassificationsRoute
   AdminTransactionsRoute: typeof AdminTransactionsRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminWebhooksRoute: typeof AdminWebhooksRoute
@@ -1480,17 +1642,24 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAiRoute: AdminAiRoute,
+  AdminAuditEvidenceRoute: AdminAuditEvidenceRoute,
   AdminCmsRoute: AdminCmsRoute,
   AdminComingSoonRoute: AdminComingSoonRoute,
+  AdminComplianceEngineRoute: AdminComplianceEngineRoute,
+  AdminContractLifecycleRoute: AdminContractLifecycleRoute,
   AdminContractsRoute: AdminContractsRoute,
   AdminCrmRoute: AdminCrmRoute,
   AdminDashboardRoute: AdminDashboardRoute,
+  AdminEscrowReconciliationRoute: AdminEscrowReconciliationRoute,
   AdminFinanceRoute: AdminFinanceRoute,
   AdminFollowUpRoute: AdminFollowUpRoute,
   AdminFractionalOwnershipRoute: AdminFractionalOwnershipRoute,
+  AdminIdentityAmlRoute: AdminIdentityAmlRoute,
   AdminInvestorRoute: AdminInvestorRoute,
   AdminInvestorReportsRoute: AdminInvestorReportsRoute,
+  AdminJurisdictionsRoute: AdminJurisdictionsRoute,
   AdminLegalComplianceRoute: AdminLegalComplianceRoute,
+  AdminLegalVaultRoute: AdminLegalVaultRoute,
   AdminLogsRoute: AdminLogsRoute,
   AdminMaintenanceRoute: AdminMaintenanceRoute,
   AdminMarketplaceRoute: AdminMarketplaceRoute,
@@ -1507,6 +1676,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminSettingsRoute: AdminSettingsRoute,
   AdminSmartPricingRoute: AdminSmartPricingRoute,
   AdminTenantScoringRoute: AdminTenantScoringRoute,
+  AdminTokenClassificationsRoute: AdminTokenClassificationsRoute,
   AdminTransactionsRoute: AdminTransactionsRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminWebhooksRoute: AdminWebhooksRoute,

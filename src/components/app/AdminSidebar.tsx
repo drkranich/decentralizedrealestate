@@ -1,20 +1,25 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard,
+  Archive,
+  BadgeCheck,
   Building2,
   Coins,
   ShoppingBag,
   FileText,
+  FileLock2,
   CreditCard,
   BarChart3,
   MessageSquare,
   Calendar,
+  Globe2,
   Sparkles,
   Wrench,
   Brush,
   TrendingUp,
   ArrowLeftRight,
   Banknote,
+  Landmark,
   FileBarChart,
   Layers,
   Boxes,
@@ -36,6 +41,7 @@ import {
   ChevronDown,
   LayoutTemplate,
   Scale,
+  Signature,
   type LucideIcon,
 } from "lucide-react";
 import {
@@ -141,6 +147,65 @@ const groups: Group[] = [
     ],
   },
   {
+    label: "LegalTech",
+    items: [
+      {
+        title: "Legal & Compliance",
+        icon: Scale,
+        to: "/admin/legal-compliance",
+        section: "LegalTech",
+      },
+      {
+        title: "Jurisdictions",
+        icon: Globe2,
+        to: "/admin/jurisdictions",
+        section: "LegalTech",
+      },
+      {
+        title: "Token Classification",
+        icon: BadgeCheck,
+        to: "/admin/token-classifications",
+        section: "LegalTech",
+      },
+      {
+        title: "Compliance Engine",
+        icon: ShieldCheck,
+        to: "/admin/compliance-engine",
+        section: "LegalTech",
+      },
+      {
+        title: "Legal Vault",
+        icon: FileLock2,
+        to: "/admin/legal-vault",
+        section: "LegalTech",
+      },
+      {
+        title: "CLM",
+        icon: Signature,
+        to: "/admin/contract-lifecycle",
+        section: "LegalTech",
+      },
+      {
+        title: "KYC / KYB / AML",
+        icon: UserCheck,
+        to: "/admin/identity-aml",
+        section: "LegalTech",
+      },
+      {
+        title: "Escrow & Reconciliation",
+        icon: Landmark,
+        to: "/admin/escrow-reconciliation",
+        section: "LegalTech",
+      },
+      {
+        title: "Audit & Evidence",
+        icon: Archive,
+        to: "/admin/audit-evidence",
+        section: "LegalTech",
+      },
+    ],
+  },
+  {
     label: "Services",
     items: [
       {
@@ -202,12 +267,6 @@ const groups: Group[] = [
     items: [
       { title: "Users", icon: Users, to: "/admin/users", section: "Admin" },
       { title: "Permissions", icon: KeyRound, to: "/admin/permissions", section: "Admin" },
-      {
-        title: "Legal & Compliance",
-        icon: Scale,
-        to: "/admin/legal-compliance",
-        section: "Admin",
-      },
       {
         title: "Security",
         icon: Lock,

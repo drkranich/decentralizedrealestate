@@ -65,41 +65,49 @@ const gates = [
 const modules = [
   {
     title: "Jurisdiction Rule Packs",
+    path: "/admin/jurisdictions",
     icon: Globe2,
     text: "Regras por país, versão, vigência, regulador, licença, restrição e responsável jurídico.",
   },
   {
     title: "Legal Token Classification",
+    path: "/admin/token-classifications",
     icon: BadgeCheck,
     text: "Ficha obrigatória para classificar cada ativo tokenizado antes de qualquer oferta.",
   },
   {
     title: "Heritage Compliance Engine",
+    path: "/admin/compliance-engine",
     icon: ShieldCheck,
     text: "Decisões versionadas com regra aplicada, evidência, fundamento, condição e responsável.",
   },
   {
     title: "Contract Lifecycle Management",
+    path: "/admin/contract-lifecycle",
     icon: Signature,
     text: "Templates, cláusulas, versões, revisão jurídica, aprovação, assinatura e arquivamento.",
   },
   {
     title: "Heritage Legal Vault",
+    path: "/admin/legal-vault",
     icon: FileLock2,
     text: "Cofre documental com hash, retenção, legal hold, versão assinada e trilha de custódia.",
   },
   {
     title: "KYC, KYB, AML e sanções",
+    path: "/admin/identity-aml",
     icon: LockKeyhole,
     text: "Identidade, beneficiário final, origem de recursos, PEP, sanções e monitoramento contínuo.",
   },
   {
     title: "Payments, escrow e conciliação",
+    path: "/admin/escrow-reconciliation",
     icon: Landmark,
     text: "Fluxos de pagamento, liberação, devolução, disputa, bloqueio, parceiro licenciado e reconciliação.",
   },
   {
     title: "Audit & Evidence Service",
+    path: "/admin/audit-evidence",
     icon: Archive,
     text: "Eventos críticos append-only, exportação de evidências e cadeia de custódia operacional.",
   },
@@ -250,6 +258,12 @@ function LegalCompliance() {
                 </div>
                 <div className="font-display text-sm font-semibold">{module.title}</div>
                 <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{module.text}</p>
+                <Link
+                  to={module.path as never}
+                  className="mt-4 inline-flex items-center rounded-full border border-glass-border bg-card px-3 py-1.5 text-xs font-medium hover:bg-secondary"
+                >
+                  Abrir módulo
+                </Link>
               </div>
             );
           })}
