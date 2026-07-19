@@ -1,9 +1,24 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Plus, Filter, Grid3x3, List, MapPin, Building2, Loader2, ImageOff } from "lucide-react";
+import { Plus, Filter, Grid3x3, List, MapPin, Building2, Loader2, ImageOff, Share2 } from "lucide-react";
 import { PageHeader, Card, Badge, StatCard } from "@/components/app/ui";
 import { AddPropertyModal } from "@/components/properties/AddPropertyModal";
+import { EditPropertyModal, type EditableProperty } from "@/components/properties/EditPropertyModal";
+import { PropertyActionsMenu } from "@/components/properties/PropertyActionsMenu";
+import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
+
+function shareProperty(id: string, title: string) {
+  const url = `${window.location.origin}/listing/${id}`;
+  if (navigator.share) {
+    navigator.share({ title, url }).catch(() => {});
+    return;
+  }
+  navigator.clipboard.writeText(url).then(
+    () => toast.success("Link copiado para a área de transferência."),
+    () => toast.error("Não foi possível copiar o link."),
+  );
+}
 
 export const Route = createFileRoute("/admin/properties")({
   validateSearch: (s: Record<string, unknown>) => ({
@@ -16,6 +31,7 @@ export const Route = createFileRoute("/admin/properties")({
 type PropertyRow = {
   id: string;
   title: string;
+  description: string | null;
   city: string | null;
   country: string | null;
   price: number | null;
@@ -37,6 +53,7 @@ function Properties() {
   const [showFilters, setShowFilters] = useState(false);
   const [textQuery, setTextQuery] = useState(search.q ?? "");
   const [open, setOpen] = useState(search.add === "1");
+  const [editing, setEditing] = useState<EditableProperty | null>(null);
 
   useEffect(() => {
     if (search.add === "1") setOpen(true);
@@ -52,7 +69,7 @@ function Properties() {
 
     const { data, error } = await supabase
       .from("properties")
-      .select("id, title, city, country, price, status, listing_type, bedrooms, bathrooms, area_sqm, owner_id, property_media(storage_path, media_type, position)")
+      .select("id, title, description, city, country, price, status, listing_type, bedrooms, bathrooms, area_sqm, owner_id, property_media(storage_path, media_type, position)")
       .order("created_at", { ascending: false });
 
     if (!error && data) {
@@ -177,6 +194,22 @@ function Properties() {
                   <Badge variant={p.status === "available" ? "emerald" : "muted"}>{p.status ?? "unknown"}</Badge>
                   {p.listing_type && <Badge variant={p.listing_type === "venda" ? "warn" : "blue"}>{p.listing_type}</Badge>}
                 </div>
+                <div className="absolute right-3 top-3 flex gap-1.5">
+                  <button
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); shareProperty(p.id, p.title); }}
+                    className="flex h-8 w-8 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-colors hover:bg-black/60"
+                    aria-label="Compartilhar imóvel"
+                  >
+                    <Share2 className="h-4 w-4" />
+                  </button>
+                  <PropertyActionsMenu
+                    propertyId={p.id}
+                    title={p.title}
+                    status={p.status}
+                    onEdit={() => setEditing(p)}
+                    onChanged={load}
+                  />
+                </div>
                 {p.price != null && (
                   <div className="absolute bottom-3 left-3 rounded-xl glass-strong px-2.5 py-1 text-[10px] font-semibold">
                     €{Number(p.price).toLocaleString("en-US")}{p.listing_type === "venda" ? "" : "/mo"}
@@ -207,6 +240,7 @@ function Properties() {
                 <th className="px-5 py-3 font-medium">Listing</th>
                 <th className="px-5 py-3 font-medium">Status</th>
                 <th className="px-5 py-3 font-medium text-right">Price</th>
+                <th className="px-5 py-3 font-medium text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -219,6 +253,25 @@ function Properties() {
                   <td className="px-5 py-4">{p.listing_type && <Badge variant={p.listing_type === "venda" ? "warn" : "blue"}>{p.listing_type}</Badge>}</td>
                   <td className="px-5 py-4"><Badge variant={p.status === "available" ? "emerald" : "muted"}>{p.status ?? "unknown"}</Badge></td>
                   <td className="px-5 py-4 text-right font-semibold">{p.price != null ? `€${Number(p.price).toLocaleString("en-US")}` : "—"}</td>
+                  <td className="px-5 py-4">
+                    <div className="flex items-center justify-end gap-1.5">
+                      <button
+                        onClick={() => shareProperty(p.id, p.title)}
+                        className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                        aria-label="Compartilhar imóvel"
+                      >
+                        <Share2 className="h-4 w-4" />
+                      </button>
+                      <PropertyActionsMenu
+                        propertyId={p.id}
+                        title={p.title}
+                        status={p.status}
+                        onEdit={() => setEditing(p)}
+                        onChanged={load}
+                        triggerClassName="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                      />
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -232,6 +285,15 @@ function Properties() {
           setOpen(false);
           load();
           if (search.add) navigate({ to: "/admin/properties", search: { q: textQuery } as any });
+        }}
+      />
+
+      <EditPropertyModal
+        property={editing}
+        onClose={() => setEditing(null)}
+        onSaved={() => {
+          setEditing(null);
+          load();
         }}
       />
     </>
