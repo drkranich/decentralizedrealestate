@@ -29,15 +29,29 @@ const cellClass: Record<Cell["type"], string> = {
   available: "bg-secondary/40 text-muted-foreground",
 };
 
+const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+
 function CalendarPage() {
-  const [month, setMonth] = useState("December 2025");
+  const [monthIndex, setMonthIndex] = useState(11);
+  const [year, setYear] = useState(2025);
+  const month = `${monthNames[monthIndex]} ${year}`;
+
+  const goPrev = () => {
+    if (monthIndex === 0) { setMonthIndex(11); setYear((y) => y - 1); }
+    else setMonthIndex((m) => m - 1);
+  };
+  const goNext = () => {
+    if (monthIndex === 11) { setMonthIndex(0); setYear((y) => y + 1); }
+    else setMonthIndex((m) => m + 1);
+  };
+
   return (
     <>
       <PageHeader title="Calendar" subtitle="Bookings, availability and maintenance across all properties.">
         <div className="flex items-center gap-1 rounded-full border border-border bg-card p-1">
-          <button className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-secondary"><ChevronLeft className="h-4 w-4" /></button>
+          <button onClick={goPrev} className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-secondary"><ChevronLeft className="h-4 w-4" /></button>
           <span className="px-3 text-sm font-semibold">{month}</span>
-          <button className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-secondary"><ChevronRight className="h-4 w-4" /></button>
+          <button onClick={goNext} className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-secondary"><ChevronRight className="h-4 w-4" /></button>
         </div>
       </PageHeader>
 

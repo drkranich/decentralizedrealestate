@@ -5,8 +5,9 @@ import {
   AlertTriangle, Wrench, DollarSign, Activity, Zap, Cpu, Lock, ChevronRight,
 } from "lucide-react";
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, RadialBarChart, RadialBar } from "recharts";
-import { PageHeader, StatCard, Card, SectionTitle, Badge } from "@/components/app/ui";
+import { PageHeader, StatCard, Card, SectionTitle, Badge, DemoDataBadge } from "@/components/app/ui";
 import { useBrand } from "@/components/brand/BrandProvider";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/app/ai")({
   component: AICenter,
@@ -70,8 +71,8 @@ function AICenter() {
     <>
       <PageHeader title="AI Automation Center" subtitle={`${brand.name} intelligence layer · learning from every transaction.`}>
         <Badge variant="emerald"><span className="mr-1 inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-emerald" /> Online</Badge>
-        <button className="rounded-full border border-border bg-card px-4 py-2 text-sm font-medium hover:bg-secondary">Models</button>
-        <button className="rounded-full bg-emerald px-4 py-2 text-sm font-semibold text-white shadow-glow">Train</button>
+        <button onClick={() => toast.info("Gestão de modelos de IA ainda não está disponível.")} className="rounded-full border border-border bg-card px-4 py-2 text-sm font-medium hover:bg-secondary">Models</button>
+        <button onClick={() => toast.info("Treinamento de modelos ainda não está disponível.")} className="rounded-full bg-emerald px-4 py-2 text-sm font-semibold text-white shadow-glow">Train</button>
       </PageHeader>
 
       <div className="mt-4 rounded-2xl border border-dashed border-skyblue/30 bg-skyblue/5 p-4 text-xs text-muted-foreground">
@@ -100,7 +101,7 @@ function AICenter() {
                 </div>
               </div>
             </div>
-            <button className="rounded-full border border-border px-3 py-1 text-xs hover:bg-secondary">Clear</button>
+            <button onClick={() => setChat([])} className="rounded-full border border-border px-3 py-1 text-xs hover:bg-secondary">Clear</button>
           </div>
 
           <div className="flex h-80 flex-col gap-3 overflow-y-auto rounded-2xl border border-border/50 bg-secondary/20 p-4">
@@ -274,15 +275,15 @@ function AICenter() {
                 </div>
                 <div className="mt-1 text-sm">{f.reason}</div>
                 <div className="mt-2 flex gap-2">
-                  <button className="flex-1 rounded-lg border border-border py-1 text-xs hover:bg-secondary">Review</button>
-                  <button className="flex-1 rounded-lg bg-red-500/10 py-1 text-xs font-semibold text-red-500 hover:bg-red-500/20">Block</button>
+                  <button onClick={() => toast.info(`Caso ${f.id}: revisão manual ainda não está disponível — exemplo de demonstração.`)} className="flex-1 rounded-lg border border-border py-1 text-xs hover:bg-secondary">Review</button>
+                  <button onClick={() => toast.info(`Caso ${f.id}: bloqueio ainda não está disponível — exemplo de demonstração.`)} className="flex-1 rounded-lg bg-red-500/10 py-1 text-xs font-semibold text-red-500 hover:bg-red-500/20">Block</button>
                 </div>
               </div>
             ))}
           </div>
           <div className="mt-3 flex items-center justify-between rounded-xl border border-emerald/20 bg-emerald/5 p-3 text-xs">
             <span className="flex items-center gap-2"><Lock className="h-3.5 w-3.5 text-emerald" /> Auto-block enabled</span>
-            <button className="font-semibold text-emerald hover:underline">Configure</button>
+            <button onClick={() => toast.info("Configuração de bloqueio automático ainda não está disponível.")} className="font-semibold text-emerald hover:underline">Configure</button>
           </div>
         </Card>
 
@@ -320,7 +321,7 @@ function AICenter() {
         <Card className="lg:col-span-2">
           <SectionTitle
             title="Automated workflows"
-            action={<button className="rounded-full bg-emerald/10 px-3 py-1 text-xs font-semibold text-emerald hover:bg-emerald/20">+ New workflow</button>}
+            action={<button onClick={() => toast.info("Criação de novos workflows ainda não está disponível.")} className="rounded-full bg-emerald/10 px-3 py-1 text-xs font-semibold text-emerald hover:bg-emerald/20">+ New workflow</button>}
           />
           <div className="space-y-2">
             {workflows.map((w, i) => (
@@ -367,7 +368,7 @@ function AICenter() {
       <Card className="mt-6">
         <SectionTitle
           title="AI contract generation"
-          action={<button className="rounded-full bg-foreground px-4 py-1.5 text-xs font-semibold text-background hover:opacity-90">Generate</button>}
+          action={<button onClick={() => toast.info("Geração de contrato por IA ainda não está disponível.")} className="rounded-full bg-foreground px-4 py-1.5 text-xs font-semibold text-background hover:opacity-90">Generate</button>}
         />
         <div className="grid gap-4 md:grid-cols-3">
           {[
@@ -381,7 +382,7 @@ function AICenter() {
               </div>
               <div className="mt-3 text-sm font-semibold">{c.t}</div>
               <div className="text-xs text-muted-foreground">{c.d}</div>
-              <button className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-emerald">
+              <button onClick={() => toast.info(`Modelo "${c.t}" ainda não está disponível.`)} className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-emerald">
                 Use template <ChevronRight className="h-3 w-3" />
               </button>
             </div>

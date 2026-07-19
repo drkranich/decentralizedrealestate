@@ -18,6 +18,7 @@ type MediaFile = { file: File; url: string; kind: "photo" | "video" };
 const emptyForm = {
   title: "",
   description: "",
+  listingType: "aluguel" as "aluguel" | "venda",
   type: "Short stay",
   addressQuery: "",
   street: "",
@@ -159,6 +160,7 @@ export function AddPropertyModal({ open, onClose }: Props) {
           price: priceValue ? Number(String(priceValue).replace(/[^\d.]/g, "")) || null : null,
           status: "available",
           owner_id: user.id,
+          listing_type: form.listingType,
           property_type: form.type,
           street: form.street || null,
           number: form.number || null,
@@ -238,6 +240,20 @@ export function AddPropertyModal({ open, onClose }: Props) {
                   <button type="button" onClick={generateDescription} className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-emerald px-2.5 py-1 text-[10px] font-semibold text-white">
                     <Sparkles className="h-3 w-3" /> {generating ? "Writing…" : "AI"}
                   </button>
+                </div>
+              </Field>
+              <Field label="Listing type">
+                <div className="flex flex-wrap gap-2">
+                  {(["aluguel", "venda"] as const).map((lt) => (
+                    <button
+                      key={lt}
+                      type="button"
+                      onClick={() => setForm((f) => ({ ...f, listingType: lt }))}
+                      className={`rounded-full px-3.5 py-1.5 text-xs font-medium capitalize transition-colors ${form.listingType === lt ? "bg-emerald text-white" : "border border-white/10 bg-secondary/40"}`}
+                    >
+                      {lt === "aluguel" ? "Aluguel" : "Venda"}
+                    </button>
+                  ))}
                 </div>
               </Field>
               <Field label="Property type">
@@ -350,10 +366,11 @@ export function AddPropertyModal({ open, onClose }: Props) {
                 <Field label="Min stay (nights)"><input value={form.minStay} onChange={(e) => set("minStay", e.target.value)} className="input" /></Field>
                 <Field label="Cleaning fee"><input value={form.cleaningFee} onChange={(e) => set("cleaningFee", e.target.value)} placeholder="€60" className="input" /></Field>
               </div>
-              <div className="rounded-2xl border border-emerald/30 bg-emerald/10 p-4">
-                <div className="flex items-center gap-2 text-xs font-semibold text-emerald"><Sparkles className="h-3.5 w-3.5" /> AI ROI estimate</div>
-                <div className="mt-1 font-display text-2xl font-bold">14.6% / year</div>
-                <div className="text-xs text-muted-foreground">Based on comparable listings in the area · 89% projected occupancy</div>
+              <div className="rounded-2xl border border-dashed border-skyblue/30 bg-skyblue/5 p-4">
+                <div className="flex items-center gap-2 text-xs font-semibold text-skyblue"><Sparkles className="h-3.5 w-3.5" /> Estimativa de ROI por IA</div>
+                <div className="mt-1 text-sm text-muted-foreground">
+                  Ainda não disponível — a estimativa de retorno exige um histórico real de imóveis comparáveis na plataforma, que ainda não existe.
+                </div>
               </div>
             </div>
           )}

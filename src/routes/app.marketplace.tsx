@@ -4,8 +4,9 @@ import {
   Brush, Hammer, Truck, Sofa, ShieldCheck, Cpu, Star, MapPin, MessageSquare,
   Calendar, CreditCard, Search, SlidersHorizontal, Zap, CheckCircle2, Sparkles, Clock,
 } from "lucide-react";
-import { PageHeader, StatCard, Card, SectionTitle, Badge } from "@/components/app/ui";
+import { PageHeader, StatCard, Card, SectionTitle, Badge, DemoDataBadge } from "@/components/app/ui";
 import { useBrand } from "@/components/brand/BrandProvider";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/app/marketplace")({
   component: Marketplace,
@@ -54,8 +55,8 @@ function Marketplace() {
   return (
     <>
       <PageHeader title="Service Marketplace" subtitle={`${brand.name} · decentralized network of vetted professionals.`}>
-        <button className="rounded-full border border-border bg-card px-4 py-2 text-sm font-medium hover:bg-secondary">My bookings</button>
-        <button className="rounded-full bg-emerald px-4 py-2 text-sm font-semibold text-white shadow-glow">Become a provider</button>
+        <button onClick={() => toast.info("Ainda não há reservas reais de serviços.")} className="rounded-full border border-border bg-card px-4 py-2 text-sm font-medium hover:bg-secondary">My bookings</button>
+        <button onClick={() => toast.info("Cadastro de prestadores de serviço ainda não está disponível.")} className="rounded-full bg-emerald px-4 py-2 text-sm font-semibold text-white shadow-glow">Become a provider</button>
       </PageHeader>
 
       <div className="mt-4 rounded-2xl border border-dashed border-skyblue/30 bg-skyblue/5 p-4 text-xs text-muted-foreground">
@@ -81,10 +82,10 @@ function Marketplace() {
               className="w-full bg-transparent text-sm placeholder:text-muted-foreground focus:outline-none"
             />
           </div>
-          <button className="flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2.5 text-sm font-medium hover:bg-secondary">
+          <button onClick={() => toast.info("Filtros avançados ainda não estão disponíveis.")} className="flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2.5 text-sm font-medium hover:bg-secondary">
             <SlidersHorizontal className="h-4 w-4" /> Filters
           </button>
-          <button className="flex items-center gap-2 rounded-full bg-emerald px-4 py-2.5 text-sm font-semibold text-white shadow-glow">
+          <button onClick={() => toast.info("Cotação instantânea ainda não está conectada a prestadores reais.")} className="flex items-center gap-2 rounded-full bg-emerald px-4 py-2.5 text-sm font-semibold text-white shadow-glow">
             <Zap className="h-4 w-4" /> Instant quote
           </button>
         </div>
@@ -145,13 +146,13 @@ function Marketplace() {
               </div>
 
               <div className="flex gap-2 pt-1">
-                <button className="flex flex-1 items-center justify-center gap-1.5 rounded-full bg-foreground py-2 text-xs font-semibold text-background hover:opacity-90">
+                <button onClick={() => toast.info(`Reserva com ${p.name} ainda não está disponível — prestador de demonstração.`)} className="flex flex-1 items-center justify-center gap-1.5 rounded-full bg-foreground py-2 text-xs font-semibold text-background hover:opacity-90">
                   <Calendar className="h-3.5 w-3.5" /> Book
                 </button>
-                <button className="flex items-center justify-center rounded-full border border-border px-3 py-2 text-xs font-medium hover:bg-secondary">
+                <button onClick={() => toast.info("Mensageria com prestadores ainda não está disponível.")} className="flex items-center justify-center rounded-full border border-border px-3 py-2 text-xs font-medium hover:bg-secondary">
                   <MessageSquare className="h-3.5 w-3.5" />
                 </button>
-                <button className="flex items-center justify-center rounded-full border border-border px-3 py-2 text-xs font-medium hover:bg-secondary">
+                <button onClick={() => toast.info("Cotação instantânea ainda não está disponível.")} className="flex items-center justify-center rounded-full border border-border px-3 py-2 text-xs font-medium hover:bg-secondary">
                   <Zap className="h-3.5 w-3.5 text-emerald" />
                 </button>
               </div>
@@ -178,7 +179,7 @@ function Marketplace() {
                 <div className="text-xs text-muted-foreground">{b.prop}</div>
                 <div className="mt-1 flex items-center justify-between">
                   <span className="text-xs text-emerald">{b.when}</span>
-                  <button className="text-xs font-semibold text-emerald hover:underline">Reschedule</button>
+                  <button onClick={() => toast.info("Reagendamento ainda não está disponível — reserva de demonstração.")} className="text-xs font-semibold text-emerald hover:underline">Reschedule</button>
                 </div>
               </div>
             ))}
@@ -189,7 +190,7 @@ function Marketplace() {
           <SectionTitle title="Messages" action={<MessageSquare className="h-4 w-4 text-skyblue" />} />
           <div className="space-y-2">
             {messages.map((m, i) => (
-              <button key={i} className="flex w-full items-center gap-3 rounded-2xl p-2.5 text-left transition hover:bg-secondary/50">
+              <button key={i} onClick={() => toast.info("Mensageria com prestadores ainda não está disponível.")} className="flex w-full items-center gap-3 rounded-2xl p-2.5 text-left transition hover:bg-secondary/50">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald text-xs font-bold text-white">
                   {m.who.split(" ").map((s) => s[0]).slice(0, 2).join("")}
                 </div>
@@ -209,7 +210,7 @@ function Marketplace() {
         </Card>
 
         <Card>
-          <SectionTitle title="Instant quotes" action={<Zap className="h-4 w-4 text-emerald animate-pulse-glow" />} />
+          <SectionTitle title="Instant quotes" action={<DemoDataBadge />} />
           <div className="space-y-3">
             {[
               { svc: "Deep cleaning · 120m²", price: 145, eta: "Today", from: "Lumen" },
@@ -224,7 +225,7 @@ function Marketplace() {
                   </div>
                   <div className="text-right">
                     <div className="font-display text-lg font-bold">€{q.price}</div>
-                    <button className="text-[11px] font-semibold text-emerald hover:underline">Accept</button>
+                    <button onClick={() => toast.info("Aceitar cotação ainda não está disponível — exemplo de demonstração.")} className="text-[11px] font-semibold text-emerald hover:underline">Accept</button>
                   </div>
                 </div>
               </div>
@@ -283,7 +284,7 @@ function Marketplace() {
               </div>
             ))}
           </div>
-          <button className="mt-3 w-full rounded-full border border-border py-2 text-xs font-medium hover:bg-secondary">View all invoices</button>
+          <button onClick={() => toast.info("Ainda não há faturas reais de serviços.")} className="mt-3 w-full rounded-full border border-border py-2 text-xs font-medium hover:bg-secondary">View all invoices</button>
         </Card>
       </div>
     </>

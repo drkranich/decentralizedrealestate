@@ -52,6 +52,30 @@ function Contracts() {
     !q || (c.properties?.title ?? "").toLowerCase().includes(q.toLowerCase()) || c.id.includes(q)
   );
 
+  const exportCsv = () => {
+    if (filtered.length === 0) {
+      toast.info("Não há contratos reais para exportar ainda.");
+      return;
+    }
+    const header = ["id", "imovel", "preco", "status", "inicio", "fim"];
+    const rows = filtered.map((c) => [
+      c.id,
+      c.properties?.title ?? "",
+      c.properties?.price ?? "",
+      c.status ?? "",
+      c.start_date ?? "",
+      c.end_date ?? "",
+    ]);
+    const csv = [header, ...rows].map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "contratos.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const active = contracts.filter((c) => c.status === "active").length;
   const pending = contracts.filter((c) => c.status === "pending").length;
   const expiringSoon = contracts.filter((c) => {
@@ -63,7 +87,7 @@ function Contracts() {
   return (
     <>
       <PageHeader title="Contracts" subtitle="Contratos reais entre proprietários e inquilinos/investidores.">
-        <button className="flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm hover:bg-secondary">
+        <button onClick={exportCsv} className="flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm hover:bg-secondary">
           <Download className="h-4 w-4" /> Export
         </button>
         <button

@@ -3,6 +3,7 @@ import { ResponsiveContainer, LineChart, Line, BarChart, Bar, XAxis, YAxis, Tool
 import { Sparkles, TrendingUp, Activity, Brain, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { PageHeader, Card, Badge, StatCard, SectionTitle } from "@/components/app/ui";
 import { properties } from "@/data/properties";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/app/smart-pricing")({
   component: SmartPricing,
@@ -23,7 +24,12 @@ function SmartPricing() {
     <>
       <PageHeader title="Smart pricing" subtitle="AI-driven nightly rates, demand forecasts and occupancy predictions.">
         <Badge variant="emerald"><Sparkles className="mr-1 inline h-3 w-3" /> AI Active</Badge>
-        <button className="rounded-full bg-foreground px-4 py-2 text-sm font-semibold text-background">Apply suggestions</button>
+        <button
+          onClick={() => toast.info("O motor de precificação por IA ainda não está conectado — não há sugestões reais para aplicar.")}
+          className="rounded-full bg-foreground px-4 py-2 text-sm font-semibold text-background"
+        >
+          Apply suggestions
+        </button>
       </PageHeader>
 
       <div className="mt-4 rounded-2xl border border-dashed border-skyblue/30 bg-skyblue/5 p-4 text-xs text-muted-foreground">

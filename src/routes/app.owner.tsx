@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip } from "recharts";
 import { Home, DollarSign, Wrench, MessageSquare, Calendar, TrendingUp } from "lucide-react";
 import { PageHeader, StatCard, Card, SectionTitle, Badge } from "@/components/app/ui";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/app/owner")({
   component: OwnerHub,
@@ -72,7 +73,7 @@ function OwnerHub() {
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         <Card>
-          <SectionTitle title="Maintenance pipeline" action={<button className="text-xs font-medium text-emerald hover:underline">View all</button>} />
+          <SectionTitle title="Maintenance pipeline" action={<button onClick={() => toast.info("Ainda não há manutenções reais registradas.")} className="text-xs font-medium text-emerald hover:underline">View all</button>} />
           <div className="space-y-3">
             {[
               { p: "Tokyo Tower", t: "AC unit replacement", s: "In progress", v: "warn" as const },

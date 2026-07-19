@@ -24,6 +24,7 @@ type PropertyDetail = {
   price: number | null;
   status: string | null;
   property_type: string | null;
+  listing_type: string | null;
   bedrooms: number | null;
   bathrooms: number | null;
   area_sqm: number | null;
@@ -46,7 +47,7 @@ function PropertyDetails() {
     (async () => {
       const { data } = await supabase
         .from("properties")
-        .select("id, title, description, price, status, property_type, bedrooms, bathrooms, area_sqm, year_built, formatted_address, latitude, longitude, owner_id, property_media(storage_path, media_type, position)")
+        .select("id, title, description, price, status, property_type, listing_type, bedrooms, bathrooms, area_sqm, year_built, formatted_address, latitude, longitude, owner_id, property_media(storage_path, media_type, position)")
         .eq("id", id)
         .maybeSingle();
       setProperty(data as PropertyDetail | null);
@@ -100,9 +101,14 @@ function PropertyDetails() {
 
           <div className="mt-6 flex flex-wrap items-start justify-between gap-3">
             <div>
-              <Badge variant={property.status === "available" ? "emerald" : "muted"}>
-                {property.status ?? "unknown"} · #{property.id.slice(0, 8)}
-              </Badge>
+              <div className="flex flex-wrap gap-1.5">
+                <Badge variant={property.status === "available" ? "emerald" : "muted"}>
+                  {property.status ?? "unknown"} · #{property.id.slice(0, 8)}
+                </Badge>
+                {property.listing_type && (
+                  <Badge variant={property.listing_type === "venda" ? "warn" : "blue"}>{property.listing_type}</Badge>
+                )}
+              </div>
               <h1 className="mt-2 font-display text-3xl font-bold">{property.title}</h1>
               {property.formatted_address && (
                 <div className="mt-1 flex items-center gap-3 text-sm text-muted-foreground">

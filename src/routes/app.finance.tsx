@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, LineChart, Line, Legend } from "recharts";
 import { DollarSign, TrendingDown, TrendingUp, CreditCard, Download } from "lucide-react";
 import { PageHeader, StatCard, Card, SectionTitle, Badge } from "@/components/app/ui";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/app/finance")({
   component: Finance,
@@ -27,7 +28,10 @@ function Finance() {
   return (
     <>
       <PageHeader title="Financial Analytics" subtitle="Multi-currency revenue, expenses, and profit across the portfolio.">
-        <button className="flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm hover:bg-secondary">
+        <button
+          onClick={() => toast.info("Exportação real ficará disponível quando houver transações reais processadas pela plataforma.")}
+          className="flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm hover:bg-secondary"
+        >
           <Download className="h-4 w-4" /> Export
         </button>
       </PageHeader>
@@ -87,7 +91,12 @@ function Finance() {
       <Card className="mt-6 overflow-hidden p-0">
         <div className="flex items-center justify-between p-6 pb-4">
           <h2 className="font-display text-lg font-semibold">Recent transactions</h2>
-          <button className="text-xs font-medium text-emerald hover:underline">View all</button>
+          <button
+            onClick={() => toast.info("Ainda não há transações reais registradas.")}
+            className="text-xs font-medium text-emerald hover:underline"
+          >
+            View all
+          </button>
         </div>
         <table className="w-full text-sm">
           <thead>

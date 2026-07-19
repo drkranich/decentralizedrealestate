@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Plus, Filter, Grid3x3, List, MapPin, Building2, Loader2, ImageOff } from "lucide-react";
 import { PageHeader, Card, Badge, StatCard } from "@/components/app/ui";
@@ -6,6 +6,10 @@ import { AddPropertyModal } from "@/components/properties/AddPropertyModal";
 import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/app/properties")({
+  validateSearch: (s: Record<string, unknown>) => ({
+    q: typeof s.q === "string" ? s.q : "",
+    add: typeof s.add === "string" ? s.add : "",
+  }),
   component: Properties,
 });
 
@@ -17,6 +21,7 @@ type PropertyRow = {
   price: number | null;
   status: string | null;
   property_type: string | null;
+  listing_type: string | null;
   bedrooms: number | null;
   bathrooms: number | null;
   area_sqm: number | null;
@@ -25,9 +30,14 @@ type PropertyRow = {
 };
 
 function Properties() {
+  const search = Route.useSearch();
+  const navigate = useNavigate();
   const [view, setView] = useState<"grid" | "list">("grid");
   const [filter, setFilter] = useState("All");
-  const [open, setOpen] = useState(false);
+  const [listingFilter, setListingFilter] = useState("Todos");
+  const [showFilters, setShowFilters] = useState(false);
+  const [textQuery, setTextQuery] = useState(search.q ?? "");
+  const [open, setOpen] = useState(search.add === "1");
   const [rows, setRows] = useState<PropertyRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
@@ -39,7 +49,7 @@ function Properties() {
 
     const { data, error } = await supabase
       .from("properties")
-      .select("id, title, city, country, price, status, property_type, bedrooms, bathrooms, area_sqm, owner_id, property_media(storage_path, media_type, position)")
+      .select("id, title, city, country, price, status, property_type, listing_type, bedrooms, bathrooms, area_sqm, owner_id, property_media(storage_path, media_type, position)")
       .order("created_at", { ascending: false });
 
     if (!error && data) {
@@ -61,7 +71,9 @@ function Properties() {
     load();
   }, []);
 
-  const filtered = filter === "All" ? rows : rows.filter((p) => (p.status ?? "").toLowerCase() === filter.toLowerCase());
+  const byStatus = filter === "All" ? rows : rows.filter((p) => (p.status ?? "").toLowerCase() === filter.toLowerCase());
+  const byListing = listingFilter === "Todos" ? byStatus : byStatus.filter((p) => p.listing_type === listingFilter.toLowerCase());
+  const filtered = textQuery ? byListing.filter((p) => p.title.toLowerCase().includes(textQuery.toLowerCase())) : byListing;
   const total = rows.length;
   const available = rows.filter((p) => p.status === "available").length;
   const own = userId ? rows.filter((p) => p.owner_id === userId).length : 0;
@@ -69,7 +81,10 @@ function Properties() {
   return (
     <>
       <PageHeader title="Properties" subtitle={loading ? "Loading your portfolio…" : `${total} ${total === 1 ? "property" : "properties"} on the platform right now.`}>
-        <button className="flex items-center gap-2 rounded-full border border-white/10 bg-card px-4 py-2 text-sm font-medium transition-colors hover:bg-secondary">
+        <button
+          onClick={() => setShowFilters((v) => !v)}
+          className={`flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors ${showFilters ? "border-emerald/40 bg-emerald/10 text-emerald" : "border-white/10 bg-card hover:bg-secondary"}`}
+        >
           <Filter className="h-4 w-4" /> Filters
         </button>
         <button onClick={() => setOpen(true)} className="flex items-center gap-2 rounded-full bg-emerald px-4 py-2 text-sm font-semibold text-white shadow-glow">
@@ -83,8 +98,14 @@ function Properties() {
         <StatCard label="Yours" value={String(own)} icon={Building2} />
       </div>
 
+      {textQuery && (
+        <div className="mb-3 flex items-center gap-2 text-xs text-muted-foreground">
+          Buscando por "{textQuery}"
+          <button onClick={() => setTextQuery("")} className="font-medium text-emerald hover:underline">Limpar</button>
+        </div>
+      )}
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {["All", "available", "unavailable"].map((s) => (
             <button
               key={s}
@@ -96,6 +117,22 @@ function Properties() {
               {s}
             </button>
           ))}
+          {showFilters && (
+            <>
+              <span className="mx-1 h-4 w-px bg-white/10" />
+              {["Todos", "Aluguel", "Venda"].map((s) => (
+                <button
+                  key={s}
+                  onClick={() => setListingFilter(s)}
+                  className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-all ${
+                    listingFilter === s ? "bg-emerald text-white" : "border border-white/10 bg-card text-muted-foreground hover:bg-secondary"
+                  }`}
+                >
+                  {s}
+                </button>
+              ))}
+            </>
+          )}
         </div>
         <div className="flex rounded-full border border-white/10 bg-card p-0.5">
           <button onClick={() => setView("grid")} className={`flex h-8 w-8 items-center justify-center rounded-full ${view === "grid" ? "bg-secondary" : ""}`}>
@@ -130,8 +167,9 @@ function Properties() {
                     <ImageOff className="h-6 w-6" />
                   </div>
                 )}
-                <div className="absolute left-4 top-4">
+                <div className="absolute left-4 top-4 flex gap-1.5">
                   <Badge variant={p.status === "available" ? "emerald" : "muted"}>{p.status ?? "unknown"}</Badge>
+                  {p.listing_type && <Badge variant={p.listing_type === "venda" ? "warn" : "blue"}>{p.listing_type}</Badge>}
                 </div>
                 {p.price != null && (
                   <div className="absolute bottom-3 left-3 rounded-xl glass-strong px-2.5 py-1 text-[10px] font-semibold">
@@ -162,6 +200,7 @@ function Properties() {
                 <th className="px-5 py-3 font-medium">Property</th>
                 <th className="px-5 py-3 font-medium">Location</th>
                 <th className="px-5 py-3 font-medium">Type</th>
+                <th className="px-5 py-3 font-medium">Listing</th>
                 <th className="px-5 py-3 font-medium">Status</th>
                 <th className="px-5 py-3 font-medium text-right">Price</th>
               </tr>
@@ -174,6 +213,7 @@ function Properties() {
                   </td>
                   <td className="px-5 py-4 text-muted-foreground">{[p.city, p.country].filter(Boolean).join(", ") || "—"}</td>
                   <td className="px-5 py-4">{p.property_type && <Badge variant="blue">{p.property_type}</Badge>}</td>
+                  <td className="px-5 py-4">{p.listing_type && <Badge variant={p.listing_type === "venda" ? "warn" : "blue"}>{p.listing_type}</Badge>}</td>
                   <td className="px-5 py-4"><Badge variant={p.status === "available" ? "emerald" : "muted"}>{p.status ?? "unknown"}</Badge></td>
                   <td className="px-5 py-4 text-right font-semibold">{p.price != null ? `€${Number(p.price).toLocaleString("en-US")}` : "—"}</td>
                 </tr>
@@ -183,7 +223,14 @@ function Properties() {
         </Card>
       )}
 
-      <AddPropertyModal open={open} onClose={() => { setOpen(false); load(); }} />
+      <AddPropertyModal
+        open={open}
+        onClose={() => {
+          setOpen(false);
+          load();
+          if (search.add) navigate({ to: "/app/properties", search: { q: textQuery } as any });
+        }}
+      />
     </>
   );
 }

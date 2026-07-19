@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useAuthUser } from "@/lib/auth";
+import { toast } from "sonner";
 import { Area, AreaChart, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, PieChart, Pie, Cell, LineChart, Line } from "recharts";
 import {
   TrendingUp, DollarSign, Home, Users, Activity, ArrowUpRight, Wrench, Wallet,
@@ -106,8 +107,34 @@ function Dashboard() {
   return (
     <>
       <PageHeader title={`Good morning, ${displayName}`} subtitle={`Welcome back to ${brand.name}. Here's your portfolio today.`}>
-        <button className="rounded-full border border-border bg-card px-4 py-2 text-sm font-medium hover:bg-secondary">Last 30 days</button>
-        <button className="rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background">Export</button>
+        <button
+          onClick={() => toast.info("Filtro de período fica disponível quando houver histórico real suficiente.")}
+          className="rounded-full border border-border bg-card px-4 py-2 text-sm font-medium hover:bg-secondary"
+        >
+          Last 30 days
+        </button>
+        <button
+          onClick={() => {
+            const rows = [
+              ["metrica", "valor"],
+              ["total_imoveis", String(counts.total)],
+              ["disponiveis", String(counts.available)],
+              ["leads_recebidos", String(counts.leads)],
+              ["contratos", String(counts.contracts)],
+            ];
+            const csv = rows.map((r) => r.map((v) => `"${v}"`).join(",")).join("\n");
+            const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "resumo-dashboard.csv";
+            a.click();
+            URL.revokeObjectURL(url);
+          }}
+          className="rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background"
+        >
+          Export
+        </button>
       </PageHeader>
 
       {/* KPIs — dados reais do Supabase */}
@@ -312,7 +339,12 @@ function Dashboard() {
                   <div className="text-xs text-muted-foreground">{r.msg}</div>
                   <div className="mt-1 text-[11px] text-muted-foreground/70">{r.t}</div>
                 </div>
-                <button className="rounded-full bg-emerald/10 px-2.5 py-1 text-[11px] font-medium text-emerald hover:bg-emerald/20">Reply</button>
+                <button
+                  onClick={() => toast.info("Mensageria com inquilinos ainda não está conectada — isto é um exemplo de demonstração.")}
+                  className="rounded-full bg-emerald/10 px-2.5 py-1 text-[11px] font-medium text-emerald hover:bg-emerald/20"
+                >
+                  Reply
+                </button>
               </div>
             ))}
           </div>

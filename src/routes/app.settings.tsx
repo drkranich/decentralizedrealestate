@@ -3,6 +3,7 @@ import { useState } from "react";
 import { User, Bell, Shield, CreditCard, Globe, Key } from "lucide-react";
 import { PageHeader, Card, SectionTitle, Badge, DemoDataBadge } from "@/components/app/ui";
 import { useAuthUser, initials } from "@/lib/auth";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/app/settings")({
   component: Settings,
@@ -117,8 +118,8 @@ function Settings() {
                 <div className="text-xs text-muted-foreground">Renews on Jan 12, 2026</div>
               </div>
               <div className="mt-4 flex gap-2">
-                <button className="flex-1 rounded-full border border-border py-2.5 text-sm">Manage plan</button>
-                <button className="flex-1 rounded-full bg-foreground py-2.5 text-sm font-semibold text-background">Upgrade</button>
+                <button onClick={() => toast.info("Gestão de plano ainda não está conectada a cobrança real.")} className="flex-1 rounded-full border border-border py-2.5 text-sm">Manage plan</button>
+                <button onClick={() => toast.info("Upgrade de plano ainda não está conectado a cobrança real.")} className="flex-1 rounded-full bg-foreground py-2.5 text-sm font-semibold text-background">Upgrade</button>
               </div>
             </Card>
           )}
@@ -141,7 +142,7 @@ function Settings() {
                 {["sk_live_••••••••a4F2", "sk_test_••••••••9bC1"].map((k) => (
                   <div key={k} className="flex items-center justify-between rounded-xl border border-border/50 bg-secondary/30 p-3 font-mono text-xs">
                     <span>{k}</span>
-                    <button className="text-muted-foreground hover:text-destructive">Revoke</button>
+                    <button onClick={() => toast.info("Chaves de API ainda não estão disponíveis.")} className="text-muted-foreground hover:text-destructive">Revoke</button>
                   </div>
                 ))}
               </div>

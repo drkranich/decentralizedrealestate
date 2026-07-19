@@ -1,4 +1,5 @@
 import * as Icons from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { Logo } from "@/components/brand/Logo";
 import { useBrand } from "@/components/brand/BrandProvider";
 
@@ -21,8 +22,8 @@ export function Footer() {
               <p className="mt-3 text-muted-foreground">Join 84,000+ owners, hosts and investors using {brand.name}.</p>
             </div>
             <div className="flex flex-wrap gap-3 lg:justify-end">
-              <button className="rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background hover:opacity-90">Start free</button>
-              <button className="rounded-full glass px-6 py-3 text-sm font-medium">Talk to sales</button>
+              <Link to="/signup" className="rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background hover:opacity-90">Start free</Link>
+              <a href="mailto:contato@decentralizedrealestate.com" className="rounded-full glass px-6 py-3 text-sm font-medium">Talk to sales</a>
             </div>
           </div>
         </div>

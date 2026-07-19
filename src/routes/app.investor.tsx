@@ -8,8 +8,9 @@ import {
   Sparkles, Activity, Zap, Shield, Bitcoin,
 } from "lucide-react";
 import { useState } from "react";
-import { PageHeader, StatCard, Card, SectionTitle, Badge } from "@/components/app/ui";
+import { PageHeader, StatCard, Card, SectionTitle, Badge, DemoDataBadge } from "@/components/app/ui";
 import { useBrand } from "@/components/brand/BrandProvider";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/app/investor")({
   component: Investor,
@@ -95,6 +96,7 @@ const tickerData = [
 function Investor() {
   const brand = useBrand();
   const [ccy, setCcy] = useState<keyof typeof fxRates>("USD");
+  const [period, setPeriod] = useState("1Y");
 
   const totalValue = 184320;
   const monthlyIncome = 1742;
@@ -127,8 +129,8 @@ function Investor() {
             </button>
           ))}
         </div>
-        <button className="rounded-full border border-border bg-card px-4 py-2 text-sm font-medium hover:bg-secondary">Withdraw</button>
-        <button className="rounded-full bg-emerald px-4 py-2 text-sm font-semibold text-white shadow-glow">Invest more</button>
+        <button onClick={() => toast.info("A tokenização de investidor ainda não está conectada a saques reais.")} className="rounded-full border border-border bg-card px-4 py-2 text-sm font-medium hover:bg-secondary">Withdraw</button>
+        <button onClick={() => toast.info("A tokenização de investidor ainda não está conectada a aportes reais.")} className="rounded-full bg-emerald px-4 py-2 text-sm font-semibold text-white shadow-glow">Invest more</button>
       </PageHeader>
 
       <div className="mt-4 rounded-2xl border border-dashed border-skyblue/30 bg-skyblue/5 p-4 text-xs text-muted-foreground">
@@ -156,7 +158,13 @@ function Investor() {
                 </span>
                 <div className="flex gap-1 rounded-full bg-secondary p-0.5 text-xs">
                   {["1M", "3M", "6M", "1Y", "ALL"].map((p) => (
-                    <button key={p} className={`rounded-full px-3 py-1 ${p === "1Y" ? "bg-foreground text-background" : "text-muted-foreground"}`}>{p}</button>
+                    <button
+                      key={p}
+                      onClick={() => setPeriod(p)}
+                      className={`rounded-full px-3 py-1 ${p === period ? "bg-foreground text-background" : "text-muted-foreground"}`}
+                    >
+                      {p}
+                    </button>
                   ))}
                 </div>
               </div>
@@ -183,18 +191,18 @@ function Investor() {
 
         <Card>
           <SectionTitle title="Risk score" action={<Shield className="h-4 w-4 text-emerald" />} />
-          <div className="h-44">
+          <div className="relative h-44">
             <ResponsiveContainer>
               <RadialBarChart innerRadius="65%" outerRadius="100%" data={[{ name: "Risk", value: 72, fill: "var(--emerald)" }]} startAngle={90} endAngle={-270}>
                 <RadialBar dataKey="value" cornerRadius={20} background={{ fill: "var(--muted)" }} />
               </RadialBarChart>
             </ResponsiveContainer>
+            <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
+              <div className="font-display text-3xl font-bold">72<span className="text-base text-muted-foreground">/100</span></div>
+              <div className="text-xs text-muted-foreground">Balanced</div>
+            </div>
           </div>
-          <div className="-mt-32 text-center">
-            <div className="font-display text-3xl font-bold">72<span className="text-base text-muted-foreground">/100</span></div>
-            <div className="text-xs text-muted-foreground">Balanced</div>
-          </div>
-          <div className="mt-12 grid grid-cols-3 gap-2 text-center text-[11px]">
+          <div className="mt-4 grid grid-cols-3 gap-2 text-center text-[11px]">
             <div className="rounded-lg bg-emerald/10 p-2"><div className="font-semibold text-emerald">Low</div><div className="text-muted-foreground">42%</div></div>
             <div className="rounded-lg bg-skyblue/10 p-2"><div className="font-semibold text-skyblue">Med</div><div className="text-muted-foreground">38%</div></div>
             <div className="rounded-lg bg-yellow-500/10 p-2"><div className="font-semibold text-yellow-500">High</div><div className="text-muted-foreground">20%</div></div>
@@ -263,7 +271,7 @@ function Investor() {
               </div>
             ))}
           </div>
-          <button className="mt-4 w-full rounded-xl border border-border bg-secondary/30 py-2 text-xs font-medium hover:bg-secondary">View on world map</button>
+          <button onClick={() => toast.info("Mapa mundial de investimentos ainda não está disponível.")} className="mt-4 w-full rounded-xl border border-border bg-secondary/30 py-2 text-xs font-medium hover:bg-secondary">View on world map</button>
         </Card>
       </div>
 
@@ -272,11 +280,11 @@ function Investor() {
         <div className="flex items-center justify-between p-6 pb-4">
           <div>
             <h2 className="font-display text-lg font-semibold">Tokenized holdings</h2>
-            <p className="text-xs text-muted-foreground">Live on-chain positions · settles every 60s</p>
+            <p className="text-xs text-muted-foreground">Posições de demonstração — sem liquidação real</p>
           </div>
           <div className="flex items-center gap-2">
-            <Badge variant="emerald"><span className="mr-1 inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-emerald" /> Live</Badge>
-            <button className="rounded-full border border-border px-3 py-1.5 text-xs font-medium hover:bg-secondary">Export CSV</button>
+            <Badge variant="muted">Demonstração</Badge>
+            <button onClick={() => toast.info("Exportação real ficará disponível quando houver posições reais de tokens.")} className="rounded-full border border-border px-3 py-1.5 text-xs font-medium hover:bg-secondary">Export CSV</button>
           </div>
         </div>
         <div className="overflow-x-auto">
@@ -311,7 +319,7 @@ function Investor() {
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <button className="rounded-full border border-border px-3 py-1 text-xs hover:bg-secondary">Trade</button>
+                    <button onClick={() => toast.info("Negociação de tokens ainda não está disponível — é um exemplo de demonstração.")} className="rounded-full border border-border px-3 py-1 text-xs hover:bg-secondary">Trade</button>
                   </td>
                 </tr>
               ))}
@@ -380,7 +388,7 @@ function Investor() {
                   <span>{o.raised}% raised · min {fmt(o.min, ccy)}</span>
                   <span>{o.days}d left</span>
                 </div>
-                <button className="mt-3 w-full rounded-full bg-foreground py-1.5 text-xs font-semibold text-background hover:opacity-90">
+                <button onClick={() => toast.info("Aportes reais em oportunidades tokenizadas ainda não estão disponíveis.")} className="mt-3 w-full rounded-full bg-foreground py-1.5 text-xs font-semibold text-background hover:opacity-90">
                   Invest →
                 </button>
               </div>
@@ -392,7 +400,7 @@ function Investor() {
       {/* Activity feed */}
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         <Card>
-          <SectionTitle title="On-chain activity" action={<Activity className="h-4 w-4 text-emerald animate-pulse-glow" />} />
+          <SectionTitle title="On-chain activity" action={<DemoDataBadge />} />
           <div className="space-y-3">
             {[
               { i: Zap, who: "Smart contract", what: "Distributed dividend 142 USDC", t: "2m ago", v: "emerald" as const },
@@ -415,7 +423,7 @@ function Investor() {
         </Card>
 
         <Card>
-          <SectionTitle title="Currency desk" action={<span className="font-mono text-xs text-muted-foreground">live FX</span>} />
+          <SectionTitle title="Currency desk" action={<span className="font-mono text-xs text-muted-foreground">câmbio de demonstração</span>} />
           <div className="grid grid-cols-2 gap-3">
             {Object.entries(fxRates).map(([k, v]) => (
               <div key={k} className="rounded-2xl border border-border/50 bg-secondary/20 p-3">

@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { useAuthUser } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
+import { toast } from "sonner";
 
 // ===== Sidebar configuration (modular, easy to extend) =====
 type Item = { title: string; icon: any; to?: string; section: string };
@@ -168,7 +169,7 @@ export function AppSidebar() {
         </div>
         {!collapsed && (
           <div className="px-2 pb-2">
-            <button className="flex w-full items-center justify-between rounded-xl border border-border bg-secondary/50 px-2.5 py-2 text-xs hover:bg-secondary">
+            <button onClick={() => toast.info("Ainda há apenas um workspace disponível para a sua conta.")} className="flex w-full items-center justify-between rounded-xl border border-border bg-secondary/50 px-2.5 py-2 text-xs hover:bg-secondary">
               <div className="flex items-center gap-2 min-w-0">
                 <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-emerald text-[10px] font-bold text-white">
                   {brand.shortName}
@@ -246,7 +247,7 @@ export function AppSidebar() {
           <div className="m-3 rounded-2xl bg-emerald/15 p-4">
             <div className="font-display text-sm font-semibold">Upgrade to Pro</div>
             <div className="mt-1 text-xs text-muted-foreground">Unlimited AI pricing & contracts.</div>
-            <button className="mt-3 w-full rounded-full bg-foreground py-2 text-xs font-semibold text-background">Upgrade</button>
+            <button onClick={() => toast.info("Planos pagos ainda não estão conectados a cobrança real.")} className="mt-3 w-full rounded-full bg-foreground py-2 text-xs font-semibold text-background">Upgrade</button>
           </div>
         )}
       </SidebarContent>

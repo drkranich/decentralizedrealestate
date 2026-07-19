@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Phone, Mail, Filter, Loader2 } from "lucide-react";
+import { Phone, Mail, Filter, Loader2, Search } from "lucide-react";
 import { PageHeader, Card, Badge, StatCard, DemoDataBadge } from "@/components/app/ui";
 import { Users, TrendingUp, Target, Zap } from "lucide-react";
 import { supabase } from "@/lib/supabase";
@@ -31,6 +31,8 @@ function initials(name: string) {
 function CRM() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showSearch, setShowSearch] = useState(false);
+  const [q, setQ] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -43,8 +45,12 @@ function CRM() {
     })();
   }, []);
 
+  const visibleLeads = q
+    ? leads.filter((l) => l.name.toLowerCase().includes(q.toLowerCase()) || (l.properties?.title ?? "").toLowerCase().includes(q.toLowerCase()))
+    : leads;
+
   const board: Record<string, Lead[]> = Object.fromEntries(stages.map((s) => [s, []]));
-  for (const lead of leads) {
+  for (const lead of visibleLeads) {
     const key = stages.includes(lead.status ?? "") ? (lead.status as string) : "new";
     board[key].push(lead);
   }
@@ -54,10 +60,25 @@ function CRM() {
   return (
     <>
       <PageHeader title="CRM Leads" subtitle="Pipeline real de interessados nos seus imóveis.">
-        <button className="flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm hover:bg-secondary">
+        <button
+          onClick={() => setShowSearch((v) => !v)}
+          className={`flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-colors ${showSearch ? "border-emerald/40 bg-emerald/10 text-emerald" : "border-border bg-card hover:bg-secondary"}`}
+        >
           <Filter className="h-4 w-4" /> Filter
         </button>
       </PageHeader>
+
+      {showSearch && (
+        <div className="mb-2 flex items-center gap-2 rounded-full border border-border bg-secondary/40 px-4 py-2 max-w-sm">
+          <Search className="h-4 w-4 text-muted-foreground" />
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Buscar por nome ou imóvel…"
+            className="w-full bg-transparent text-sm focus:outline-none"
+          />
+        </div>
+      )}
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatCard label="Leads reais" value={String(total)} icon={Users} />
