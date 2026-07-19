@@ -10,7 +10,8 @@ export type BrandTheme = {
   colors: {
     primary: string;
     primaryGlow: string;
-    accent: string;       // secondary brand color — blue
+    primaryDeep: string;  // darkest gradient stop for metallic/gold surfaces
+    accent: string;       // secondary brand color — baby blue
     danger: string;       // alert / dispute / CTA color — red
     neutral: string;      // silver / gray
   };
@@ -47,11 +48,13 @@ export const defaultBrand: BrandConfig = {
   logo: { icon: "Building2" },
   theme: {
     colors: {
-      // Verde menta — trust, liquidity
-      primary: "0.74 0.11 156",
-      primaryGlow: "0.84 0.12 154",
-      // Azul — complements the mint, used for secondary actions/data
-      accent: "0.62 0.14 240",
+      // Ouro (gold) — primary brand color, rendered as a metallic gradient
+      // (light -> mid -> deep) on solid surfaces via .bg-emerald/.bg-primary
+      primary: "0.76 0.12 88",
+      primaryGlow: "0.9 0.08 92",
+      primaryDeep: "0.58 0.11 72",
+      // Azul bebê — secondary brand color, used for secondary actions/data
+      accent: "0.83 0.055 235",
       // Vermelho — alerts, disputes, CTAs
       danger: "0.58 0.22 25",
       neutral: "0.78 0.01 240",
