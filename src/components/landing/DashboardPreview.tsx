@@ -91,7 +91,7 @@ export function DashboardPreview() {
                 <div className="mt-3 h-40">
                   <ResponsiveContainer>
                     <LineChart data={data}>
-                      <Line type="monotone" dataKey="y" stroke="oklch(0.74 0.11 156)" strokeWidth={2.5} dot={false} />
+                      <Line type="monotone" dataKey="y" stroke="var(--emerald)" strokeWidth={2.5} dot={false} />
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
