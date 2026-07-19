@@ -1,10 +1,10 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, Building2, Coins, ShoppingBag, FileText, CreditCard, BarChart3,
-  MessageSquare, Calendar, Hotel, Home, Sparkles, Wrench, Brush, BedDouble,
-  TrendingUp, ArrowLeftRight, Banknote, FileBarChart, PieChart, Layers,
-  Boxes, Lightbulb, Briefcase, ShieldCheck, Truck, Workflow, Bot, Bell,
-  Webhook, Users, GitBranch, UserCheck, ClipboardList, KeyRound, ScrollText,
+  MessageSquare, Calendar, Hotel, Home, Sparkles, Wrench, Brush,
+  TrendingUp, ArrowLeftRight, Banknote, FileBarChart, Layers,
+  Boxes, Lightbulb, ShieldCheck, Truck, Workflow, Bot, Bell,
+  Webhook, Users, UserCheck, ClipboardList, KeyRound, ScrollText,
   Settings, Lock, Search, ChevronDown,
 } from "lucide-react";
 import {
@@ -49,8 +49,6 @@ const groups: Group[] = [
       { title: "Long Stay", icon: Home, to: "/admin/properties", search: { type: "Long stay" }, section: "Property Management" },
       { title: "Smart Pricing", icon: Sparkles, to: "/admin/smart-pricing", section: "Property Management" },
       { title: "Maintenance", icon: Wrench, to: "/admin/maintenance", section: "Property Management" },
-      { title: "Cleaning", icon: Brush, to: "/admin/marketplace", search: { cat: "cleaning" }, section: "Property Management" },
-      { title: "Occupancy", icon: BedDouble, to: "/admin/properties-analytics", section: "Property Management" },
     ],
   },
   {
@@ -60,15 +58,12 @@ const groups: Group[] = [
       { title: "Transactions", icon: ArrowLeftRight, to: "/admin/transactions", section: "Financial" },
       { title: "Payouts", icon: Banknote, to: "/admin/payouts", section: "Financial" },
       { title: "Investor Reports", icon: FileBarChart, to: "/admin/investor-reports", section: "Financial" },
-      { title: "ROI Analytics", icon: PieChart, to: "/admin/investor", section: "Financial" },
     ],
   },
   {
     label: "Investors",
     items: [
       { title: "Fractional Ownership", icon: Layers, to: "/admin/fractional-ownership", section: "Investors" },
-      { title: "Tokenized Assets", icon: Coins, to: "/admin/investor", section: "Investors" },
-      { title: "Investment Opportunities", icon: Sparkles, to: "/admin/investor", section: "Investors" },
       { title: "Portfolio", icon: Boxes, to: "/admin/portfolio", section: "Investors" },
     ],
   },
@@ -95,7 +90,6 @@ const groups: Group[] = [
     label: "CRM",
     items: [
       { title: "Leads", icon: Users, to: "/admin/crm", section: "CRM" },
-      { title: "Pipeline", icon: GitBranch, to: "/admin/crm", section: "CRM" },
       { title: "Follow-up", icon: ClipboardList, to: "/admin/follow-up", section: "CRM" },
       { title: "Tenant Scoring", icon: UserCheck, to: "/admin/tenant-scoring", section: "CRM" },
     ],
