@@ -1,14 +1,14 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, Building2, Calendar, TrendingUp, FileText, Wrench,
-  CreditCard, MessageSquare, LogOut,
+  CreditCard, MessageSquare, LogOut, UserRound,
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
   SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar,
 } from "@/components/ui/sidebar";
 import { Logo, LogoMark } from "@/components/brand/Logo";
-import { useAuthUser, initials } from "@/lib/auth";
+import { useAuthUser, useAvatarUrl, initials } from "@/lib/auth";
 import type { UserRole } from "@/lib/auth";
 
 type Item = { title: string; icon: any; to: string };
@@ -20,6 +20,7 @@ const ownerItems: Item[] = [
   { title: "Financeiro", icon: TrendingUp, to: "/app/finance" },
   { title: "Contratos", icon: FileText, to: "/app/contracts" },
   { title: "Manutenção", icon: Wrench, to: "/app/maintenance" },
+  { title: "Perfil", icon: UserRound, to: "/app/profile" },
 ];
 
 const tenantItems: Item[] = [
@@ -28,6 +29,7 @@ const tenantItems: Item[] = [
   { title: "Pagamentos", icon: CreditCard, to: "/app/payments" },
   { title: "Manutenção", icon: Wrench, to: "/app/maintenance" },
   { title: "Mensagens", icon: MessageSquare, to: "/app/messages" },
+  { title: "Perfil", icon: UserRound, to: "/app/profile" },
 ];
 
 export function UserSidebar({ role }: { role: UserRole | null }) {
@@ -35,6 +37,7 @@ export function UserSidebar({ role }: { role: UserRole | null }) {
   const collapsed = state === "collapsed";
   const path = useRouterState({ select: (s) => s.location.pathname });
   const { user, signOut } = useAuthUser();
+  const avatarUrl = useAvatarUrl();
   const items = role === "owner" ? ownerItems : tenantItems;
   const displayName = (user?.user_metadata?.name as string | undefined) ?? user?.email ?? "";
   const roleLabel = role === "owner" ? "Dono de imóvel" : "Inquilino";
@@ -48,8 +51,8 @@ export function UserSidebar({ role }: { role: UserRole | null }) {
         {!collapsed && (
           <div className="px-2 pb-2">
             <div className="flex items-center gap-2 rounded-xl border border-border bg-secondary/50 px-2.5 py-2 text-xs">
-              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-emerald text-[10px] font-bold text-white">
-                {initials(displayName)}
+              <div className="flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden rounded-md bg-emerald text-[10px] font-bold text-white">
+                {avatarUrl ? <img src={avatarUrl} alt="" className="h-full w-full object-cover" /> : initials(displayName)}
               </div>
               <div className="min-w-0 text-left">
                 <div className="truncate text-xs font-semibold">{displayName}</div>

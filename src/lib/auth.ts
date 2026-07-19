@@ -62,6 +62,37 @@ export function useUserRole() {
   return { role, loading: loading || userLoading };
 }
 
+/**
+ * Real avatar URL for the current session, read from public.users.avatar_url.
+ * Used anywhere we render a user avatar (headers, sidebars) so a photo
+ * uploaded from the Profile tab shows up everywhere consistently.
+ */
+export function useAvatarUrl() {
+  const { user, loading: userLoading } = useAuthUser();
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (userLoading || !user) {
+      setAvatarUrl(null);
+      return;
+    }
+    let cancelled = false;
+    supabase
+      .from("users")
+      .select("avatar_url")
+      .eq("id", user.id)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (!cancelled) setAvatarUrl(data?.avatar_url ?? null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [user, userLoading]);
+
+  return avatarUrl;
+}
+
 export function initials(nameOrEmail: string | null | undefined): string {
   if (!nameOrEmail) return "?";
   const parts = nameOrEmail.split(/[\s@.]+/).filter(Boolean);

@@ -2,7 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { User, Bell, Shield, CreditCard, Globe, Key } from "lucide-react";
 import { PageHeader, Card, SectionTitle, Badge, DemoDataBadge } from "@/components/app/ui";
-import { useAuthUser, initials } from "@/lib/auth";
+import { ProfileCard } from "@/components/app/ProfileCard";
+import { PlanCard } from "@/components/app/PlanCard";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/settings")({
@@ -20,10 +21,6 @@ const tabs = [
 
 function Settings() {
   const [tab, setTab] = useState("profile");
-  const { user } = useAuthUser();
-  const name = (user?.user_metadata?.name as string | undefined) ?? "";
-  const email = user?.email ?? "";
-  const phone = (user?.user_metadata?.phone as string | undefined) ?? "";
 
   return (
     <>
@@ -46,22 +43,7 @@ function Settings() {
         </nav>
 
         <div className="space-y-6">
-          {tab === "profile" && (
-            <>
-              <Card>
-                <SectionTitle title="Profile" />
-                <div className="flex items-center gap-4">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald text-xl font-bold text-white">{initials(name || email)}</div>
-                  <div className="text-xs text-muted-foreground">Foto de perfil ainda não é suportada.</div>
-                </div>
-                <div className="mt-6 grid gap-4 md:grid-cols-2">
-                  <Field label="Nome completo" value={name} readOnly />
-                  <Field label="E-mail" value={email} readOnly />
-                  <Field label="Celular" value={phone} readOnly />
-                </div>
-              </Card>
-            </>
-          )}
+          {tab === "profile" && <ProfileCard />}
 
           {tab === "notifications" && (
             <Card>
@@ -109,20 +91,7 @@ function Settings() {
             </>
           )}
 
-          {tab === "billing" && (
-            <Card>
-              <SectionTitle title="Plan" action={<DemoDataBadge />} />
-              <div className="rounded-2xl border border-emerald/30 bg-emerald/10 p-5">
-                <Badge variant="emerald">Pro</Badge>
-                <div className="mt-2 font-display text-2xl font-bold">€89/month</div>
-                <div className="text-xs text-muted-foreground">Renews on Jan 12, 2026</div>
-              </div>
-              <div className="mt-4 flex gap-2">
-                <button onClick={() => toast.info("Gestão de plano ainda não está conectada a cobrança real.")} className="flex-1 rounded-full border border-border py-2.5 text-sm">Manage plan</button>
-                <button onClick={() => toast.info("Upgrade de plano ainda não está conectado a cobrança real.")} className="flex-1 rounded-full bg-foreground py-2.5 text-sm font-semibold text-background">Upgrade</button>
-              </div>
-            </Card>
-          )}
+          {tab === "billing" && <PlanCard />}
 
           {tab === "regional" && (
             <Card>

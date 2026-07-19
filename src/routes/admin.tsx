@@ -6,7 +6,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/app/AdminSidebar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/lib/supabase";
-import { useAuthUser, initials } from "@/lib/auth";
+import { useAuthUser, useAvatarUrl, initials } from "@/lib/auth";
 
 export const Route = createFileRoute("/admin")({
   beforeLoad: async () => {
@@ -40,6 +40,7 @@ export const Route = createFileRoute("/admin")({
 function AppLayout() {
   const navigate = useNavigate();
   const { user, signOut } = useAuthUser();
+  const avatarUrl = useAvatarUrl();
   const displayName = (user?.user_metadata?.name as string | undefined) ?? user?.email ?? "";
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -93,8 +94,8 @@ function AppLayout() {
             </button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex h-9 w-9 items-center justify-center rounded-full bg-skyblue text-xs font-bold text-white">
-                  {initials(displayName)}
+                <button className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-skyblue text-xs font-bold text-white">
+                  {avatarUrl ? <img src={avatarUrl} alt="" className="h-full w-full object-cover" /> : initials(displayName)}
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
