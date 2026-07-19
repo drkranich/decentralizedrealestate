@@ -1,14 +1,18 @@
 import { createFileRoute, Outlet, redirect, useNavigate } from "@tanstack/react-router";
-import { Bell, LogOut } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
+import { Bell, Search, Plus, LogOut } from "lucide-react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { UserSidebar } from "@/components/app/UserSidebar";
+import { AdminSidebar } from "@/components/app/AdminSidebar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/lib/supabase";
-import { useAuthUser, useUserRole, initials } from "@/lib/auth";
+import { useAuthUser, initials } from "@/lib/auth";
 
-export const Route = createFileRoute("/app")({
+export const Route = createFileRoute("/admin")({
   beforeLoad: async () => {
+    // Defensive: supabase-js reads the session from localStorage, which may
+    // not exist in every SSR context. If the check itself fails, treat it
+    // as "no session" (redirect to /login) instead of crashing the route.
     let session = null;
     try {
       const { data } = await supabase.auth.getSession();
@@ -19,25 +23,30 @@ export const Route = createFileRoute("/app")({
     if (!session) {
       throw redirect({ to: "/login" });
     }
-    // /app is the SaaS portal for owners and tenants. The super admin has
-    // its own dedicated console at /admin instead.
+    // /admin is the super-admin console only. Owners/tenants get redirected
+    // to their own portal at /app instead of seeing an error.
     const { data: profile } = await supabase
       .from("users")
       .select("role")
       .eq("id", session.user.id)
       .maybeSingle();
-    if (profile?.role === "admin") {
-      throw redirect({ to: "/admin/dashboard" });
+    if (profile?.role !== "admin") {
+      throw redirect({ to: "/app/dashboard" });
     }
   },
-  component: UserLayout,
+  component: AppLayout,
 });
 
-function UserLayout() {
+function AppLayout() {
   const navigate = useNavigate();
   const { user, signOut } = useAuthUser();
-  const { role } = useUserRole();
   const displayName = (user?.user_metadata?.name as string | undefined) ?? user?.email ?? "";
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const runSearch = () => {
+    if (!searchQuery.trim()) return;
+    navigate({ to: "/admin/properties", search: { q: searchQuery.trim() } as any });
+  };
 
   const handleSignOut = async () => {
     await signOut();
@@ -47,17 +56,35 @@ function UserLayout() {
   return (
     <SidebarProvider>
       <div className="relative flex min-h-screen w-full overflow-hidden bg-secondary/30">
+        {/* Ambient drifting glow — gives the glass panels something to catch light from */}
         <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
           <div className="absolute -left-32 -top-32 h-[28rem] w-[28rem] rounded-full bg-emerald/20 blur-[110px] animate-drift-slow" />
           <div className="absolute right-[-10rem] top-1/3 h-[24rem] w-[24rem] rounded-full bg-skyblue/15 blur-[110px] animate-drift-slower" />
           <div className="absolute bottom-[-8rem] left-1/3 h-[22rem] w-[22rem] rounded-full bg-emerald-glow/15 blur-[110px] animate-drift-slow" />
         </div>
 
-        <UserSidebar role={role} />
+        <AdminSidebar />
 
         <div className="relative z-10 flex min-w-0 flex-1 flex-col">
-          <header className="sticky top-0 z-20 flex h-16 items-center justify-end gap-3 border-b border-white/10 bg-background/70 px-4 backdrop-blur-xl md:px-6">
-            <SidebarTrigger className="mr-auto" />
+          <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-white/10 bg-background/70 px-4 backdrop-blur-xl md:px-6">
+            <SidebarTrigger />
+            <div className="flex flex-1 items-center gap-2 rounded-full border border-white/10 bg-secondary/40 px-4 py-2 max-w-md backdrop-blur-sm">
+              <Search className="h-4 w-4 text-muted-foreground" />
+              <input
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && runSearch()}
+                className="w-full bg-transparent text-sm placeholder:text-muted-foreground focus:outline-none"
+                placeholder="Search properties… (Enter)"
+              />
+              <kbd className="hidden rounded bg-background px-1.5 py-0.5 text-[10px] text-muted-foreground md:inline">⌘K</kbd>
+            </div>
+            <button
+              onClick={() => navigate({ to: "/admin/properties", search: { add: "1" } as any })}
+              className="hidden items-center gap-2 rounded-full bg-emerald px-4 py-2 text-sm font-medium text-white shadow-glow transition-transform hover:scale-105 md:flex"
+            >
+              <Plus className="h-4 w-4" /> Add property
+            </button>
             <button
               onClick={() => toast.info("Nenhuma notificação real no momento.")}
               className="relative flex h-9 w-9 items-center justify-center rounded-full transition-colors hover:bg-secondary"
@@ -73,7 +100,7 @@ function UserLayout() {
               <DropdownMenuContent align="end" className="w-48">
                 <div className="px-2 py-1.5 text-xs text-muted-foreground truncate">{user?.email}</div>
                 <DropdownMenuItem onClick={handleSignOut} className="text-destructive focus:text-destructive">
-                  <LogOut className="mr-2 h-4 w-4" /> Sair
+                  <LogOut className="mr-2 h-4 w-4" /> Log out
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

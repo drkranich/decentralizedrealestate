@@ -9,7 +9,7 @@ import { PageHeader, StatCard, Card, SectionTitle, Badge, DemoDataBadge } from "
 import { useBrand } from "@/components/brand/BrandProvider";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/app/ai")({
+export const Route = createFileRoute("/admin/ai")({
   component: AICenter,
 });
 

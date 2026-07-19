@@ -3,7 +3,7 @@ import { ResponsiveContainer, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cel
 import { TrendingUp, Activity, Users, Wrench } from "lucide-react";
 import { PageHeader, Card, StatCard, SectionTitle } from "@/components/app/ui";
 
-export const Route = createFileRoute("/app/properties-analytics")({
+export const Route = createFileRoute("/admin/properties-analytics")({
   component: PropertiesAnalytics,
 });
 

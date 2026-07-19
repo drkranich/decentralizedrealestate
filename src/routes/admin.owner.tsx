@@ -4,7 +4,7 @@ import { Home, DollarSign, Wrench, MessageSquare, Calendar, TrendingUp } from "l
 import { PageHeader, StatCard, Card, SectionTitle, Badge } from "@/components/app/ui";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/app/owner")({
+export const Route = createFileRoute("/admin/owner")({
   component: OwnerHub,
 });
 

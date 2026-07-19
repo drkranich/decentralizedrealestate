@@ -5,7 +5,7 @@ import { PageHeader, Card, SectionTitle, Badge, DemoDataBadge } from "@/componen
 import { useAuthUser, initials } from "@/lib/auth";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/app/settings")({
+export const Route = createFileRoute("/admin/settings")({
   component: Settings,
 });
 

@@ -7,12 +7,12 @@ import {
 import { Card, Badge, SectionTitle, StatCard, DemoDataBadge } from "@/components/app/ui";
 import { supabase } from "@/lib/supabase";
 
-export const Route = createFileRoute("/app/properties/$id")({
+export const Route = createFileRoute("/admin/properties/$id")({
   component: PropertyDetails,
   notFoundComponent: () => (
     <div className="py-16 text-center">
       <h2 className="font-display text-2xl font-bold">Property not found</h2>
-      <Link to="/app/properties" className="mt-4 inline-block text-sm text-emerald hover:underline">Back to properties</Link>
+      <Link to="/admin/properties" className="mt-4 inline-block text-sm text-emerald hover:underline">Back to properties</Link>
     </div>
   ),
 });
@@ -69,7 +69,7 @@ function PropertyDetails() {
 
   return (
     <>
-      <Link to="/app/properties" className="mb-4 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
+      <Link to="/admin/properties" className="mb-4 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
         <ArrowLeft className="h-4 w-4" /> Back to properties
       </Link>
 

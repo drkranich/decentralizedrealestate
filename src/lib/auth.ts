@@ -24,6 +24,44 @@ export function useAuthUser() {
   return { user, loading, signOut };
 }
 
+export type UserRole = "admin" | "owner" | "tenant";
+
+/**
+ * Real role for the current session, read from public.users.role (the
+ * source of truth RLS policies key off), not just the JWT's user_metadata
+ * (which can go stale). Used to pick which sidebar/pages to show under /app.
+ */
+export function useUserRole() {
+  const { user, loading: userLoading } = useAuthUser();
+  const [role, setRole] = useState<UserRole | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (userLoading) return;
+    if (!user) {
+      setRole(null);
+      setLoading(false);
+      return;
+    }
+    let cancelled = false;
+    supabase
+      .from("users")
+      .select("role")
+      .eq("id", user.id)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (cancelled) return;
+        setRole((data?.role as UserRole | undefined) ?? "tenant");
+        setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [user, userLoading]);
+
+  return { role, loading: loading || userLoading };
+}
+
 export function initials(nameOrEmail: string | null | undefined): string {
   if (!nameOrEmail) return "?";
   const parts = nameOrEmail.split(/[\s@.]+/).filter(Boolean);

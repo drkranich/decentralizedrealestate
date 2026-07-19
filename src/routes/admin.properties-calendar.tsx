@@ -5,7 +5,7 @@ import { PageHeader, Card, Badge } from "@/components/app/ui";
 import { Calendar as DatePicker } from "@/components/ui/calendar";
 import { properties } from "@/data/properties";
 
-export const Route = createFileRoute("/app/properties-calendar")({
+export const Route = createFileRoute("/admin/properties-calendar")({
   component: CalendarPage,
 });
 

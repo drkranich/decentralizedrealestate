@@ -12,7 +12,7 @@ import { PageHeader, StatCard, Card, SectionTitle, Badge, DemoDataBadge } from "
 import { useBrand } from "@/components/brand/BrandProvider";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/app/investor")({
+export const Route = createFileRoute("/admin/investor")({
   component: Investor,
 });
 

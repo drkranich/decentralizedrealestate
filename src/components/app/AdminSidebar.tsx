@@ -30,33 +30,33 @@ const groups: Group[] = [
   {
     label: "Main",
     items: [
-      { title: "Dashboard", icon: LayoutDashboard, to: "/app/dashboard", section: "Main" },
-      { title: "Properties", icon: Building2, to: "/app/properties", section: "Main" },
-      { title: "Investments", icon: Coins, to: "/app/investor", section: "Main" },
-      { title: "Marketplace", icon: ShoppingBag, to: "/app/marketplace", section: "Main" },
-      { title: "Contracts", icon: FileText, to: "/app/contracts", section: "Main" },
+      { title: "Dashboard", icon: LayoutDashboard, to: "/admin/dashboard", section: "Main" },
+      { title: "Properties", icon: Building2, to: "/admin/properties", section: "Main" },
+      { title: "Investments", icon: Coins, to: "/admin/investor", section: "Main" },
+      { title: "Marketplace", icon: ShoppingBag, to: "/admin/marketplace", section: "Main" },
+      { title: "Contracts", icon: FileText, to: "/admin/contracts", section: "Main" },
       { title: "Payments", icon: CreditCard, section: "Main" },
-      { title: "Analytics", icon: BarChart3, to: "/app/properties-analytics", section: "Main" },
+      { title: "Analytics", icon: BarChart3, to: "/admin/properties-analytics", section: "Main" },
       { title: "Messages", icon: MessageSquare, section: "Main" },
-      { title: "Calendar", icon: Calendar, to: "/app/properties-calendar", section: "Main" },
+      { title: "Calendar", icon: Calendar, to: "/admin/properties-calendar", section: "Main" },
     ],
   },
   {
     label: "Property Management",
     items: [
-      { title: "All Properties", icon: Building2, to: "/app/properties", section: "Property Management" },
+      { title: "All Properties", icon: Building2, to: "/admin/properties", section: "Property Management" },
       { title: "Short Stay", icon: Hotel, section: "Property Management" },
       { title: "Long Stay", icon: Home, section: "Property Management" },
-      { title: "Smart Pricing", icon: Sparkles, to: "/app/smart-pricing", section: "Property Management" },
+      { title: "Smart Pricing", icon: Sparkles, to: "/admin/smart-pricing", section: "Property Management" },
       { title: "Maintenance", icon: Wrench, section: "Property Management" },
       { title: "Cleaning", icon: Brush, section: "Property Management" },
-      { title: "Occupancy", icon: BedDouble, to: "/app/properties-analytics", section: "Property Management" },
+      { title: "Occupancy", icon: BedDouble, to: "/admin/properties-analytics", section: "Property Management" },
     ],
   },
   {
     label: "Financial",
     items: [
-      { title: "Revenue", icon: TrendingUp, to: "/app/finance", section: "Financial" },
+      { title: "Revenue", icon: TrendingUp, to: "/admin/finance", section: "Financial" },
       { title: "Transactions", icon: ArrowLeftRight, section: "Financial" },
       { title: "Payouts", icon: Banknote, section: "Financial" },
       { title: "Investor Reports", icon: FileBarChart, section: "Financial" },
@@ -67,7 +67,7 @@ const groups: Group[] = [
     label: "Investors",
     items: [
       { title: "Fractional Ownership", icon: Layers, section: "Investors" },
-      { title: "Tokenized Assets", icon: Coins, to: "/app/investor", section: "Investors" },
+      { title: "Tokenized Assets", icon: Coins, to: "/admin/investor", section: "Investors" },
       { title: "Investment Opportunities", icon: Sparkles, section: "Investors" },
       { title: "Portfolio", icon: Boxes, section: "Investors" },
     ],
@@ -86,7 +86,7 @@ const groups: Group[] = [
     label: "Automation",
     items: [
       { title: "Workflows", icon: Workflow, section: "Automation" },
-      { title: "AI Automations", icon: Bot, to: "/app/ai", section: "Automation" },
+      { title: "AI Automations", icon: Bot, to: "/admin/ai", section: "Automation" },
       { title: "Notifications", icon: Bell, section: "Automation" },
       { title: "Webhooks", icon: Webhook, section: "Automation" },
     ],
@@ -94,7 +94,7 @@ const groups: Group[] = [
   {
     label: "CRM",
     items: [
-      { title: "Leads", icon: Users, to: "/app/crm", section: "CRM" },
+      { title: "Leads", icon: Users, to: "/admin/crm", section: "CRM" },
       { title: "Pipeline", icon: GitBranch, section: "CRM" },
       { title: "Follow-up", icon: ClipboardList, section: "CRM" },
       { title: "Tenant Scoring", icon: UserCheck, section: "CRM" },
@@ -107,7 +107,7 @@ const groups: Group[] = [
       { title: "Permissions", icon: KeyRound, section: "Admin" },
       { title: "Security", icon: Lock, section: "Admin" },
       { title: "Logs", icon: ScrollText, section: "Admin" },
-      { title: "Settings", icon: Settings, to: "/app/settings", section: "Admin" },
+      { title: "Settings", icon: Settings, to: "/admin/settings", section: "Admin" },
     ],
   },
 ];
@@ -135,7 +135,7 @@ function ItemLink({ item, active, collapsed }: { item: Item; active: boolean; co
   }
   return (
     <Link
-      to="/app/coming-soon"
+      to="/admin/coming-soon"
       search={{ section: item.section, page: item.title }}
       className={className}
     >
@@ -144,7 +144,7 @@ function ItemLink({ item, active, collapsed }: { item: Item; active: boolean; co
   );
 }
 
-export function AppSidebar() {
+export function AdminSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const path = useRouterState({ select: (s) => s.location.pathname });

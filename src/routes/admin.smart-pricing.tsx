@@ -5,7 +5,7 @@ import { PageHeader, Card, Badge, StatCard, SectionTitle } from "@/components/ap
 import { properties } from "@/data/properties";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/app/smart-pricing")({
+export const Route = createFileRoute("/admin/smart-pricing")({
   component: SmartPricing,
 });
 

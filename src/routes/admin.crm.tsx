@@ -5,7 +5,7 @@ import { PageHeader, Card, Badge, StatCard, DemoDataBadge } from "@/components/a
 import { Users, TrendingUp, Target, Zap } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
-export const Route = createFileRoute("/app/crm")({
+export const Route = createFileRoute("/admin/crm")({
   component: CRM,
 });
 

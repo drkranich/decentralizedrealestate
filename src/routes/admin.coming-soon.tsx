@@ -2,7 +2,7 @@ import { createFileRoute, useSearch } from "@tanstack/react-router";
 import { Sparkles } from "lucide-react";
 import { PageHeader, Card } from "@/components/app/ui";
 
-export const Route = createFileRoute("/app/coming-soon")({
+export const Route = createFileRoute("/admin/coming-soon")({
   validateSearch: (s: Record<string, unknown>) => ({
     section: typeof s.section === "string" ? s.section : "Module",
     page: typeof s.page === "string" ? s.page : "Page",
@@ -11,7 +11,7 @@ export const Route = createFileRoute("/app/coming-soon")({
 });
 
 function ComingSoon() {
-  const { section, page } = useSearch({ from: "/app/coming-soon" });
+  const { section, page } = useSearch({ from: "/admin/coming-soon" });
   return (
     <>
       <PageHeader title={page} subtitle={section} />
