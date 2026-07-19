@@ -1,13 +1,40 @@
-import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { Bell, Search, Plus } from "lucide-react";
+import { createFileRoute, Outlet, redirect, useNavigate } from "@tanstack/react-router";
+import { Bell, Search, Plus, LogOut } from "lucide-react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app/AppSidebar";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { supabase } from "@/lib/supabase";
+import { useAuthUser, initials } from "@/lib/auth";
 
 export const Route = createFileRoute("/app")({
+  beforeLoad: async () => {
+    // Defensive: supabase-js reads the session from localStorage, which may
+    // not exist in every SSR context. If the check itself fails, treat it
+    // as "no session" (redirect to /login) instead of crashing the route.
+    let session = null;
+    try {
+      const { data } = await supabase.auth.getSession();
+      session = data.session;
+    } catch {
+      session = null;
+    }
+    if (!session) {
+      throw redirect({ to: "/login" });
+    }
+  },
   component: AppLayout,
 });
 
 function AppLayout() {
+  const navigate = useNavigate();
+  const { user, signOut } = useAuthUser();
+  const displayName = (user?.user_metadata?.name as string | undefined) ?? user?.email ?? "";
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate({ to: "/login" });
+  };
+
   return (
     <SidebarProvider>
       <div className="relative flex min-h-screen w-full overflow-hidden bg-secondary/30">
@@ -35,7 +62,19 @@ function AppLayout() {
               <Bell className="h-4 w-4" />
               <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-emerald animate-pulse-glow" />
             </button>
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-skyblue text-xs font-bold text-white">JD</div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="flex h-9 w-9 items-center justify-center rounded-full bg-skyblue text-xs font-bold text-white">
+                  {initials(displayName)}
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <div className="px-2 py-1.5 text-xs text-muted-foreground truncate">{user?.email}</div>
+                <DropdownMenuItem onClick={handleSignOut} className="text-destructive focus:text-destructive">
+                  <LogOut className="mr-2 h-4 w-4" /> Log out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </header>
 
           <main className="flex-1 p-4 md:p-8">
