@@ -17,6 +17,9 @@ import {
 import { Logo, LogoMark } from "@/components/brand/Logo";
 import { useBrand } from "@/components/brand/BrandProvider";
 import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
+import { useAuthUser } from "@/lib/auth";
+import { supabase } from "@/lib/supabase";
 
 // ===== Sidebar configuration (modular, easy to extend) =====
 type Item = { title: string; icon: any; to?: string; section: string };
@@ -145,6 +148,17 @@ export function AppSidebar() {
   const collapsed = state === "collapsed";
   const path = useRouterState({ select: (s) => s.location.pathname });
   const brand = useBrand();
+  const { user } = useAuthUser();
+  const [propertyCount, setPropertyCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    supabase
+      .from("properties")
+      .select("id", { count: "exact", head: true })
+      .then(({ count }) => setPropertyCount(count ?? 0));
+  }, []);
+
+  const ownerLabel = (user?.user_metadata?.name as string | undefined) || user?.email || "Sua conta";
 
   return (
     <Sidebar collapsible="icon" className="border-r border-white/10 bg-sidebar/70 backdrop-blur-xl">
@@ -160,8 +174,10 @@ export function AppSidebar() {
                   {brand.shortName}
                 </div>
                 <div className="text-left min-w-0">
-                  <div className="truncate text-xs font-semibold">Portfolio Alpha</div>
-                  <div className="text-[10px] text-muted-foreground">12 properties</div>
+                  <div className="truncate text-xs font-semibold">{ownerLabel}</div>
+                  <div className="text-[10px] text-muted-foreground">
+                    {propertyCount === null ? "…" : `${propertyCount} imóve${propertyCount === 1 ? "l" : "is"}`}
+                  </div>
                 </div>
               </div>
               <ChevronDown className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
