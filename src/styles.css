@@ -34,6 +34,7 @@
   --color-ring: var(--ring);
   --color-emerald: var(--emerald);
   --color-emerald-glow: var(--emerald-glow);
+  --color-emerald-deep: var(--emerald-deep);
   --color-skyblue: var(--skyblue);
   --color-silver: var(--silver);
   --color-glass-tint: var(--glass-tint);
@@ -53,8 +54,8 @@
   --card-foreground: oklch(0.15 0.02 250);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.15 0.02 250);
-  --primary: oklch(0.78 0.14 85);
-  --primary-foreground: oklch(0.24 0.04 85);
+  --primary: oklch(0.76 0.12 88);
+  --primary-foreground: oklch(0.26 0.04 80);
   --secondary: oklch(0.96 0.01 240);
   --secondary-foreground: oklch(0.2 0.02 250);
   --muted: oklch(0.96 0.005 240);
@@ -65,13 +66,14 @@
   --destructive-foreground: oklch(0.99 0 0);
   --border: oklch(0.92 0.01 240);
   --input: oklch(0.92 0.01 240);
-  --ring: oklch(0.78 0.14 85);
+  --ring: oklch(0.76 0.12 88);
 
   /* Rebrand: "emerald"/"skyblue" tokens repointed to gold + baby blue.
      Class names (bg-emerald, text-skyblue, etc.) kept as-is across the app;
      only the underlying colors changed, so nothing else needs renaming. */
-  --emerald: oklch(0.78 0.14 85);
-  --emerald-glow: oklch(0.88 0.11 88);
+  --emerald: oklch(0.76 0.12 88);
+  --emerald-glow: oklch(0.9 0.08 92);
+  --emerald-deep: oklch(0.58 0.11 72);
   --skyblue: oklch(0.83 0.055 235);
   --silver: oklch(0.78 0.01 240);
 
@@ -82,8 +84,8 @@
   --glass-fill: oklch(0 0 0 / 0.025);
   --glass-fill-strong: oklch(0 0 0 / 0.05);
   --shadow-soft: 0 1px 2px oklch(0 0 0 / 0.04), 0 8px 24px -8px oklch(0.2 0.04 250 / 0.08);
-  --shadow-elegant: 0 24px 60px -20px oklch(0.78 0.14 85 / 0.22);
-  --shadow-glow: 0 0 60px oklch(0.78 0.14 85 / 0.32);
+  --shadow-elegant: 0 24px 60px -20px oklch(0.76 0.12 88 / 0.22);
+  --shadow-glow: 0 0 60px oklch(0.76 0.12 88 / 0.32);
 }
 
 .dark {
@@ -93,8 +95,8 @@
   --card-foreground: oklch(0.98 0.005 240);
   --popover: oklch(0.13 0.02 250);
   --popover-foreground: oklch(0.98 0.005 240);
-  --primary: oklch(0.8 0.14 85);
-  --primary-foreground: oklch(0.18 0.03 85);
+  --primary: oklch(0.8 0.12 88);
+  --primary-foreground: oklch(0.2 0.03 80);
   --secondary: oklch(0.18 0.02 250);
   --secondary-foreground: oklch(0.98 0.005 240);
   --muted: oklch(0.18 0.02 250);
@@ -105,7 +107,7 @@
   --destructive-foreground: oklch(0.98 0 0);
   --border: oklch(1 0 0 / 0.08);
   --input: oklch(1 0 0 / 0.1);
-  --ring: oklch(0.8 0.14 85);
+  --ring: oklch(0.8 0.12 88);
   --glass-border: oklch(1 0 0 / 0.1);
   --glass-fill: oklch(1 0 0 / 0.04);
   --glass-fill-strong: oklch(1 0 0 / 0.08);
@@ -231,4 +233,14 @@
 }
 .animate-fade-in-down {
   animation: fade-in-down 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Ouro (gold) real: aplica um gradiente metálico sutil sobre as superfícies
+   sólidas que usam a cor de marca, em vez de um amarelo-laranja chapado.
+   Mantém bg-color como fallback (definido pelo utilitário do Tailwind) e só
+   adiciona o background-image por cima — texto/bordas (text-emerald,
+   border-emerald, bg-primary/90 do hover, etc.) continuam sólidos. */
+.bg-emerald,
+.bg-primary {
+  background-image: linear-gradient(135deg, var(--emerald-glow) 0%, var(--emerald) 55%, var(--emerald-deep) 100%);
 }
