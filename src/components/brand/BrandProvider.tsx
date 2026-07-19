@@ -34,6 +34,8 @@ export function BrandProvider({ brand, children }: Props) {
     root.style.setProperty("--primary", `oklch(${c.primary})`);
     root.style.setProperty("--ring", `oklch(${c.primary})`);
     root.style.setProperty("--accent", `oklch(${c.accent})`);
+    root.style.setProperty("--destructive", `oklch(${c.danger})`);
+    root.style.setProperty("--gold", `oklch(${c.accent})`);
     root.style.setProperty("--emerald", `oklch(${c.primary})`);
     root.style.setProperty("--emerald-glow", `oklch(${c.primaryGlow})`);
     root.style.setProperty("--skyblue", `oklch(${c.accent})`);

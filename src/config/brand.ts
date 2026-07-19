@@ -10,7 +10,8 @@ export type BrandTheme = {
   colors: {
     primary: string;
     primaryGlow: string;
-    accent: string;       // secondary brand color (e.g. sky blue)
+    accent: string;       // secondary brand color — gold
+    danger: string;       // alert / dispute / CTA color — red
     neutral: string;      // silver / gray
   };
   typography: {
@@ -42,13 +43,17 @@ export const defaultBrand: BrandConfig = {
   nameParts: { plain: "Property", accent: "OS" },
   tagline: "The global operating system for real estate.",
   shortName: "PO",
-  domain: "propertyos.com",
+  domain: "decentralizedrealestate.ciclonovo2022.workers.dev",
   logo: { icon: "Building2" },
   theme: {
     colors: {
-      primary: "0.62 0.16 160",
-      primaryGlow: "0.78 0.18 158",
-      accent: "0.72 0.13 230",
+      // Verde água — trust, liquidity
+      primary: "0.64 0.15 175",
+      primaryGlow: "0.78 0.17 173",
+      // Dourado — value, ownership
+      accent: "0.80 0.14 88",
+      // Vermelho — alerts, disputes, CTAs
+      danger: "0.58 0.21 27",
       neutral: "0.78 0.01 240",
     },
     typography: {
