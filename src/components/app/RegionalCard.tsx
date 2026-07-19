@@ -103,7 +103,7 @@ export function RegionalCard() {
             <SelectTrigger className="mt-1">
               <SelectValue placeholder="Selecione…" />
             </SelectTrigger>
-            <SelectContent className="max-h-72">
+            <SelectContent className="max-h-72" side="bottom">
               {LANGUAGES.map((l) => (
                 <SelectItem key={l.code} value={l.code}>
                   {l.name}
@@ -118,7 +118,7 @@ export function RegionalCard() {
             <SelectTrigger className="mt-1">
               <SelectValue placeholder="Selecione…" />
             </SelectTrigger>
-            <SelectContent className="max-h-72">
+            <SelectContent className="max-h-72" side="bottom">
               {CURRENCIES.map((c) => (
                 <SelectItem key={c.code} value={c.code}>
                   {c.label}
@@ -133,7 +133,7 @@ export function RegionalCard() {
             <SelectTrigger className="mt-1">
               <SelectValue placeholder="Selecione…" />
             </SelectTrigger>
-            <SelectContent className="max-h-72">
+            <SelectContent className="max-h-72" side="bottom">
               {timezones.map((tz) => (
                 <SelectItem key={tz} value={tz}>
                   {tz.replace(/_/g, " ")}
