@@ -20,7 +20,7 @@ const tenant = [
   { n: "Mid stay (8-30d)", v: 27 },
   { n: "Long stay (30d+)", v: 25 },
 ];
-const colors = ["oklch(0.62 0.16 160)", "oklch(0.72 0.13 230)", "oklch(0.78 0.18 158)"];
+const colors = ["var(--emerald)", "var(--skyblue)", "var(--emerald-glow)"];
 const costs = Array.from({ length: 12 }, (_, i) => ({
   m: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][i],
   cleaning: 800 + Math.round(Math.sin(i) * 120),
@@ -52,15 +52,15 @@ function PropertiesAnalytics() {
               <AreaChart data={revenue}>
                 <defs>
                   <linearGradient id="rv" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="oklch(0.62 0.16 160)" stopOpacity={0.4} />
-                    <stop offset="100%" stopColor="oklch(0.62 0.16 160)" stopOpacity={0} />
+                    <stop offset="0%" stopColor="var(--emerald)" stopOpacity={0.4} />
+                    <stop offset="100%" stopColor="var(--emerald)" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="currentColor" opacity={0.08} />
                 <XAxis dataKey="m" tickLine={false} axisLine={false} fontSize={11} stroke="currentColor" opacity={0.5} />
                 <YAxis tickLine={false} axisLine={false} fontSize={11} stroke="currentColor" opacity={0.5} />
                 <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid var(--border)", background: "var(--card)" }} />
-                <Area type="monotone" dataKey="rev" stroke="oklch(0.62 0.16 160)" strokeWidth={2.5} fill="url(#rv)" />
+                <Area type="monotone" dataKey="rev" stroke="var(--emerald)" strokeWidth={2.5} fill="url(#rv)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -99,7 +99,7 @@ function PropertiesAnalytics() {
                 <XAxis type="number" tickLine={false} axisLine={false} fontSize={11} stroke="currentColor" opacity={0.5} />
                 <YAxis dataKey="name" type="category" tickLine={false} axisLine={false} fontSize={11} stroke="currentColor" opacity={0.5} width={70} />
                 <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid var(--border)", background: "var(--card)" }} />
-                <Bar dataKey="v" fill="oklch(0.62 0.16 160)" radius={[0, 6, 6, 0]} />
+                <Bar dataKey="v" fill="var(--emerald)" radius={[0, 6, 6, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -114,9 +114,9 @@ function PropertiesAnalytics() {
                 <XAxis dataKey="m" tickLine={false} axisLine={false} fontSize={11} stroke="currentColor" opacity={0.5} />
                 <YAxis tickLine={false} axisLine={false} fontSize={11} stroke="currentColor" opacity={0.5} />
                 <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid var(--border)", background: "var(--card)" }} />
-                <Bar dataKey="cleaning" stackId="a" fill="oklch(0.62 0.16 160)" />
-                <Bar dataKey="repairs" stackId="a" fill="oklch(0.72 0.13 230)" />
-                <Bar dataKey="utilities" stackId="a" fill="oklch(0.78 0.18 158)" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="cleaning" stackId="a" fill="var(--emerald)" />
+                <Bar dataKey="repairs" stackId="a" fill="var(--skyblue)" />
+                <Bar dataKey="utilities" stackId="a" fill="var(--emerald-glow)" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

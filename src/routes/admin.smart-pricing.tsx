@@ -54,8 +54,8 @@ function SmartPricing() {
                 <YAxis tickLine={false} axisLine={false} fontSize={11} stroke="currentColor" opacity={0.5} />
                 <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid var(--border)", background: "var(--card)" }} />
                 <Legend wrapperStyle={{ fontSize: 11 }} />
-                <Line type="monotone" dataKey="current" stroke="oklch(0.72 0.13 230)" strokeWidth={2.5} dot={false} name="Current" />
-                <Line type="monotone" dataKey="ai" stroke="oklch(0.62 0.16 160)" strokeWidth={2.5} dot={false} name="AI suggested" />
+                <Line type="monotone" dataKey="current" stroke="var(--skyblue)" strokeWidth={2.5} dot={false} name="Current" />
+                <Line type="monotone" dataKey="ai" stroke="var(--emerald)" strokeWidth={2.5} dot={false} name="AI suggested" />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -92,7 +92,7 @@ function SmartPricing() {
                 <XAxis dataKey="m" tickLine={false} axisLine={false} fontSize={11} stroke="currentColor" opacity={0.5} />
                 <YAxis tickLine={false} axisLine={false} fontSize={11} stroke="currentColor" opacity={0.5} />
                 <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid var(--border)", background: "var(--card)" }} />
-                <Bar dataKey="f" fill="oklch(0.62 0.16 160)" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="f" fill="var(--emerald)" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

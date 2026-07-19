@@ -57,9 +57,9 @@ function Finance() {
                 <YAxis tickLine={false} axisLine={false} fontSize={11} stroke="currentColor" opacity={0.4} />
                 <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid var(--border)", background: "var(--card)" }} />
                 <Legend wrapperStyle={{ fontSize: 12 }} />
-                <Bar dataKey="income" fill="oklch(0.62 0.16 160)" radius={[6, 6, 0, 0]} />
-                <Bar dataKey="expense" fill="oklch(0.72 0.13 230)" radius={[6, 6, 0, 0]} />
-                <Bar dataKey="profit" fill="oklch(0.78 0.18 158)" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="income" fill="var(--emerald)" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="expense" fill="var(--skyblue)" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="profit" fill="var(--emerald-glow)" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

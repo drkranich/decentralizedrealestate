@@ -34,14 +34,14 @@ function OwnerHub() {
               <AreaChart data={data}>
                 <defs>
                   <linearGradient id="ow" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="oklch(0.62 0.16 160)" stopOpacity={0.5} />
-                    <stop offset="100%" stopColor="oklch(0.62 0.16 160)" stopOpacity={0} />
+                    <stop offset="0%" stopColor="var(--emerald)" stopOpacity={0.5} />
+                    <stop offset="100%" stopColor="var(--emerald)" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <XAxis dataKey="d" tickLine={false} axisLine={false} fontSize={11} stroke="currentColor" opacity={0.4} />
                 <YAxis tickLine={false} axisLine={false} fontSize={11} stroke="currentColor" opacity={0.4} />
                 <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid var(--border)", background: "var(--card)" }} />
-                <Area type="monotone" dataKey="v" stroke="oklch(0.62 0.16 160)" strokeWidth={2.5} fill="url(#ow)" />
+                <Area type="monotone" dataKey="v" stroke="var(--emerald)" strokeWidth={2.5} fill="url(#ow)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
