@@ -52,9 +52,15 @@ export function BrandProvider({ brand, children }: Props) {
           legal: { ...defaultBrand.legal, ...(brand.legal ?? {}) },
         };
 
+    const nameOverridden = Boolean(globalOverride.brand_name);
     return {
       ...base,
       name: globalOverride.brand_name || base.name,
+      // A custom name typed by the admin won't match the default's
+      // hardcoded plain/accent split (e.g. "Property" + "OS"), so drop it
+      // and render the custom name as one plain string instead of a stale
+      // split that no longer matches.
+      nameParts: nameOverridden ? undefined : base.nameParts,
       logo: globalOverride.logo_url ? { ...base.logo, src: globalOverride.logo_url } : base.logo,
     };
   }, [brand, globalOverride]);
