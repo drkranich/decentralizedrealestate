@@ -32,8 +32,9 @@ const cellClass: Record<Cell["type"], string> = {
 const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
 function CalendarPage() {
-  const [monthIndex, setMonthIndex] = useState(11);
-  const [year, setYear] = useState(2025);
+  const today = new Date();
+  const [monthIndex, setMonthIndex] = useState(today.getMonth());
+  const [year, setYear] = useState(today.getFullYear());
   const month = `${monthNames[monthIndex]} ${year}`;
 
   const goPrev = () => {
