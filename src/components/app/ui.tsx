@@ -48,6 +48,14 @@ export function Card({ children, className = "" }: { children: ReactNode; classN
   );
 }
 
+export function DemoDataBadge() {
+  return (
+    <span className="inline-flex items-center gap-1 rounded-full border border-dashed border-skyblue/40 bg-skyblue/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-skyblue">
+      Dados de demonstração
+    </span>
+  );
+}
+
 export function SectionTitle({ title, action }: { title: string; action?: ReactNode }) {
   return (
     <div className="mb-4 flex items-center justify-between">
