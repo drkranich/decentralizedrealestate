@@ -1,5 +1,6 @@
-import { createContext, useContext, useEffect, useMemo, ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, useState, ReactNode } from "react";
 import { BrandConfig, defaultBrand } from "@/config/brand";
+import { supabase } from "@/lib/supabase";
 
 const BrandContext = createContext<BrandConfig>(defaultBrand);
 
@@ -10,21 +11,45 @@ export function useBrand() {
 type Props = { brand?: Partial<BrandConfig>; children: ReactNode };
 
 export function BrandProvider({ brand, children }: Props) {
-  const value = useMemo<BrandConfig>(() => {
-    if (!brand) return defaultBrand;
-    return {
-      ...defaultBrand,
-      ...brand,
-      theme: {
-        ...defaultBrand.theme,
-        ...(brand.theme ?? {}),
-        colors: { ...defaultBrand.theme.colors, ...(brand.theme?.colors ?? {}) },
-        typography: { ...defaultBrand.theme.typography, ...(brand.theme?.typography ?? {}) },
-      },
-      logo: { ...defaultBrand.logo, ...(brand.logo ?? {}) },
-      legal: { ...defaultBrand.legal, ...(brand.legal ?? {}) },
+  // Global, DB-backed overrides (logo/favicon) set by the super admin in
+  // /admin/settings → Branding. Applies platform-wide, to every visitor,
+  // regardless of role or auth state.
+  const [globalOverride, setGlobalOverride] = useState<{ logo_url?: string | null; favicon_url?: string | null }>({});
+
+  useEffect(() => {
+    let cancelled = false;
+    supabase
+      .from("app_settings")
+      .select("logo_url, favicon_url")
+      .eq("id", true)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (!cancelled && data) setGlobalOverride(data);
+      });
+    return () => {
+      cancelled = true;
     };
-  }, [brand]);
+  }, []);
+
+  const value = useMemo<BrandConfig>(() => {
+    const base: BrandConfig = !brand
+      ? defaultBrand
+      : {
+          ...defaultBrand,
+          ...brand,
+          theme: {
+            ...defaultBrand.theme,
+            ...(brand.theme ?? {}),
+            colors: { ...defaultBrand.theme.colors, ...(brand.theme?.colors ?? {}) },
+            typography: { ...defaultBrand.theme.typography, ...(brand.theme?.typography ?? {}) },
+          },
+          logo: { ...defaultBrand.logo, ...(brand.logo ?? {}) },
+          legal: { ...defaultBrand.legal, ...(brand.legal ?? {}) },
+        };
+
+    if (!globalOverride.logo_url) return base;
+    return { ...base, logo: { ...base.logo, src: globalOverride.logo_url } };
+  }, [brand, globalOverride]);
 
   // Inject brand tokens into CSS variables so Tailwind utilities (bg-primary,
   // text-emerald, etc.) reflect the active brand without code changes.
@@ -45,6 +70,19 @@ export function BrandProvider({ brand, children }: Props) {
     root.style.setProperty("--font-display", value.theme.typography.display);
     document.title = `${value.name} — ${value.tagline}`;
   }, [value]);
+
+  // Global favicon override — creates/updates the <link rel="icon"> tag.
+  useEffect(() => {
+    const href = globalOverride.favicon_url;
+    if (!href) return;
+    let link = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
+    if (!link) {
+      link = document.createElement("link");
+      link.rel = "icon";
+      document.head.appendChild(link);
+    }
+    link.href = href;
+  }, [globalOverride.favicon_url]);
 
   return <BrandContext.Provider value={value}>{children}</BrandContext.Provider>;
 }

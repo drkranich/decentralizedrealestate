@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { User, Bell, Shield, CreditCard, Globe, Key } from "lucide-react";
+import { User, Bell, Shield, CreditCard, Globe, Key, Palette } from "lucide-react";
 import { PageHeader, Card, SectionTitle, Badge, DemoDataBadge } from "@/components/app/ui";
 import { ProfileCard } from "@/components/app/ProfileCard";
 import { AddressCard } from "@/components/app/AddressCard";
 import { PlanCard } from "@/components/app/PlanCard";
 import { RegionalCard } from "@/components/app/RegionalCard";
+import { BrandingCard } from "@/components/app/BrandingCard";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/settings")({
@@ -18,6 +19,7 @@ const tabs = [
   { id: "security", label: "Security", icon: Shield },
   { id: "billing", label: "Billing", icon: CreditCard },
   { id: "regional", label: "Regional", icon: Globe },
+  { id: "branding", label: "Branding", icon: Palette },
   { id: "api", label: "API & Integrations", icon: Key },
 ];
 
@@ -101,6 +103,8 @@ function Settings() {
           {tab === "billing" && <PlanCard />}
 
           {tab === "regional" && <RegionalCard />}
+
+          {tab === "branding" && <BrandingCard />}
 
           {tab === "api" && (
             <Card>
