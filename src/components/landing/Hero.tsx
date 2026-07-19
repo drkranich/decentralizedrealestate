@@ -14,7 +14,7 @@ export function Hero() {
     <section className="relative min-h-screen overflow-hidden pt-28 pb-20">
       <div className="absolute inset-0 -z-10">
         <img src={heroImg} alt="Futuristic city skyline" width={1920} height={1080} className="h-full w-full object-cover opacity-90" />
-        <div className="absolute inset-0 bg-background/40" />
+        <div className="absolute inset-0 bg-background/75" />
         <div className="absolute inset-0 grid-bg opacity-30" />
       </div>
 
@@ -45,7 +45,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground md:text-xl"
+            className="mx-auto mt-6 max-w-2xl text-lg text-foreground/70 md:text-xl"
           >
             One platform to discover properties, fractional invest in tokenized assets, and automate operations with AI — anywhere on earth.
           </motion.p>
