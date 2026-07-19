@@ -38,6 +38,10 @@ function Properties() {
   const [showFilters, setShowFilters] = useState(false);
   const [textQuery, setTextQuery] = useState(search.q ?? "");
   const [open, setOpen] = useState(search.add === "1");
+
+  useEffect(() => {
+    if (search.add === "1") setOpen(true);
+  }, [search.add]);
   const [rows, setRows] = useState<PropertyRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
