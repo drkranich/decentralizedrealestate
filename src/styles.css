@@ -193,7 +193,7 @@
 /* Glass scrollbars — every internal scroll area gets a translucent, blurred thumb */
 * {
   scrollbar-width: thin;
-  scrollbar-color: oklch(0.74 0.11 156 / 0.35) transparent;
+  scrollbar-color: var(--emerald) transparent;
 }
 *::-webkit-scrollbar {
   width: 10px;
@@ -203,14 +203,14 @@
   background: transparent;
 }
 *::-webkit-scrollbar-thumb {
-  background-color: oklch(0.74 0.11 156 / 0.35);
+  background-color: color-mix(in oklch, var(--emerald) 35%, transparent);
   backdrop-filter: blur(6px);
   border-radius: 999px;
   border: 2px solid transparent;
   background-clip: padding-box;
 }
 *::-webkit-scrollbar-thumb:hover {
-  background-color: oklch(0.74 0.11 156 / 0.55);
+  background-color: color-mix(in oklch, var(--emerald) 55%, transparent);
 }
 .dark *::-webkit-scrollbar-thumb {
   background-color: oklch(0.98 0.005 240 / 0.18);

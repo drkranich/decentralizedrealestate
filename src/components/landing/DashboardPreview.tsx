@@ -101,7 +101,7 @@ export function DashboardPreview() {
                 <div className="mt-3 h-40">
                   <ResponsiveContainer>
                     <BarChart data={data}>
-                      <Bar dataKey="y" fill="oklch(0.62 0.14 240)" radius={[6, 6, 0, 0]} />
+                      <Bar dataKey="y" fill="var(--skyblue)" radius={[6, 6, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
