@@ -206,6 +206,35 @@
   .dark .seravie-public [class*="text-[#667064]"] {
     color: oklch(0.78 0.018 240);
   }
+
+  .recharts-wrapper,
+  .recharts-wrapper:focus,
+  .recharts-wrapper:focus-visible,
+  .recharts-surface,
+  .recharts-surface:focus,
+  .recharts-surface:focus-visible,
+  .recharts-wrapper svg,
+  .recharts-wrapper svg:focus,
+  .recharts-wrapper svg:focus-visible,
+  .recharts-wrapper *:focus,
+  .recharts-wrapper *:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  .recharts-tooltip-cursor {
+    fill: transparent !important;
+    stroke: transparent !important;
+    stroke-width: 0 !important;
+  }
+
+  .recharts-active-bar,
+  .recharts-active-bar *,
+  .recharts-active-shape,
+  .recharts-active-shape * {
+    stroke: transparent !important;
+    outline: none !important;
+  }
 }
 
 @keyframes float {
