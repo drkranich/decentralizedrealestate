@@ -1,8 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Phone, Mail, Filter, Loader2, Search, ChevronRight, ChevronLeft, CheckCircle2 } from "lucide-react";
+import {
+  Phone,
+  Mail,
+  Filter,
+  Loader2,
+  Search,
+  ChevronRight,
+  ChevronLeft,
+  CheckCircle2,
+} from "lucide-react";
 import { toast } from "sonner";
-import { PageHeader, Card, Badge, StatCard, DemoDataBadge } from "@/components/app/ui";
+import { PageHeader, Card, Badge, StatCard } from "@/components/app/ui";
 import { Users, TrendingUp, Target, Zap } from "lucide-react";
 import { EditLeadModal, type EditableLead } from "@/components/crm/EditLeadModal";
 import { LeadActionsMenu } from "@/components/crm/LeadActionsMenu";
@@ -24,11 +33,21 @@ type Lead = {
 
 const stages = ["new", "qualified", "tour", "proposal", "closed"];
 const stageLabels: Record<string, string> = {
-  new: "New", qualified: "Qualified", tour: "Tour", proposal: "Proposal", closed: "Closed",
+  new: "New",
+  qualified: "Qualified",
+  tour: "Tour",
+  proposal: "Proposal",
+  closed: "Closed",
 };
 
 function initials(name: string) {
-  return name.split(" ").filter(Boolean).map((n) => n[0]).slice(0, 2).join("").toUpperCase();
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
 }
 
 function CRM() {
@@ -66,7 +85,11 @@ function CRM() {
   };
 
   const visibleLeads = q
-    ? leads.filter((l) => l.name.toLowerCase().includes(q.toLowerCase()) || (l.properties?.title ?? "").toLowerCase().includes(q.toLowerCase()))
+    ? leads.filter(
+        (l) =>
+          l.name.toLowerCase().includes(q.toLowerCase()) ||
+          (l.properties?.title ?? "").toLowerCase().includes(q.toLowerCase()),
+      )
     : leads;
 
   const board: Record<string, Lead[]> = Object.fromEntries(stages.map((s) => [s, []]));
@@ -76,10 +99,14 @@ function CRM() {
   }
 
   const total = leads.length;
+  const closingRate = total > 0 ? `${Math.round((board.closed.length / total) * 100)}%` : "0%";
 
   return (
     <>
-      <PageHeader title="CRM Leads" subtitle="Pipeline real de interessados nos seus imóveis. Arraste o card ou use os botões para mudar de etapa.">
+      <PageHeader
+        title="CRM Leads"
+        subtitle="Pipeline real de interessados nos seus imóveis. Arraste o card ou use os botões para mudar de etapa."
+      >
         <button
           onClick={() => setShowSearch((v) => !v)}
           className={`flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-colors ${showSearch ? "border-emerald/40 bg-emerald/10 text-emerald" : "border-border bg-card hover:bg-secondary"}`}
@@ -102,12 +129,14 @@ function CRM() {
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatCard label="Leads reais" value={String(total)} icon={Users} />
-        <StatCard label="Em qualificação" value={String(board.qualified.length)} icon={Target} accent="skyblue" />
+        <StatCard
+          label="Em qualificação"
+          value={String(board.qualified.length)}
+          icon={Target}
+          accent="skyblue"
+        />
         <StatCard label="Fechados" value={String(board.closed.length)} icon={TrendingUp} />
-        <div className="relative">
-          <StatCard label="Score de IA" value="—" icon={Zap} accent="skyblue" />
-          <div className="absolute right-3 top-3"><DemoDataBadge /></div>
-        </div>
+        <StatCard label="Taxa de fechamento" value={closingRate} icon={Zap} accent="skyblue" />
       </div>
 
       {loading ? (
@@ -117,7 +146,8 @@ function CRM() {
       ) : total === 0 ? (
         <Card className="mt-6">
           <p className="text-sm text-muted-foreground">
-            Nenhum lead real ainda. Quando um interessado enviar contato para um dos seus imóveis, ele aparecerá aqui automaticamente.
+            Nenhum lead real ainda. Quando um interessado enviar contato para um dos seus imóveis,
+            ele aparecerá aqui automaticamente.
           </p>
         </Card>
       ) : (
@@ -173,7 +203,9 @@ function CRM() {
                         </div>
                         <div className="min-w-0 flex-1">
                           <div className="text-sm font-semibold truncate">{l.name}</div>
-                          <div className="text-[10px] text-muted-foreground truncate">{l.properties?.title ?? "Imóvel removido"}</div>
+                          <div className="text-[10px] text-muted-foreground truncate">
+                            {l.properties?.title ?? "Imóvel removido"}
+                          </div>
                         </div>
                         <span onMouseDown={(e) => e.stopPropagation()} draggable={false}>
                           <LeadActionsMenu
@@ -186,10 +218,20 @@ function CRM() {
                       </div>
                       <div className="mt-2 flex gap-1.5 border-t border-border/50 pt-2">
                         {l.phone && (
-                          <a href={`tel:${l.phone}`} className="flex h-7 flex-1 items-center justify-center rounded-lg hover:bg-background"><Phone className="h-3 w-3" /></a>
+                          <a
+                            href={`tel:${l.phone}`}
+                            className="flex h-7 flex-1 items-center justify-center rounded-lg hover:bg-background"
+                          >
+                            <Phone className="h-3 w-3" />
+                          </a>
                         )}
                         {l.email && (
-                          <a href={`mailto:${l.email}`} className="flex h-7 flex-1 items-center justify-center rounded-lg hover:bg-background"><Mail className="h-3 w-3" /></a>
+                          <a
+                            href={`mailto:${l.email}`}
+                            className="flex h-7 flex-1 items-center justify-center rounded-lg hover:bg-background"
+                          >
+                            <Mail className="h-3 w-3" />
+                          </a>
                         )}
                       </div>
                       <div className="mt-1.5 flex items-center gap-1.5 border-t border-border/50 pt-1.5">
