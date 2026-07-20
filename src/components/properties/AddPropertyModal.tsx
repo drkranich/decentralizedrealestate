@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { X, Sparkles, Upload, MapPin, Loader2, Trash2, Film } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 
-type Props = { open: boolean; onClose: () => void };
+type Props = { open: boolean; onClose: () => void; onCreated?: () => void };
 
 type GeoSuggestion = {
   display_name: string;
@@ -33,7 +33,17 @@ const emptyForm = {
   price: "",
 };
 
-export function AddPropertyModal({ open, onClose }: Props) {
+function parseMoney(value: string) {
+  const cleaned = value.trim().replace(/[^\d,.]/g, "");
+  if (!cleaned) return null;
+  const normalized = cleaned.includes(",")
+    ? cleaned.replace(/\./g, "").replace(",", ".")
+    : cleaned.replace(/,/g, "");
+  const amount = Number(normalized);
+  return Number.isFinite(amount) ? amount : null;
+}
+
+export function AddPropertyModal({ open, onClose, onCreated }: Props) {
   const [step, setStep] = useState(1);
   const [generating, setGenerating] = useState(false);
   const [publishing, setPublishing] = useState(false);
@@ -58,9 +68,12 @@ export function AddPropertyModal({ open, onClose }: Props) {
   const generateDescription = () => {
     setGenerating(true);
     setTimeout(() => {
-      set("description", `${form.title || "This property"} offers a premium stay in a sought-after location. Stylish interiors, high-end finishes, and seamless smart-home integration. Ideal for both short stays and longer relocations.`);
+      set(
+        "description",
+        `${form.title || "Este imóvel"} combina localização, conforto e liquidez para ocupação, venda ou investimento patrimonial. Destaque os acabamentos, diferenciais do bairro, estado de conservação e potencial de valorização para orientar compradores, inquilinos e investidores.`,
+      );
       setGenerating(false);
-    }, 900);
+    }, 250);
   };
 
   // ===== World GPS autocomplete via OpenStreetMap Nominatim (no API key needed) =====
@@ -137,6 +150,10 @@ export function AddPropertyModal({ open, onClose }: Props) {
 
   // ===== Publish: real Supabase insert + storage upload =====
   const publish = async () => {
+    if (!form.title.trim()) {
+      toast.error("Informe o título do imóvel.");
+      return;
+    }
     setPublishing(true);
     try {
       const { data: userData } = await supabase.auth.getUser();
@@ -146,13 +163,13 @@ export function AddPropertyModal({ open, onClose }: Props) {
         return;
       }
 
-      const priceValue = form.price;
+      const priceValue = parseMoney(form.price);
       const { data: propertyRow, error: insertError } = await supabase
         .from("properties")
         .insert({
-          title: form.title || "Untitled property",
+          title: form.title.trim(),
           description: form.description || null,
-          price: priceValue ? Number(String(priceValue).replace(/[^\d.]/g, "")) || null : null,
+          price: priceValue,
           status: "available",
           owner_id: user.id,
           listing_type: form.listingType,
@@ -195,9 +212,14 @@ export function AddPropertyModal({ open, onClose }: Props) {
 
       toast.success("Imóvel publicado com sucesso.");
       reset();
+      onCreated?.();
       onClose();
     } catch (err: any) {
-      const message = err?.message || err?.error_description || err?.details || "Não foi possível publicar o imóvel.";
+      const message =
+        err?.message ||
+        err?.error_description ||
+        err?.details ||
+        "Não foi possível publicar o imóvel.";
       toast.error(message);
       console.error("publish property failed:", err);
     } finally {
@@ -206,17 +228,23 @@ export function AddPropertyModal({ open, onClose }: Props) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 animate-in fade-in" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 animate-in fade-in"
+      onClick={onClose}
+    >
       <div
         className="max-h-[90vh] w-full max-w-2xl overflow-hidden rounded-3xl border border-glass-border bg-card/90 shadow-elegant backdrop-blur-2xl animate-in zoom-in-95"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between border-b border-glass-border px-6 py-4">
           <div>
-            <h3 className="font-display text-xl font-bold">Add property</h3>
-            <p className="text-xs text-muted-foreground">Step {step} of 3</p>
+            <h3 className="font-display text-xl font-bold">Novo imóvel</h3>
+            <p className="text-xs text-muted-foreground">Etapa {step} de 3</p>
           </div>
-          <button onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-secondary">
+          <button
+            onClick={onClose}
+            className="flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-secondary"
+          >
             <X className="h-4 w-4" />
           </button>
         </div>
@@ -224,18 +252,33 @@ export function AddPropertyModal({ open, onClose }: Props) {
         <div className="max-h-[65vh] overflow-y-auto px-6 py-5">
           {step === 1 && (
             <div className="space-y-4">
-              <Field label="Title">
-                <input value={form.title} onChange={(e) => set("title", e.target.value)} placeholder="Príncipe Real Loft" className="input" />
+              <Field label="Título">
+                <input
+                  value={form.title}
+                  onChange={(e) => set("title", e.target.value)}
+                  placeholder="Loft no Príncipe Real"
+                  className="input"
+                />
               </Field>
-              <Field label="Description">
+              <Field label="Descrição">
                 <div className="relative">
-                  <textarea value={form.description} onChange={(e) => set("description", e.target.value)} rows={4} className="input resize-none pr-10" placeholder="Tell investors and tenants what makes this place special…" />
-                  <button type="button" onClick={generateDescription} className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-emerald px-2.5 py-1 text-[10px] font-semibold text-white">
-                    <Sparkles className="h-3 w-3" /> {generating ? "Writing…" : "AI"}
+                  <textarea
+                    value={form.description}
+                    onChange={(e) => set("description", e.target.value)}
+                    rows={4}
+                    className="input resize-none pr-10"
+                    placeholder="Descreva localização, estado do imóvel, diferenciais e potencial de uso."
+                  />
+                  <button
+                    type="button"
+                    onClick={generateDescription}
+                    className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-emerald px-2.5 py-1 text-[10px] font-semibold text-white"
+                  >
+                    <Sparkles className="h-3 w-3" /> {generating ? "Gerando…" : "Sugestão"}
                   </button>
                 </div>
               </Field>
-              <Field label="Listing type">
+              <Field label="Tipo de anúncio">
                 <div className="flex flex-wrap gap-2">
                   {(["aluguel", "venda"] as const).map((lt) => (
                     <button
@@ -254,7 +297,7 @@ export function AddPropertyModal({ open, onClose }: Props) {
 
           {step === 2 && (
             <div className="space-y-4">
-              <Field label="Search address (auto-fills everything below via world GPS)">
+              <Field label="Endereço (busca mundial por GPS)">
                 <div className="relative">
                   <div className="relative">
                     <MapPin className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -262,10 +305,12 @@ export function AddPropertyModal({ open, onClose }: Props) {
                       value={form.addressQuery}
                       onChange={(e) => onAddressQueryChange(e.target.value)}
                       onFocus={() => setShowSuggestions(true)}
-                      placeholder="Start typing a street, city or landmark…"
+                      placeholder="Digite uma rua, cidade ou referência..."
                       className="input pl-9"
                     />
-                    {searching && <Loader2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-muted-foreground" />}
+                    {searching && (
+                      <Loader2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-muted-foreground" />
+                    )}
                   </div>
                   {showSuggestions && suggestions.length > 0 && (
                     <div className="absolute z-10 mt-1 max-h-56 w-full overflow-y-auto rounded-2xl border border-glass-border bg-card/95 p-1 shadow-elegant backdrop-blur-xl">
@@ -285,21 +330,84 @@ export function AddPropertyModal({ open, onClose }: Props) {
               </Field>
 
               <div className="grid grid-cols-2 gap-3">
-                <Field label="Street"><input value={form.street} onChange={(e) => set("street", e.target.value)} className="input" /></Field>
-                <Field label="Number"><input value={form.number} onChange={(e) => set("number", e.target.value)} className="input" /></Field>
-                <Field label="Complement"><input value={form.complement} onChange={(e) => set("complement", e.target.value)} placeholder="Apt, floor…" className="input" /></Field>
-                <Field label="Neighborhood"><input value={form.neighborhood} onChange={(e) => set("neighborhood", e.target.value)} className="input" /></Field>
-                <Field label="City"><input value={form.city} onChange={(e) => set("city", e.target.value)} className="input" /></Field>
-                <Field label="State / Province"><input value={form.state} onChange={(e) => set("state", e.target.value)} className="input" /></Field>
-                <Field label="Postal code"><input value={form.postalCode} onChange={(e) => set("postalCode", e.target.value)} className="input" /></Field>
-                <Field label="Country"><input value={form.country} onChange={(e) => set("country", e.target.value)} className="input" /></Field>
+                <Field label="Rua">
+                  <input
+                    value={form.street}
+                    onChange={(e) => set("street", e.target.value)}
+                    className="input"
+                  />
+                </Field>
+                <Field label="Número">
+                  <input
+                    value={form.number}
+                    onChange={(e) => set("number", e.target.value)}
+                    className="input"
+                  />
+                </Field>
+                <Field label="Complemento">
+                  <input
+                    value={form.complement}
+                    onChange={(e) => set("complement", e.target.value)}
+                    placeholder="Apto, andar..."
+                    className="input"
+                  />
+                </Field>
+                <Field label="Bairro">
+                  <input
+                    value={form.neighborhood}
+                    onChange={(e) => set("neighborhood", e.target.value)}
+                    className="input"
+                  />
+                </Field>
+                <Field label="Cidade">
+                  <input
+                    value={form.city}
+                    onChange={(e) => set("city", e.target.value)}
+                    className="input"
+                  />
+                </Field>
+                <Field label="Estado / província">
+                  <input
+                    value={form.state}
+                    onChange={(e) => set("state", e.target.value)}
+                    className="input"
+                  />
+                </Field>
+                <Field label="CEP / código postal">
+                  <input
+                    value={form.postalCode}
+                    onChange={(e) => set("postalCode", e.target.value)}
+                    className="input"
+                  />
+                </Field>
+                <Field label="País">
+                  <input
+                    value={form.country}
+                    onChange={(e) => set("country", e.target.value)}
+                    className="input"
+                  />
+                </Field>
               </div>
               <div className="grid grid-cols-2 gap-3">
-                <Field label="Latitude"><input value={form.lat} onChange={(e) => set("lat", e.target.value)} placeholder="38.7178" className="input" /></Field>
-                <Field label="Longitude"><input value={form.lng} onChange={(e) => set("lng", e.target.value)} placeholder="-9.1486" className="input" /></Field>
+                <Field label="Latitude">
+                  <input
+                    value={form.lat}
+                    onChange={(e) => set("lat", e.target.value)}
+                    placeholder="38.7178"
+                    className="input"
+                  />
+                </Field>
+                <Field label="Longitude">
+                  <input
+                    value={form.lng}
+                    onChange={(e) => set("lng", e.target.value)}
+                    placeholder="-9.1486"
+                    className="input"
+                  />
+                </Field>
               </div>
 
-              <Field label="Photos & video">
+              <Field label="Fotos e vídeo">
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -311,17 +419,25 @@ export function AddPropertyModal({ open, onClose }: Props) {
                 <div
                   onClick={() => fileInputRef.current?.click()}
                   onDragOver={(e) => e.preventDefault()}
-                  onDrop={(e) => { e.preventDefault(); onFilesSelected(e.dataTransfer.files); }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    onFilesSelected(e.dataTransfer.files);
+                  }}
                   className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-glass-border bg-secondary/30 px-6 py-8 text-center transition-colors hover:border-emerald/40"
                 >
                   <Upload className="h-5 w-5 text-muted-foreground" />
-                  <div className="text-sm font-medium">Drop files or click to upload</div>
-                  <div className="text-xs text-muted-foreground">JPG, PNG, MP4 — up to 25 MB each</div>
+                  <div className="text-sm font-medium">Arraste arquivos ou clique para enviar</div>
+                  <div className="text-xs text-muted-foreground">
+                    JPG, PNG, WebP ou MP4, até 25 MB por arquivo
+                  </div>
                 </div>
                 {media.length > 0 && (
                   <div className="mt-3 grid grid-cols-4 gap-2">
                     {media.map((m) => (
-                      <div key={m.url} className="group relative aspect-square overflow-hidden rounded-xl border border-glass-border bg-secondary/40">
+                      <div
+                        key={m.url}
+                        className="group relative aspect-square overflow-hidden rounded-xl border border-glass-border bg-secondary/40"
+                      >
                         {m.kind === "photo" ? (
                           <img src={m.url} className="h-full w-full object-cover" />
                         ) : (
@@ -346,11 +462,15 @@ export function AddPropertyModal({ open, onClose }: Props) {
 
           {step === 3 && (
             <div className="space-y-4">
-              <Field label={form.listingType === "venda" ? "Preço de venda" : "Preço do aluguel (mensal)"}>
+              <Field
+                label={
+                  form.listingType === "venda" ? "Preço de venda" : "Preço do aluguel (mensal)"
+                }
+              >
                 <input
                   value={form.price}
                   onChange={(e) => set("price", e.target.value)}
-                  placeholder={form.listingType === "venda" ? "€320,000" : "€2,450"}
+                  placeholder={form.listingType === "venda" ? "R$ 320.000" : "R$ 2.450"}
                   className="input"
                 />
               </Field>
@@ -360,9 +480,12 @@ export function AddPropertyModal({ open, onClose }: Props) {
                   : "Valor único do aluguel mensal — sem diária, sem taxa de limpeza."}
               </p>
               <div className="rounded-2xl border border-dashed border-skyblue/30 bg-skyblue/5 p-4">
-                <div className="flex items-center gap-2 text-xs font-semibold text-skyblue"><Sparkles className="h-3.5 w-3.5" /> Estimativa de ROI por IA</div>
+                <div className="flex items-center gap-2 text-xs font-semibold text-skyblue">
+                  <Sparkles className="h-3.5 w-3.5" /> Estimativa de retorno
+                </div>
                 <div className="mt-1 text-sm text-muted-foreground">
-                  Ainda não disponível — a estimativa de retorno exige um histórico real de imóveis comparáveis na plataforma, que ainda não existe.
+                  A estimativa será exibida quando houver histórico suficiente de imóveis
+                  comparáveis na plataforma.
                 </div>
               </div>
             </div>
@@ -370,8 +493,11 @@ export function AddPropertyModal({ open, onClose }: Props) {
         </div>
 
         <div className="flex items-center justify-between border-t border-glass-border px-6 py-4">
-          <button onClick={() => (step === 1 ? onClose() : setStep(step - 1))} className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
-            {step === 1 ? "Cancel" : "Back"}
+          <button
+            onClick={() => (step === 1 ? onClose() : setStep(step - 1))}
+            className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+          >
+            {step === 1 ? "Cancelar" : "Voltar"}
           </button>
           <button
             disabled={publishing}
@@ -379,7 +505,7 @@ export function AddPropertyModal({ open, onClose }: Props) {
             className="flex items-center gap-2 rounded-full bg-emerald px-5 py-2 text-sm font-semibold text-white disabled:opacity-60"
           >
             {publishing && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-            {step < 3 ? "Continue" : publishing ? "Publishing…" : "Publish property"}
+            {step < 3 ? "Continuar" : publishing ? "Publicando…" : "Publicar imóvel"}
           </button>
         </div>
       </div>
@@ -389,7 +515,7 @@ export function AddPropertyModal({ open, onClose }: Props) {
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <label className="block">
       <span className="mb-1 block text-xs font-medium text-muted-foreground">{label}</span>

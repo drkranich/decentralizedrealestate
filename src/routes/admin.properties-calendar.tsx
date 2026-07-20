@@ -1,76 +1,205 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { ChevronLeft, ChevronRight, Calendar as CalIcon, Wrench, Brush } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import {
+  Brush,
+  Calendar as CalIcon,
+  ChevronLeft,
+  ChevronRight,
+  Loader2,
+  Wrench,
+} from "lucide-react";
 import { PageHeader, Card, Badge } from "@/components/app/ui";
 import { Calendar as DatePicker } from "@/components/ui/calendar";
-import { properties } from "@/data/properties";
+import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/admin/properties-calendar")({
   component: CalendarPage,
 });
 
-type Cell = { type: "booking" | "maintenance" | "cleaning" | "available"; label?: string };
+type PropertyRow = {
+  id: string;
+  title: string;
+  city: string | null;
+  status: string | null;
+};
 
-function daysInMonth(monthIndex: number, year: number) {
-  return new Date(year, monthIndex + 1, 0).getDate();
-}
+type ContractRow = {
+  id: string;
+  property_id: string | null;
+  user_id: string;
+  status: string | null;
+  start_date: string | null;
+  end_date: string | null;
+  created_at: string | null;
+};
 
-// Deterministic demo pattern that actually changes when the month/year change,
-// so navigating the calendar visibly moves the grid instead of always showing
-// the exact same fake bookings regardless of what month is selected.
-function makeRow(seed: number, monthIndex: number, year: number, dayCount: number): Cell[] {
-  const monthSeed = monthIndex * 7 + (year % 100) * 13;
-  return Array.from({ length: dayCount }, (_, i) => {
-    const d = i + 1;
-    const m = (d + seed + monthSeed) % 11;
-    if (m === 0) return { type: "maintenance", label: "HVAC" };
-    if (m === 4) return { type: "cleaning", label: "Clean" };
-    if (m >= 5 && m <= 8) return { type: "booking", label: "Booked" };
-    return { type: "available" };
-  });
-}
+type MaintenanceRow = {
+  id: string;
+  property_id: string;
+  title: string | null;
+  description: string;
+  status: string;
+  priority: string;
+  due_at: string | null;
+  created_at: string;
+};
+
+type CalendarData = {
+  properties: PropertyRow[];
+  contracts: ContractRow[];
+  maintenance: MaintenanceRow[];
+};
+
+type Cell = {
+  type: "contract" | "maintenance" | "available";
+  label?: string;
+};
 
 const cellClass: Record<Cell["type"], string> = {
-  booking: "bg-emerald/80 text-white",
-  maintenance: "bg-yellow-500/70 text-white",
-  cleaning: "bg-skyblue/70 text-white",
+  contract: "bg-emerald/80 text-white",
+  maintenance: "bg-yellow-500/75 text-white",
   available: "bg-secondary/40 text-muted-foreground",
 };
 
-const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+const monthNames = [
+  "Janeiro",
+  "Fevereiro",
+  "Março",
+  "Abril",
+  "Maio",
+  "Junho",
+  "Julho",
+  "Agosto",
+  "Setembro",
+  "Outubro",
+  "Novembro",
+  "Dezembro",
+];
 
 function CalendarPage() {
   const today = new Date();
   const [selectedDate, setSelectedDate] = useState<Date>(today);
+  const [data, setData] = useState<CalendarData | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function load() {
+      const [properties, contracts, maintenance] = await Promise.all([
+        supabase
+          .from("properties")
+          .select("id, title, city, status")
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("contracts")
+          .select("id, property_id, user_id, status, start_date, end_date, created_at")
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("maintenance_requests")
+          .select("id, property_id, title, description, status, priority, due_at, created_at")
+          .order("created_at", { ascending: false }),
+      ]);
+
+      if (cancelled) return;
+      const firstError = [properties, contracts, maintenance].find((item) => item.error)?.error;
+      if (firstError) {
+        setError(firstError.message);
+        setData({ properties: [], contracts: [], maintenance: [] });
+        return;
+      }
+
+      setError(null);
+      setData({
+        properties: ((properties.data ?? []) as PropertyRow[]) ?? [],
+        contracts: ((contracts.data ?? []) as ContractRow[]) ?? [],
+        maintenance: ((maintenance.data ?? []) as MaintenanceRow[]) ?? [],
+      });
+    }
+
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const monthIndex = selectedDate.getMonth();
   const year = selectedDate.getFullYear();
   const month = `${monthNames[monthIndex]} ${year}`;
   const dayCount = daysInMonth(monthIndex, year);
-  const days = Array.from({ length: dayCount }, (_, i) => i + 1);
-  const isCurrentMonth = (d: Date) => d.getMonth() === monthIndex && d.getFullYear() === year;
+  const days = Array.from({ length: dayCount }, (_, index) => index + 1);
+  const isCurrentMonth = (date: Date) =>
+    date.getMonth() === monthIndex && date.getFullYear() === year;
 
-  const goPrev = () => setSelectedDate((d) => new Date(d.getFullYear(), d.getMonth() - 1, 1));
-  const goNext = () => setSelectedDate((d) => new Date(d.getFullYear(), d.getMonth() + 1, 1));
+  const visibleContracts = useMemo(
+    () =>
+      (data?.contracts ?? []).filter((contract) =>
+        dateRangeTouchesMonth(contract.start_date, contract.end_date, year, monthIndex),
+      ),
+    [data?.contracts, monthIndex, year],
+  );
+  const visibleMaintenance = useMemo(
+    () =>
+      (data?.maintenance ?? []).filter((item) =>
+        dateTouchesMonth(item.due_at ?? item.created_at, year, monthIndex),
+      ),
+    [data?.maintenance, monthIndex, year],
+  );
+
+  const goPrev = () =>
+    setSelectedDate((date) => new Date(date.getFullYear(), date.getMonth() - 1, 1));
+  const goNext = () =>
+    setSelectedDate((date) => new Date(date.getFullYear(), date.getMonth() + 1, 1));
+
+  if (!data) {
+    return (
+      <>
+        <PageHeader
+          title="Calendário"
+          subtitle="Carregando agenda real de imóveis, contratos e manutenção."
+        />
+        <Card>
+          <div className="flex items-center justify-center gap-2 py-16 text-sm text-muted-foreground">
+            <Loader2 className="h-4 w-4 animate-spin" /> Carregando...
+          </div>
+        </Card>
+      </>
+    );
+  }
 
   return (
     <>
-      <PageHeader title="Calendar" subtitle="Bookings, availability and maintenance across all properties.">
+      <PageHeader
+        title="Calendário"
+        subtitle="Contratos, disponibilidade e manutenção registrados na plataforma."
+      >
         <div className="flex items-center gap-1 rounded-full border border-border bg-card p-1">
-          <button onClick={goPrev} className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-secondary"><ChevronLeft className="h-4 w-4" /></button>
+          <button
+            onClick={goPrev}
+            className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-secondary"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </button>
           <span className="px-3 text-sm font-semibold">{month}</span>
-          <button onClick={goNext} className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-secondary"><ChevronRight className="h-4 w-4" /></button>
+          <button
+            onClick={goNext}
+            className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-secondary"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </button>
         </div>
       </PageHeader>
 
-      <div className="mt-4 rounded-2xl border border-dashed border-skyblue/30 bg-skyblue/5 p-4 text-xs text-muted-foreground">
-        <span className="font-semibold text-skyblue">Nota:</span> as reservas exibidas no calendário abaixo são dados de demonstração — não há um sistema de reservas real conectado ainda. O grid muda de acordo com o mês/dia selecionados, mas os eventos em si continuam fictícios.
-      </div>
+      {error && (
+        <Card className="mb-6 border-destructive/30 bg-destructive/5">
+          <p className="text-sm text-destructive">{error}</p>
+        </Card>
+      )}
 
       <div className="mb-4 flex flex-wrap gap-3 text-xs">
-        <Legend color="bg-emerald" label="Booking" icon={CalIcon} />
-        <Legend color="bg-skyblue" label="Cleaning" icon={Brush} />
-        <Legend color="bg-yellow-500" label="Maintenance" icon={Wrench} />
-        <Legend color="bg-secondary border border-border" label="Available" icon={CalIcon} />
+        <Legend color="bg-emerald" label="Contrato" icon={CalIcon} />
+        <Legend color="bg-yellow-500" label="Manutenção" icon={Wrench} />
+        <Legend color="bg-secondary border border-border" label="Livre / sem evento" icon={Brush} />
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[auto_1fr]">
@@ -78,86 +207,145 @@ function CalendarPage() {
           <DatePicker
             mode="single"
             selected={selectedDate}
-            onSelect={(d) => d && setSelectedDate(d)}
+            onSelect={(date) => date && setSelectedDate(date)}
             month={new Date(year, monthIndex)}
-            onMonthChange={(d) => setSelectedDate((prev) => new Date(d.getFullYear(), d.getMonth(), Math.min(prev.getDate(), daysInMonth(d.getMonth(), d.getFullYear()))))}
+            onMonthChange={(date) =>
+              setSelectedDate(
+                (previous) =>
+                  new Date(
+                    date.getFullYear(),
+                    date.getMonth(),
+                    Math.min(previous.getDate(), daysInMonth(date.getMonth(), date.getFullYear())),
+                  ),
+              )
+            }
           />
           <p className="px-3 pb-2 text-xs text-muted-foreground">
-            Selecionado: <span className="font-semibold text-foreground">{selectedDate.toLocaleDateString("pt-BR")}</span>
+            Selecionado:{" "}
+            <span className="font-semibold text-foreground">
+              {selectedDate.toLocaleDateString("pt-BR")}
+            </span>
           </p>
         </Card>
 
         <Card className="overflow-x-auto p-0">
-          <div style={{ minWidth: `${200 + dayCount * 32}px` }}>
-            <div className="grid border-b border-border bg-secondary/30 text-[10px] uppercase tracking-wide text-muted-foreground" style={{ gridTemplateColumns: `200px repeat(${dayCount}, minmax(28px, 1fr))` }}>
-              <div className="px-4 py-2 font-medium">Property</div>
-              {days.map((d) => (
-                <div
-                  key={d}
-                  className={`border-l border-border/50 py-2 text-center ${d === selectedDate.getDate() && isCurrentMonth(selectedDate) ? "bg-emerald/20 font-bold text-emerald" : ""}`}
-                >
-                  {d}
-                </div>
-              ))}
+          {data.properties.length === 0 ? (
+            <div className="py-16 text-center text-sm text-muted-foreground">
+              Nenhum imóvel cadastrado ainda.
             </div>
-            {properties.map((p, idx) => {
-              const row = makeRow(idx * 3, monthIndex, year, dayCount);
-              return (
-                <div key={p.id} className="grid border-b border-border last:border-0" style={{ gridTemplateColumns: `200px repeat(${dayCount}, minmax(28px, 1fr))` }}>
-                  <div className="flex items-center gap-2 px-4 py-2 text-xs">
-                    <div className={`h-7 w-7 shrink-0 rounded-lg bg-${p.gradient}`} />
-                    <div className="min-w-0">
-                      <div className="truncate font-semibold">{p.name}</div>
-                      <div className="text-[10px] text-muted-foreground">{p.city}</div>
-                    </div>
+          ) : (
+            <div style={{ minWidth: `${220 + dayCount * 32}px` }}>
+              <div
+                className="grid border-b border-border bg-secondary/30 text-[10px] uppercase tracking-wide text-muted-foreground"
+                style={{ gridTemplateColumns: `220px repeat(${dayCount}, minmax(28px, 1fr))` }}
+              >
+                <div className="px-4 py-2 font-medium">Imóvel</div>
+                {days.map((day) => (
+                  <div
+                    key={day}
+                    className={`border-l border-border/50 py-2 text-center ${
+                      day === selectedDate.getDate() && isCurrentMonth(selectedDate)
+                        ? "bg-emerald/20 font-bold text-emerald"
+                        : ""
+                    }`}
+                  >
+                    {day}
                   </div>
-                  {row.map((c, i) => (
-                    <div key={i} className={`border-l border-border/50 p-0.5 ${i + 1 === selectedDate.getDate() && isCurrentMonth(selectedDate) ? "ring-1 ring-inset ring-emerald/60" : ""}`}>
-                      <div className={`h-6 rounded ${cellClass[c.type]}`} />
+                ))}
+              </div>
+              {data.properties.map((property) => {
+                const row = buildPropertyRow(property.id, days, monthIndex, year, data);
+                return (
+                  <div
+                    key={property.id}
+                    className="grid border-b border-border last:border-0"
+                    style={{ gridTemplateColumns: `220px repeat(${dayCount}, minmax(28px, 1fr))` }}
+                  >
+                    <div className="flex items-center gap-2 px-4 py-2 text-xs">
+                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-emerald/15 text-emerald">
+                        <CalIcon className="h-3.5 w-3.5" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="truncate font-semibold">{property.title}</div>
+                        <div className="text-[10px] text-muted-foreground">
+                          {property.city ?? property.status ?? "Sem localização"}
+                        </div>
+                      </div>
                     </div>
-                  ))}
-                </div>
-              );
-            })}
-          </div>
+                    {row.map((cell, index) => (
+                      <div
+                        key={index}
+                        title={cell.label}
+                        className={`border-l border-border/50 p-0.5 ${
+                          index + 1 === selectedDate.getDate() && isCurrentMonth(selectedDate)
+                            ? "ring-1 ring-inset ring-emerald/60"
+                            : ""
+                        }`}
+                      >
+                        <div className={`h-6 rounded ${cellClass[cell.type]}`} />
+                      </div>
+                    ))}
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </Card>
       </div>
 
       <div className="mt-6 grid gap-4 lg:grid-cols-2">
         <Card>
-          <h3 className="font-display text-lg font-semibold">Upcoming bookings</h3>
+          <h3 className="font-display text-lg font-semibold">Contratos no mês</h3>
           <div className="mt-3 space-y-2">
-            {[
-              { p: "Príncipe Real Loft", g: "Anna Schmidt", d: "Dec 12 — Dec 18" },
-              { p: "Beach Villa Kuta", g: "James Wong", d: "Dec 14 — Dec 21" },
-              { p: "Eixample Apt 4B", g: "Marie Lefèvre", d: "Dec 18 — Dec 24" },
-            ].map((b, i) => (
-              <div key={i} className="flex items-center justify-between rounded-xl border border-border/50 bg-secondary/30 p-3 text-sm">
-                <div>
-                  <div className="font-semibold">{b.p}</div>
-                  <div className="text-xs text-muted-foreground">{b.g}</div>
+            {visibleContracts.length === 0 ? (
+              <p className="py-6 text-sm text-muted-foreground">
+                Nenhum contrato com vigência neste mês.
+              </p>
+            ) : (
+              visibleContracts.map((contract) => (
+                <div
+                  key={contract.id}
+                  className="flex items-center justify-between rounded-xl border border-border/50 bg-secondary/30 p-3 text-sm"
+                >
+                  <div>
+                    <div className="font-semibold">
+                      {propertyTitle(contract.property_id, data.properties)}
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      {formatDate(contract.start_date)} até {formatDate(contract.end_date)}
+                    </div>
+                  </div>
+                  <Badge variant="emerald">{contract.status ?? "contrato"}</Badge>
                 </div>
-                <Badge variant="emerald">{b.d}</Badge>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </Card>
         <Card>
-          <h3 className="font-display text-lg font-semibold">Maintenance schedule</h3>
+          <h3 className="font-display text-lg font-semibold">Manutenção no mês</h3>
           <div className="mt-3 space-y-2">
-            {[
-              { p: "Marina Penthouse", t: "Pool resurface", d: "Dec 11" },
-              { p: "Skyline Tower 22F", t: "Window cleaning", d: "Dec 16" },
-              { p: "Brooklyn Studio 7C", t: "HVAC tune-up", d: "Dec 19" },
-            ].map((b, i) => (
-              <div key={i} className="flex items-center justify-between rounded-xl border border-border/50 bg-secondary/30 p-3 text-sm">
-                <div>
-                  <div className="font-semibold">{b.p}</div>
-                  <div className="text-xs text-muted-foreground">{b.t}</div>
+            {visibleMaintenance.length === 0 ? (
+              <p className="py-6 text-sm text-muted-foreground">
+                Nenhuma manutenção com data neste mês.
+              </p>
+            ) : (
+              visibleMaintenance.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex items-center justify-between rounded-xl border border-border/50 bg-secondary/30 p-3 text-sm"
+                >
+                  <div>
+                    <div className="font-semibold">
+                      {item.title || propertyTitle(item.property_id, data.properties)}
+                    </div>
+                    <div className="text-xs text-muted-foreground">{item.description}</div>
+                  </div>
+                  <Badge variant={item.priority === "urgent" ? "warn" : "muted"}>
+                    {formatDate(item.due_at ?? item.created_at)}
+                  </Badge>
                 </div>
-                <Badge variant="warn">{b.d}</Badge>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </Card>
       </div>
@@ -165,11 +353,93 @@ function CalendarPage() {
   );
 }
 
-function Legend({ color, label, icon: Icon }: { color: string; label: string; icon: any }) {
+function Legend({
+  color,
+  label,
+  icon: Icon,
+}: {
+  color: string;
+  label: string;
+  icon: typeof CalIcon;
+}) {
   return (
     <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1">
       <span className={`h-3 w-3 rounded ${color}`} />
       <Icon className="h-3 w-3 text-muted-foreground" /> {label}
     </span>
   );
+}
+
+function daysInMonth(monthIndex: number, year: number) {
+  return new Date(year, monthIndex + 1, 0).getDate();
+}
+
+function dateOnly(value: string | null | undefined) {
+  if (!value) return null;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+function dateTouchesMonth(value: string | null | undefined, year: number, monthIndex: number) {
+  const date = dateOnly(value);
+  return !!date && date.getFullYear() === year && date.getMonth() === monthIndex;
+}
+
+function dateRangeTouchesMonth(
+  startValue: string | null | undefined,
+  endValue: string | null | undefined,
+  year: number,
+  monthIndex: number,
+) {
+  const start = dateOnly(startValue);
+  const end = dateOnly(endValue) ?? start;
+  if (!start || !end) return false;
+  const monthStart = new Date(year, monthIndex, 1);
+  const monthEnd = new Date(year, monthIndex + 1, 0);
+  return start <= monthEnd && end >= monthStart;
+}
+
+function buildPropertyRow(
+  propertyId: string,
+  days: number[],
+  monthIndex: number,
+  year: number,
+  data: CalendarData,
+): Cell[] {
+  return days.map((day) => {
+    const current = new Date(year, monthIndex, day);
+    const maintenance = data.maintenance.find((item) => {
+      if (item.property_id !== propertyId) return false;
+      const date = dateOnly(item.due_at ?? item.created_at);
+      return !!date && date.getTime() === current.getTime();
+    });
+    if (maintenance) {
+      return {
+        type: "maintenance",
+        label: maintenance.title || maintenance.description,
+      };
+    }
+
+    const contract = data.contracts.find((item) => {
+      if (item.property_id !== propertyId) return false;
+      const start = dateOnly(item.start_date);
+      const end = dateOnly(item.end_date) ?? start;
+      return !!start && !!end && start <= current && end >= current;
+    });
+    if (contract) {
+      return { type: "contract", label: contract.status ?? "Contrato" };
+    }
+
+    return { type: "available" };
+  });
+}
+
+function propertyTitle(propertyId: string | null, properties: PropertyRow[]) {
+  return properties.find((property) => property.id === propertyId)?.title ?? "Imóvel";
+}
+
+function formatDate(value: string | null | undefined) {
+  if (!value) return "-";
+  return new Date(value).toLocaleDateString("pt-BR");
 }

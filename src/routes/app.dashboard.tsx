@@ -531,7 +531,7 @@ function TenantDashboard({ userId }: { userId: string | null }) {
         />
         <StatCard
           label="Imóvel"
-          value={contract?.property_title ?? (contract === undefined ? "..." : "-")}
+          value={contract === undefined ? "..." : (contract?.property_title ?? "-")}
           icon={Building2}
         />
       </div>

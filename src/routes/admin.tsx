@@ -17,7 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/lib/supabase";
-import { useAuthUser, useUserRole, useAvatarUrl, initials } from "@/lib/auth";
+import { getSafeSession, useAuthUser, useAvatarUrl, useUserRole, initials } from "@/lib/auth";
 import {
   getFirstAllowedPath,
   isPathAllowedForRole,
@@ -31,16 +31,7 @@ export const Route = createFileRoute("/admin")({
       return;
     }
 
-    // Defensive: supabase-js reads the session from localStorage, which may
-    // not exist in every SSR context. If the check itself fails, treat it
-    // as "no session" (redirect to /login) instead of crashing the route.
-    let session = null;
-    try {
-      const { data } = await supabase.auth.getSession();
-      session = data.session;
-    } catch {
-      session = null;
-    }
+    const session = await getSafeSession();
     if (!session) {
       throw redirect({ to: "/login" });
     }

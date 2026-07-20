@@ -20,6 +20,13 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader, StatCard, Card, SectionTitle, Badge } from "@/components/app/ui";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useAuthUser } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 
@@ -516,7 +523,7 @@ function LegalCompliance() {
               {gates.map((gate) => (
                 <div
                   key={gate.id}
-                  className="rounded-2xl border border-glass-border bg-glass-fill p-4"
+                  className="rounded-2xl border border-glass-border bg-card/45 p-4 shadow-soft backdrop-blur-xl"
                 >
                   <div className="mb-2 flex items-center justify-between gap-3">
                     <Badge variant="blue">Gate {gate.gate_order ?? gate.gate_key}</Badge>
@@ -538,19 +545,10 @@ function LegalCompliance() {
                       ))}
                   </div>
                   <div className="mt-4 grid gap-2 sm:grid-cols-[1fr_auto] sm:items-center">
-                    <select
+                    <StatusSelect
                       value={gate.status}
-                      onChange={(event) =>
-                        updateGateStatus(gate, event.target.value as LegalTechStatus)
-                      }
-                      className="rounded-full border border-glass-border bg-card px-3 py-2 text-xs"
-                    >
-                      {statusOptions.map((status) => (
-                        <option key={status} value={status}>
-                          {statusLabels[status]}
-                        </option>
-                      ))}
-                    </select>
+                      onValueChange={(status) => updateGateStatus(gate, status)}
+                    />
                     <Badge variant={statusVariant(gate.status)}>{statusLabels[gate.status]}</Badge>
                   </div>
                   <div className="mt-2 text-[11px] text-muted-foreground">
@@ -590,7 +588,7 @@ function LegalCompliance() {
             return (
               <div
                 key={module.title}
-                className="rounded-2xl border border-glass-border bg-glass-fill p-4"
+                className="rounded-2xl border border-glass-border bg-card/45 p-4 shadow-soft backdrop-blur-xl"
               >
                 <div className="mb-3 flex items-center justify-between gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald/15 text-emerald">
@@ -629,7 +627,7 @@ function LegalCompliance() {
               {workItems.map((item) => (
                 <div
                   key={item.id}
-                  className="rounded-2xl border border-glass-border bg-glass-fill p-4"
+                  className="rounded-2xl border border-glass-border bg-card/45 p-4 shadow-soft backdrop-blur-xl"
                 >
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
@@ -643,19 +641,10 @@ function LegalCompliance() {
                     </Badge>
                   </div>
                   <div className="mt-3 grid gap-2 sm:grid-cols-[1fr_auto] sm:items-center">
-                    <select
+                    <StatusSelect
                       value={item.status}
-                      onChange={(event) =>
-                        updateWorkItemStatus(item, event.target.value as LegalTechStatus)
-                      }
-                      className="rounded-full border border-glass-border bg-card px-3 py-2 text-xs"
-                    >
-                      {statusOptions.map((status) => (
-                        <option key={status} value={status}>
-                          {statusLabels[status]}
-                        </option>
-                      ))}
-                    </select>
+                      onValueChange={(status) => updateWorkItemStatus(item, status)}
+                    />
                     <span className="text-xs text-muted-foreground">
                       {item.due_at
                         ? new Date(item.due_at).toLocaleDateString("pt-BR")
@@ -682,7 +671,7 @@ function LegalCompliance() {
               {exports.map((item) => (
                 <div
                   key={item.id}
-                  className="rounded-2xl border border-glass-border bg-glass-fill p-4"
+                  className="rounded-2xl border border-glass-border bg-card/45 p-4 shadow-soft backdrop-blur-xl"
                 >
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
@@ -741,6 +730,33 @@ function LoadingLine({ label }: { label: string }) {
 
 function EmptyLine({ label }: { label: string }) {
   return <div className="py-8 text-sm text-muted-foreground">{label}</div>;
+}
+
+function StatusSelect({
+  value,
+  onValueChange,
+}: {
+  value: LegalTechStatus;
+  onValueChange: (value: LegalTechStatus) => void;
+}) {
+  return (
+    <Select value={value} onValueChange={(next) => onValueChange(next as LegalTechStatus)}>
+      <SelectTrigger className="h-10 rounded-full bg-card/60 text-xs shadow-soft backdrop-blur-xl">
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent
+        side="bottom"
+        avoidCollisions
+        className="max-h-72 rounded-2xl bg-card/90 p-1 shadow-elegant backdrop-blur-2xl"
+      >
+        {statusOptions.map((status) => (
+          <SelectItem key={status} value={status} className="rounded-xl text-xs">
+            {statusLabels[status]}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
 }
 
 function statusVariant(status: LegalTechStatus) {

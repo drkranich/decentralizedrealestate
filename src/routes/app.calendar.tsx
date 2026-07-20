@@ -103,7 +103,7 @@ function OwnerCalendar() {
                   <div>
                     <div className="font-medium">{c.property_title}</div>
                     <div className="text-xs text-muted-foreground">
-                      {c.start_date ?? "?"} — {c.end_date ?? "?"}
+                      {c.start_date ?? "??"} — {c.end_date ?? "??"}
                     </div>
                   </div>
                   <Badge variant={c.status === "active" ? "emerald" : "muted"}>{c.status}</Badge>

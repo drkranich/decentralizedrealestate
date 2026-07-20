@@ -17,7 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/lib/supabase";
-import { useAuthUser, useUserRole, useAvatarUrl, initials } from "@/lib/auth";
+import { getSafeSession, useAuthUser, useAvatarUrl, useUserRole, initials } from "@/lib/auth";
 import {
   getFirstAllowedPath,
   isPathAllowedForRole,
@@ -31,13 +31,7 @@ export const Route = createFileRoute("/app")({
       return;
     }
 
-    let session = null;
-    try {
-      const { data } = await supabase.auth.getSession();
-      session = data.session;
-    } catch {
-      session = null;
-    }
+    const session = await getSafeSession();
     if (!session) {
       throw redirect({ to: "/login" });
     }
@@ -89,7 +83,7 @@ function UserLayout() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="rounded-2xl border border-glass-border bg-card/70 px-6 py-4 text-sm text-muted-foreground shadow-soft backdrop-blur-xl">
-          Restaurando sessao segura...
+          Restaurando sessão segura...
         </div>
       </div>
     );

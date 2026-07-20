@@ -256,7 +256,8 @@ function ServiceMarketplace() {
 
       {schemaMissing && (
         <Card className="mb-6 border-dashed border-destructive/30 text-sm text-muted-foreground">
-          A infraestrutura do Service Marketplace ainda não foi aplicada no Supabase.
+          Não foi possível carregar o Service Marketplace. Verifique seu acesso ou tente recarregar
+          a página.
         </Card>
       )}
 

@@ -45,17 +45,51 @@ type PropertyRow = {
   id: string;
   title: string;
   description: string | null;
+  street: string | null;
+  number: string | null;
+  complement: string | null;
+  neighborhood: string | null;
   city: string | null;
+  state: string | null;
+  postal_code: string | null;
   country: string | null;
+  formatted_address: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  property_type: string | null;
   price: number | null;
+  nightly_rate: number | null;
+  min_stay_nights: number | null;
+  cleaning_fee: number | null;
   status: string | null;
   listing_type: string | null;
   bedrooms: number | null;
   bathrooms: number | null;
   area_sqm: number | null;
+  year_built: number | null;
   owner_id: string;
   cover_url: string | null;
 };
+
+const statusLabels: Record<string, string> = {
+  available: "Disponível",
+  unavailable: "Indisponível",
+  archived: "Arquivado",
+  pending: "Pendente",
+};
+
+function statusLabel(status: string | null) {
+  return statusLabels[status ?? ""] ?? status ?? "Sem status";
+}
+
+function formatPrice(value: number | null) {
+  if (value == null) return "—";
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+    maximumFractionDigits: 0,
+  }).format(Number(value));
+}
 
 function Properties() {
   const search = Route.useSearch();
@@ -83,7 +117,7 @@ function Properties() {
     const { data, error } = await supabase
       .from("properties")
       .select(
-        "id, title, description, city, country, price, status, listing_type, bedrooms, bathrooms, area_sqm, owner_id, property_media(storage_path, media_type, position)",
+        "id, title, description, street, number, complement, neighborhood, city, state, postal_code, country, formatted_address, latitude, longitude, property_type, price, nightly_rate, min_stay_nights, cleaning_fee, status, listing_type, bedrooms, bathrooms, area_sqm, year_built, owner_id, property_media(storage_path, media_type, position)",
       )
       .order("created_at", { ascending: false });
 
@@ -124,36 +158,31 @@ function Properties() {
   return (
     <>
       <PageHeader
-        title="Properties"
+        title="Imóveis"
         subtitle={
           loading
-            ? "Loading your portfolio…"
-            : `${filtered.length} ${filtered.length === 1 ? "property" : "properties"} on the platform right now.`
+            ? "Carregando portfólio..."
+            : `${filtered.length} ${filtered.length === 1 ? "imóvel" : "imóveis"} na plataforma agora.`
         }
       >
         <button
           onClick={() => setShowFilters((v) => !v)}
           className={`flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors ${showFilters ? "border-emerald/40 bg-emerald/10 text-emerald" : "border-glass-border bg-card hover:bg-secondary"}`}
         >
-          <Filter className="h-4 w-4" /> Filters
+          <Filter className="h-4 w-4" /> Filtros
         </button>
         <button
           onClick={() => setOpen(true)}
           className="flex items-center gap-2 rounded-full bg-emerald px-4 py-2 text-sm font-semibold text-white shadow-glow"
         >
-          <Plus className="h-4 w-4" /> Add property
+          <Plus className="h-4 w-4" /> Novo imóvel
         </button>
       </PageHeader>
 
       <div className="mb-6 grid gap-4 sm:grid-cols-3">
-        <StatCard label="Total properties" value={String(total)} icon={Building2} />
-        <StatCard
-          label="Available now"
-          value={String(available)}
-          icon={Building2}
-          accent="skyblue"
-        />
-        <StatCard label="Yours" value={String(own)} icon={Building2} />
+        <StatCard label="Total de imóveis" value={String(total)} icon={Building2} />
+        <StatCard label="Disponíveis" value={String(available)} icon={Building2} accent="skyblue" />
+        <StatCard label="Seus imóveis" value={String(own)} icon={Building2} />
       </div>
 
       {textQuery && (
@@ -179,7 +208,7 @@ function Properties() {
                   : "border border-glass-border bg-card text-muted-foreground hover:bg-secondary"
               }`}
             >
-              {s}
+              {s === "All" ? "Todos" : statusLabel(s)}
             </button>
           ))}
           {showFilters && (
@@ -219,20 +248,20 @@ function Properties() {
 
       {loading ? (
         <div className="flex items-center justify-center py-24 text-muted-foreground">
-          <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Loading properties from Supabase…
+          <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Carregando imóveis do Supabase...
         </div>
       ) : filtered.length === 0 ? (
         <Card className="flex flex-col items-center gap-3 py-16 text-center">
           <Building2 className="h-8 w-8 text-muted-foreground" />
-          <div className="font-display text-lg font-semibold">No properties yet</div>
+          <div className="font-display text-lg font-semibold">Nenhum imóvel ainda</div>
           <p className="max-w-sm text-sm text-muted-foreground">
-            Real properties published on the platform will show up here — no demo data.
+            Os imóveis publicados na plataforma aparecerão aqui com dados reais.
           </p>
           <button
             onClick={() => setOpen(true)}
             className="mt-2 rounded-full bg-emerald px-5 py-2 text-sm font-semibold text-white"
           >
-            Add your first property
+            Cadastrar primeiro imóvel
           </button>
         </Card>
       ) : view === "grid" ? (
@@ -243,7 +272,7 @@ function Properties() {
               to="/admin/properties/$id"
               params={{ id: p.id }}
               search={{ q: search.q, add: "" }}
-              className="group overflow-hidden rounded-3xl border border-glass-border bg-card transition-all hover:-translate-y-1 hover:shadow-elegant"
+              className="group overflow-hidden rounded-3xl border border-glass-border bg-card/60 shadow-soft backdrop-blur-xl transition-all hover:-translate-y-1 hover:border-emerald/20 hover:shadow-elegant"
             >
               <div className="relative aspect-[4/3] overflow-hidden bg-secondary/40">
                 {p.cover_url ? (
@@ -255,7 +284,7 @@ function Properties() {
                 )}
                 <div className="absolute left-4 top-4 flex gap-1.5">
                   <Badge variant={p.status === "available" ? "emerald" : "muted"}>
-                    {p.status ?? "unknown"}
+                    {statusLabel(p.status)}
                   </Badge>
                   {p.listing_type && (
                     <Badge variant={p.listing_type === "venda" ? "warn" : "blue"}>
@@ -285,8 +314,8 @@ function Properties() {
                 </div>
                 {p.price != null && (
                   <div className="absolute bottom-3 left-3 rounded-xl glass-strong px-2.5 py-1 text-[10px] font-semibold">
-                    €{Number(p.price).toLocaleString("en-US")}
-                    {p.listing_type === "venda" ? "" : "/mo"}
+                    {formatPrice(p.price)}
+                    {p.listing_type === "venda" ? "" : "/mês"}
                   </div>
                 )}
               </div>
@@ -294,11 +323,12 @@ function Properties() {
                 <h3 className="font-display text-base font-semibold">{p.title}</h3>
                 <div className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
                   <MapPin className="h-3 w-3" />{" "}
-                  {[p.city, p.country].filter(Boolean).join(", ") || "Location not set"}
+                  {[p.city, p.country].filter(Boolean).join(", ") || "Localização não informada"}
                 </div>
                 <div className="mt-4 flex items-center justify-between border-t border-glass-border pt-3 text-xs">
                   <span className="text-muted-foreground">
-                    {p.bedrooms ?? "—"} bd · {p.bathrooms ?? "—"} ba · {p.area_sqm ?? "—"} m²
+                    {p.bedrooms ?? "—"} quartos · {p.bathrooms ?? "—"} banheiros ·{" "}
+                    {p.area_sqm ?? "—"} m²
                   </span>
                 </div>
               </div>
@@ -306,23 +336,23 @@ function Properties() {
           ))}
         </div>
       ) : (
-        <Card className="overflow-hidden p-0">
+        <Card className="overflow-hidden bg-card/50 p-0 backdrop-blur-2xl">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-glass-border bg-secondary/30 text-left text-xs uppercase tracking-wide text-muted-foreground">
-                <th className="px-5 py-3 font-medium">Property</th>
-                <th className="px-5 py-3 font-medium">Location</th>
-                <th className="px-5 py-3 font-medium">Listing</th>
+              <tr className="border-b border-glass-border bg-glass-fill-strong text-left text-xs uppercase tracking-wide text-muted-foreground backdrop-blur-xl">
+                <th className="px-5 py-3 font-medium">Imóvel</th>
+                <th className="px-5 py-3 font-medium">Localização</th>
+                <th className="px-5 py-3 font-medium">Anúncio</th>
                 <th className="px-5 py-3 font-medium">Status</th>
-                <th className="px-5 py-3 font-medium text-right">Price</th>
-                <th className="px-5 py-3 font-medium text-right">Actions</th>
+                <th className="px-5 py-3 font-medium text-right">Preço</th>
+                <th className="px-5 py-3 font-medium text-right">Ações</th>
               </tr>
             </thead>
             <tbody>
               {filtered.map((p) => (
                 <tr
                   key={p.id}
-                  className="border-b border-glass-border last:border-0 hover:bg-secondary/30"
+                  className="border-b border-glass-border bg-glass-fill/40 backdrop-blur-sm transition-colors last:border-0 hover:bg-glass-fill-strong"
                 >
                   <td className="px-5 py-4">
                     <Link
@@ -346,12 +376,10 @@ function Properties() {
                   </td>
                   <td className="px-5 py-4">
                     <Badge variant={p.status === "available" ? "emerald" : "muted"}>
-                      {p.status ?? "unknown"}
+                      {statusLabel(p.status)}
                     </Badge>
                   </td>
-                  <td className="px-5 py-4 text-right font-semibold">
-                    {p.price != null ? `€${Number(p.price).toLocaleString("en-US")}` : "—"}
-                  </td>
+                  <td className="px-5 py-4 text-right font-semibold">{formatPrice(p.price)}</td>
                   <td className="px-5 py-4">
                     <div className="flex items-center justify-end gap-1.5">
                       <button

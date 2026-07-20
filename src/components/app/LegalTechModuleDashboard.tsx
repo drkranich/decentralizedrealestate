@@ -33,6 +33,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { supabase } from "@/lib/supabase";
 import { useAuthUser } from "@/lib/auth";
 
@@ -859,34 +866,46 @@ export function LegalTechModuleDashboard({ moduleKey }: { moduleKey: LegalTechMo
               />
             </Field>
             <Field label="Estado">
-              <select
+              <Select
                 value={form.status}
-                onChange={(event) =>
-                  setFormValue("status", event.target.value as LegalTechStatus, setForm)
-                }
-                className="input"
+                onValueChange={(value) => setFormValue("status", value as LegalTechStatus, setForm)}
               >
-                {Object.entries(statusLabels).map(([value, label]) => (
-                  <option key={value} value={value}>
-                    {label}
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger className="input h-10 rounded-xl">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent
+                  side="bottom"
+                  avoidCollisions
+                  className="bg-card/90 backdrop-blur-2xl"
+                >
+                  {Object.entries(statusLabels).map(([value, label]) => (
+                    <SelectItem key={value} value={value}>
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </Field>
             <Field label="Risco">
-              <select
+              <Select
                 value={form.risk_level}
-                onChange={(event) =>
-                  setFormValue("risk_level", event.target.value as RiskLevel, setForm)
-                }
-                className="input"
+                onValueChange={(value) => setFormValue("risk_level", value as RiskLevel, setForm)}
               >
-                {Object.entries(riskLabels).map(([value, label]) => (
-                  <option key={value} value={value}>
-                    {label}
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger className="input h-10 rounded-xl">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent
+                  side="bottom"
+                  avoidCollisions
+                  className="bg-card/90 backdrop-blur-2xl"
+                >
+                  {Object.entries(riskLabels).map(([value, label]) => (
+                    <SelectItem key={value} value={value}>
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </Field>
             <Field label="Prazo">
               <input

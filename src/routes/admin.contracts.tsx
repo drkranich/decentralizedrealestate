@@ -1,13 +1,25 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { FileText, Search, Download, Loader2 } from "lucide-react";
-import { PageHeader, Card, Badge, StatCard, DemoDataBadge } from "@/components/app/ui";
-import { CheckCircle2, Clock, AlertCircle } from "lucide-react";
-import { toast } from "sonner";
+import {
+  AlertCircle,
+  CheckCircle2,
+  Clock,
+  Download,
+  FileDown,
+  FileSpreadsheet,
+  FileText,
+  Loader2,
+  Search,
+} from "lucide-react";
+import { PageHeader, Card, Badge, StatCard } from "@/components/app/ui";
 import { supabase } from "@/lib/supabase";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { downloadTablePdf } from "@/lib/pdf";
-import { FileSpreadsheet, FileDown } from "lucide-react";
 
 export const Route = createFileRoute("/admin/contracts")({
   component: Contracts,
@@ -15,11 +27,18 @@ export const Route = createFileRoute("/admin/contracts")({
 
 type ContractRow = {
   id: string;
+  user_id: string;
+  property_id: string | null;
   status: string | null;
   start_date: string | null;
   end_date: string | null;
   created_at: string;
-  properties: { title: string; price: number | null } | null;
+};
+
+type ContractView = ContractRow & {
+  propertyTitle: string;
+  propertyPrice: number | null;
+  userName: string;
 };
 
 const badgeVariant: Record<string, "emerald" | "warn" | "muted" | "blue"> = {
@@ -30,130 +49,211 @@ const badgeVariant: Record<string, "emerald" | "warn" | "muted" | "blue"> = {
   cancelled: "muted",
 };
 
-function fmt(d: string | null) {
-  if (!d) return "—";
-  return new Date(d).toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" });
-}
+const statusLabels: Record<string, string> = {
+  active: "Ativo",
+  pending: "Pendente",
+  signed: "Assinado",
+  expired: "Expirado",
+  cancelled: "Cancelado",
+};
 
 function Contracts() {
   const [contracts, setContracts] = useState<ContractRow[]>([]);
+  const [views, setViews] = useState<ContractView[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [q, setQ] = useState("");
 
   useEffect(() => {
-    (async () => {
-      const { data } = await supabase
+    let cancelled = false;
+
+    async function load() {
+      const { data, error: loadError } = await supabase
         .from("contracts")
-        .select("id, status, start_date, end_date, created_at, properties(title, price)")
+        .select("id, user_id, property_id, status, start_date, end_date, created_at")
         .order("created_at", { ascending: false });
-      setContracts((data as unknown as ContractRow[]) ?? []);
+
+      if (cancelled) return;
       setLoading(false);
-    })();
+      if (loadError) {
+        setError(loadError.message);
+        setContracts([]);
+        setViews([]);
+        return;
+      }
+      const rows = ((data ?? []) as ContractRow[]) ?? [];
+      const propertyIds = rows.map((contract) => contract.property_id).filter(Boolean) as string[];
+      const userIds = rows.map((contract) => contract.user_id).filter(Boolean);
+      const [properties, users] = await Promise.all([
+        propertyIds.length
+          ? supabase.from("properties").select("id, title, price").in("id", propertyIds)
+          : Promise.resolve({
+              data: [] as Array<{ id: string; title: string | null; price: number | null }>,
+            }),
+        userIds.length
+          ? supabase.from("users").select("id, name, email").in("id", userIds)
+          : Promise.resolve({
+              data: [] as Array<{ id: string; name: string | null; email: string | null }>,
+            }),
+      ]);
+      const propertyById = new Map(
+        (
+          (properties.data ?? []) as Array<{
+            id: string;
+            title: string | null;
+            price: number | null;
+          }>
+        ).map((property) => [property.id, property]),
+      );
+      const userById = new Map(
+        (
+          (users.data ?? []) as Array<{ id: string; name: string | null; email: string | null }>
+        ).map((user) => [user.id, user]),
+      );
+      const nextViews = rows.map((contract) => {
+        const property = contract.property_id ? propertyById.get(contract.property_id) : null;
+        const user = userById.get(contract.user_id);
+        return {
+          ...contract,
+          propertyTitle: property?.title ?? "Imóvel",
+          propertyPrice: property?.price ?? null,
+          userName: user?.name ?? user?.email ?? "Usuário",
+        };
+      });
+      setContracts(rows);
+      setViews(nextViews);
+    }
+
+    load();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const filtered = contracts.filter((c) =>
-    !q || (c.properties?.title ?? "").toLowerCase().includes(q.toLowerCase()) || c.id.includes(q)
-  );
+  const filtered = views.filter((contract) => {
+    const needle = q.toLowerCase();
+    return (
+      !needle ||
+      contract.id.toLowerCase().includes(needle) ||
+      contract.propertyTitle.toLowerCase().includes(needle) ||
+      contract.userName.toLowerCase().includes(needle)
+    );
+  });
 
-  const contractRows = () => filtered.map((c) => [
-    c.id.slice(0, 8),
-    c.properties?.title ?? "",
-    c.properties?.price ?? "",
-    c.status ?? "",
-    c.start_date ?? "",
-    c.end_date ?? "",
+  const rows = filtered.map((contract) => [
+    contract.id.slice(0, 8),
+    contract.propertyTitle,
+    contract.userName,
+    contract.propertyPrice != null ? formatCurrency(Number(contract.propertyPrice)) : "-",
+    statusLabel(contract.status),
+    formatDate(contract.start_date),
+    formatDate(contract.end_date),
   ]);
 
   const exportCsv = () => {
-    if (filtered.length === 0) {
-      toast.info("Não há contratos reais para exportar ainda.");
-      return;
-    }
-    const header = ["id", "imovel", "preco", "status", "inicio", "fim"];
-    const csv = [header, ...contractRows()].map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
+    if (filtered.length === 0) return;
+    const csv = [["id", "imovel", "usuario", "valor", "status", "inicio", "fim"], ...rows]
+      .map((row) => row.map((value) => `"${String(value).replace(/"/g, '""')}"`).join(","))
+      .join("\n");
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "contratos.csv";
-    a.click();
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = "contratos.csv";
+    anchor.click();
     URL.revokeObjectURL(url);
   };
 
   const exportPdf = () => {
-    if (filtered.length === 0) {
-      toast.info("Não há contratos reais para exportar ainda.");
-      return;
-    }
+    if (filtered.length === 0) return;
     downloadTablePdf({
       title: "Contratos",
       subtitle: `Exportado em ${new Date().toLocaleDateString("pt-BR")}`,
-      header: ["ID", "Imóvel", "Preço", "Status", "Início", "Fim"],
-      rows: contractRows(),
+      header: ["ID", "Imóvel", "Usuário", "Valor", "Status", "Início", "Fim"],
+      rows,
       filename: "contratos.pdf",
     });
   };
 
-  const active = contracts.filter((c) => c.status === "active").length;
-  const pending = contracts.filter((c) => c.status === "pending").length;
-  const expiringSoon = contracts.filter((c) => {
-    if (!c.end_date) return false;
-    const days = (new Date(c.end_date).getTime() - Date.now()) / 86400000;
+  const active = contracts.filter((contract) => contract.status === "active").length;
+  const pending = contracts.filter((contract) => contract.status === "pending").length;
+  const expiringSoon = contracts.filter((contract) => {
+    if (!contract.end_date) return false;
+    const days = (new Date(contract.end_date).getTime() - Date.now()) / 86400000;
     return days >= 0 && days <= 30;
   }).length;
 
   return (
     <>
-      <PageHeader title="Contracts" subtitle="Contratos reais entre proprietários e inquilinos/investidores.">
+      <PageHeader
+        title="Contratos"
+        subtitle="Contratos registrados entre proprietários, inquilinos e participantes da operação."
+      >
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm hover:bg-secondary">
-              <Download className="h-4 w-4" /> Export
+            <button
+              disabled={filtered.length === 0}
+              className="flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm hover:bg-secondary disabled:opacity-50"
+            >
+              <Download className="h-4 w-4" /> Exportar
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={exportCsv}><FileSpreadsheet className="mr-2 h-4 w-4" /> Exportar CSV</DropdownMenuItem>
-            <DropdownMenuItem onClick={exportPdf}><FileDown className="mr-2 h-4 w-4" /> Exportar PDF</DropdownMenuItem>
+            <DropdownMenuItem onClick={exportCsv}>
+              <FileSpreadsheet className="mr-2 h-4 w-4" /> Exportar CSV
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={exportPdf}>
+              <FileDown className="mr-2 h-4 w-4" /> Exportar PDF
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <button
-          onClick={() => toast.info("A geração automática de contratos via IA ainda não está disponível.")}
+        <Link
+          to="/admin/contract-lifecycle"
           className="flex items-center gap-2 rounded-full bg-emerald px-4 py-2 text-sm font-semibold text-white shadow-glow"
         >
-          Novo contrato
-        </button>
+          CLM e templates
+        </Link>
       </PageHeader>
+
+      {error && (
+        <Card className="mb-6 border-destructive/30 bg-destructive/5">
+          <p className="text-sm text-destructive">{error}</p>
+        </Card>
+      )}
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatCard label="Ativos" value={String(active)} icon={CheckCircle2} />
         <StatCard label="Pendentes" value={String(pending)} icon={Clock} accent="skyblue" />
-        <StatCard label="Vencendo em 30d" value={String(expiringSoon)} icon={AlertCircle} accent="skyblue" />
-        <div className="relative">
-          <StatCard label="Gerados por IA" value="—" icon={FileText} />
-          <div className="absolute right-3 top-3"><DemoDataBadge /></div>
-        </div>
+        <StatCard
+          label="Vencendo em 30d"
+          value={String(expiringSoon)}
+          icon={AlertCircle}
+          accent="skyblue"
+        />
+        <StatCard label="Total" value={String(contracts.length)} icon={FileText} />
       </div>
 
       <Card className="mt-6 overflow-hidden p-0">
         <div className="flex flex-wrap items-center justify-between gap-3 p-6 pb-4">
-          <div className="flex flex-1 items-center gap-2 rounded-full border border-border bg-secondary/40 px-4 py-2 max-w-sm">
+          <div className="flex max-w-sm flex-1 items-center gap-2 rounded-full border border-border bg-secondary/40 px-4 py-2">
             <Search className="h-4 w-4 text-muted-foreground" />
             <input
               value={q}
-              onChange={(e) => setQ(e.target.value)}
+              onChange={(event) => setQ(event.target.value)}
               className="w-full bg-transparent text-sm focus:outline-none"
-              placeholder="Buscar contratos…"
+              placeholder="Buscar contratos..."
             />
           </div>
         </div>
 
         {loading ? (
           <div className="flex items-center justify-center py-16 text-muted-foreground">
-            <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Carregando contratos…
+            <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Carregando contratos...
           </div>
         ) : filtered.length === 0 ? (
           <div className="px-6 pb-8 text-sm text-muted-foreground">
-            Nenhum contrato real encontrado. Contratos aparecerão aqui quando forem criados entre um proprietário e um interessado.
+            Nenhum contrato encontrado. Quando um contrato for criado, assinado ou importado, ele
+            aparecerá aqui.
           </div>
         ) : (
           <table className="w-full text-sm">
@@ -161,6 +261,7 @@ function Contracts() {
               <tr className="border-y border-border bg-secondary/30 text-left text-xs uppercase tracking-wide text-muted-foreground">
                 <th className="px-6 py-3 font-medium">Ref</th>
                 <th className="px-6 py-3 font-medium">Imóvel</th>
+                <th className="px-6 py-3 font-medium">Usuário</th>
                 <th className="px-6 py-3 font-medium">Valor</th>
                 <th className="px-6 py-3 font-medium">Status</th>
                 <th className="px-6 py-3 font-medium">Início</th>
@@ -168,23 +269,30 @@ function Contracts() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map((c) => (
-                <tr key={c.id} className="border-b border-border last:border-0 hover:bg-secondary/30">
-                  <td className="px-6 py-4 font-mono text-xs">{c.id.slice(0, 8)}</td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-2">
-                      <FileText className="h-4 w-4 text-emerald" />
-                      <span className="font-semibold">{c.properties?.title ?? "Imóvel removido"}</span>
-                    </div>
-                  </td>
+              {filtered.map((contract) => (
+                <tr
+                  key={contract.id}
+                  className="border-b border-border last:border-0 hover:bg-secondary/30"
+                >
+                  <td className="px-6 py-4 font-mono text-xs">{contract.id.slice(0, 8)}</td>
+                  <td className="px-6 py-4 font-semibold">{contract.propertyTitle}</td>
+                  <td className="px-6 py-4 text-muted-foreground">{contract.userName}</td>
                   <td className="px-6 py-4 font-semibold">
-                    {c.properties?.price != null ? `€${Number(c.properties.price).toLocaleString("en-US")}` : "—"}
+                    {contract.propertyPrice != null
+                      ? formatCurrency(Number(contract.propertyPrice))
+                      : "-"}
                   </td>
                   <td className="px-6 py-4">
-                    <Badge variant={badgeVariant[c.status ?? ""] ?? "muted"}>{c.status ?? "unknown"}</Badge>
+                    <Badge variant={badgeVariant[contract.status ?? ""] ?? "muted"}>
+                      {statusLabel(contract.status)}
+                    </Badge>
                   </td>
-                  <td className="px-6 py-4 text-muted-foreground">{fmt(c.start_date)}</td>
-                  <td className="px-6 py-4 text-muted-foreground">{fmt(c.end_date)}</td>
+                  <td className="px-6 py-4 text-muted-foreground">
+                    {formatDate(contract.start_date)}
+                  </td>
+                  <td className="px-6 py-4 text-muted-foreground">
+                    {formatDate(contract.end_date)}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -193,4 +301,25 @@ function Contracts() {
       </Card>
     </>
   );
+}
+
+function statusLabel(status: string | null | undefined) {
+  return status ? (statusLabels[status] ?? status) : "Sem status";
+}
+
+function formatDate(value: string | null) {
+  if (!value) return "-";
+  return new Date(value).toLocaleDateString("pt-BR", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+function formatCurrency(value: number) {
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+    maximumFractionDigits: 0,
+  }).format(value);
 }

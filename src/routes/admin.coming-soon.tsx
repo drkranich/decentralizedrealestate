@@ -19,10 +19,11 @@ function ComingSoon() {
         <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald shadow-glow">
           <Sparkles className="h-6 w-6 text-white" />
         </div>
-        <h2 className="font-display text-2xl font-bold">{page} — coming soon</h2>
+        <h2 className="font-display text-2xl font-bold">{page}</h2>
         <p className="max-w-md text-sm text-muted-foreground">
-          The <span className="font-semibold text-foreground">{page}</span> module under{" "}
-          <span className="font-semibold text-foreground">{section}</span> is part of the next release of the platform.
+          Este módulo de <span className="font-semibold text-foreground">{section}</span> ainda não
+          tem uma rota dedicada no painel. As permissões já podem controlar o acesso enquanto a tela
+          específica é conectada.
         </p>
       </Card>
     </>

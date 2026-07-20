@@ -68,7 +68,7 @@ function OwnerContracts() {
                   <div>
                     <div className="font-medium">{c.property_title}</div>
                     <div className="text-xs text-muted-foreground">
-                      {c.tenant_name} · {c.start_date ?? "?"} — {c.end_date ?? "?"}
+                      {c.tenant_name} · {c.start_date ?? "??"} — {c.end_date ?? "??"}
                     </div>
                   </div>
                 </div>

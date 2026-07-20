@@ -10,6 +10,7 @@ import {
   WalletCards,
 } from "lucide-react";
 import { toast } from "sonner";
+import { GlassSelect } from "@/components/app/GlassSelect";
 import { PageHeader, Card, Badge, SectionTitle, StatCard } from "@/components/app/ui";
 import { useAuthUser } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
@@ -67,6 +68,33 @@ type Wallet = {
   provider: string | null;
   status: ReviewStatus;
 };
+
+const riskProfileOptions = [
+  { value: "conservative", label: "Conservador" },
+  { value: "balanced", label: "Balanceado" },
+  { value: "growth", label: "Crescimento" },
+  { value: "professional", label: "Profissional" },
+];
+
+const currencyOptions = [
+  { value: "USD", label: "USD" },
+  { value: "EUR", label: "EUR" },
+  { value: "BRL", label: "BRL" },
+];
+
+const riskLevelOptions = [
+  { value: "low", label: "Baixo" },
+  { value: "medium", label: "Médio" },
+  { value: "high", label: "Alto" },
+  { value: "critical", label: "Crítico" },
+];
+
+const walletTypeOptions = [
+  { value: "custodial", label: "Custodial" },
+  { value: "self_custody", label: "Self-custody" },
+  { value: "bank_account", label: "Conta bancária" },
+  { value: "escrow", label: "Escrow" },
+];
 
 function InvestorCompliance() {
   const { user } = useAuthUser();
@@ -312,31 +340,22 @@ function InvestorCompliance() {
               />
             </Field>
             <Field label="Perfil de risco">
-              <select
+              <GlassSelect
                 value={profileForm.risk_profile}
-                onChange={(event) =>
-                  setProfileForm((prev) => ({ ...prev, risk_profile: event.target.value }))
+                onValueChange={(value) =>
+                  setProfileForm((prev) => ({ ...prev, risk_profile: value }))
                 }
-                className="input"
-              >
-                <option value="conservative">Conservador</option>
-                <option value="balanced">Balanceado</option>
-                <option value="growth">Crescimento</option>
-                <option value="professional">Profissional</option>
-              </select>
+                options={riskProfileOptions}
+              />
             </Field>
             <Field label="Moeda preferida">
-              <select
+              <GlassSelect
                 value={profileForm.preferred_currency}
-                onChange={(event) =>
-                  setProfileForm((prev) => ({ ...prev, preferred_currency: event.target.value }))
+                onValueChange={(value) =>
+                  setProfileForm((prev) => ({ ...prev, preferred_currency: value }))
                 }
-                className="input"
-              >
-                <option value="USD">USD</option>
-                <option value="EUR">EUR</option>
-                <option value="BRL">BRL</option>
-              </select>
+                options={currencyOptions}
+              />
             </Field>
             <Field label="Limite pretendido">
               <input
@@ -378,18 +397,11 @@ function InvestorCompliance() {
           <SectionTitle title="Abrir KYC" />
           <div className="space-y-3">
             <Field label="Risco declarado">
-              <select
+              <GlassSelect
                 value={kycForm.risk_level}
-                onChange={(event) =>
-                  setKycForm((prev) => ({ ...prev, risk_level: event.target.value }))
-                }
-                className="input"
-              >
-                <option value="low">Baixo</option>
-                <option value="medium">Médio</option>
-                <option value="high">Alto</option>
-                <option value="critical">Crítico</option>
-              </select>
+                onValueChange={(value) => setKycForm((prev) => ({ ...prev, risk_level: value }))}
+                options={riskLevelOptions}
+              />
             </Field>
             <Field label="Origem dos recursos">
               <textarea
@@ -462,18 +474,13 @@ function InvestorCompliance() {
               />
             </Field>
             <Field label="Tipo">
-              <select
+              <GlassSelect
                 value={walletForm.wallet_type}
-                onChange={(event) =>
-                  setWalletForm((prev) => ({ ...prev, wallet_type: event.target.value }))
+                onValueChange={(value) =>
+                  setWalletForm((prev) => ({ ...prev, wallet_type: value }))
                 }
-                className="input"
-              >
-                <option value="custodial">Custodial</option>
-                <option value="self_custody">Self-custody</option>
-                <option value="bank_account">Conta bancária</option>
-                <option value="escrow">Escrow</option>
-              </select>
+                options={walletTypeOptions}
+              />
             </Field>
             <Field label="Rede/banco">
               <input

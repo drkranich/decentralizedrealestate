@@ -2,19 +2,44 @@ import { useEffect, useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
 
+export async function getSafeSession() {
+  if (typeof window === "undefined") return null;
+
+  try {
+    const { data } = await supabase.auth.getSession();
+    if (!data.session) return null;
+
+    const { data: userData, error } = await supabase.auth.getUser();
+    if (!error && userData.user) return data.session;
+
+    const { data: refreshed } = await supabase.auth.refreshSession();
+    return refreshed.session ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export function useAuthUser() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setUser(data.session?.user ?? null);
+    let cancelled = false;
+
+    getSafeSession().then((session) => {
+      if (cancelled) return;
+      setUser(session?.user ?? null);
       setLoading(false);
     });
+
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
+      setLoading(false);
     });
-    return () => sub.subscription.unsubscribe();
+    return () => {
+      cancelled = true;
+      sub.subscription.unsubscribe();
+    };
   }, []);
 
   const signOut = async () => {
@@ -38,6 +63,7 @@ export function useUserRole() {
 
   useEffect(() => {
     if (userLoading) return;
+    setLoading(true);
     if (!user) {
       setRole(null);
       setLoading(false);

@@ -12,6 +12,7 @@ import {
   WalletCards,
 } from "lucide-react";
 import { toast } from "sonner";
+import { GlassSelect } from "@/components/app/GlassSelect";
 import { Badge, Card, PageHeader, SectionTitle, StatCard } from "@/components/app/ui";
 import { useAuthUser } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
@@ -114,6 +115,19 @@ type QuoteDraft = {
   notes: string;
   valid_until: string;
 };
+
+const pricingModelOptions = [
+  { value: "quote", label: "Sob orçamento" },
+  { value: "fixed", label: "Preço fechado" },
+  { value: "hourly", label: "Por hora" },
+  { value: "subscription", label: "Recorrente" },
+];
+
+const currencyOptions = [
+  { value: "BRL", label: "BRL" },
+  { value: "EUR", label: "EUR" },
+  { value: "USD", label: "USD" },
+];
 
 function ServiceProviderPanel() {
   const { user } = useAuthUser();
@@ -437,7 +451,8 @@ function ServiceProviderPanel() {
 
       {schemaMissing && (
         <Card className="mb-6 border-dashed border-destructive/30 text-sm text-muted-foreground">
-          A infraestrutura do Service Marketplace ainda não foi aplicada no Supabase.
+          Não foi possível carregar seu painel de prestador. Verifique seu acesso ou tente
+          recarregar a página.
         </Card>
       )}
 
@@ -474,19 +489,14 @@ function ServiceProviderPanel() {
           />
           <div className="grid gap-3 sm:grid-cols-2">
             <Field label="Plano">
-              <select
+              <GlassSelect
                 value={profileForm.plan_id}
-                onChange={(event) =>
-                  setProfileForm((prev) => ({ ...prev, plan_id: event.target.value }))
-                }
-                className="input"
-              >
-                {plans.map((plan) => (
-                  <option key={plan.id} value={plan.id}>
-                    {plan.name} · {planSummary(plan)}
-                  </option>
-                ))}
-              </select>
+                onValueChange={(value) => setProfileForm((prev) => ({ ...prev, plan_id: value }))}
+                options={plans.map((plan) => ({
+                  value: plan.id,
+                  label: `${plan.name} · ${planSummary(plan)}`,
+                }))}
+              />
             </Field>
             <Field label="Nome comercial">
               <input
@@ -614,33 +624,22 @@ function ServiceProviderPanel() {
             <>
               <div className="grid gap-3 sm:grid-cols-2">
                 <Field label="Categoria">
-                  <select
+                  <GlassSelect
                     value={listingForm.category_id || categories[0]?.id || ""}
-                    onChange={(event) =>
-                      setListingForm((prev) => ({ ...prev, category_id: event.target.value }))
+                    onValueChange={(value) =>
+                      setListingForm((prev) => ({ ...prev, category_id: value }))
                     }
-                    className="input"
-                  >
-                    {categories.map((item) => (
-                      <option key={item.id} value={item.id}>
-                        {item.name}
-                      </option>
-                    ))}
-                  </select>
+                    options={categories.map((item) => ({ value: item.id, label: item.name }))}
+                  />
                 </Field>
                 <Field label="Modelo de preço">
-                  <select
+                  <GlassSelect
                     value={listingForm.pricing_model}
-                    onChange={(event) =>
-                      setListingForm((prev) => ({ ...prev, pricing_model: event.target.value }))
+                    onValueChange={(value) =>
+                      setListingForm((prev) => ({ ...prev, pricing_model: value }))
                     }
-                    className="input"
-                  >
-                    <option value="quote">Sob orçamento</option>
-                    <option value="fixed">Preço fechado</option>
-                    <option value="hourly">Por hora</option>
-                    <option value="subscription">Recorrente</option>
-                  </select>
+                    options={pricingModelOptions}
+                  />
                 </Field>
                 <Field label="Título">
                   <input
@@ -683,17 +682,13 @@ function ServiceProviderPanel() {
                   />
                 </Field>
                 <Field label="Moeda">
-                  <select
+                  <GlassSelect
                     value={listingForm.currency}
-                    onChange={(event) =>
-                      setListingForm((prev) => ({ ...prev, currency: event.target.value }))
+                    onValueChange={(value) =>
+                      setListingForm((prev) => ({ ...prev, currency: value }))
                     }
-                    className="input"
-                  >
-                    <option value="BRL">BRL</option>
-                    <option value="EUR">EUR</option>
-                    <option value="USD">USD</option>
-                  </select>
+                    options={currencyOptions}
+                  />
                 </Field>
                 <Field label="SLA de resposta">
                   <input

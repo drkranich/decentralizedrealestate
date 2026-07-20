@@ -12,6 +12,7 @@ import {
   WalletCards,
 } from "lucide-react";
 import { toast } from "sonner";
+import { GlassSelect } from "@/components/app/GlassSelect";
 import { PageHeader, StatCard, Card, SectionTitle, Badge } from "@/components/app/ui";
 import { supabase } from "@/lib/supabase";
 
@@ -83,6 +84,39 @@ type OpportunityFormState = {
   risk_level: string;
   summary: string;
 };
+
+const currencyOptions = [
+  { value: "USD", label: "USD" },
+  { value: "EUR", label: "EUR" },
+  { value: "BRL", label: "BRL" },
+];
+
+const riskOptions = [
+  { value: "low", label: "Baixo" },
+  { value: "medium", label: "Médio" },
+  { value: "high", label: "Alto" },
+  { value: "critical", label: "Crítico" },
+];
+
+const opportunityStatusOptions = [
+  { value: "draft", label: "Rascunho" },
+  { value: "pending_review", label: "Revisão" },
+  { value: "legal_review", label: "Jurídico" },
+  { value: "approved_with_conditions", label: "Condicionado" },
+  { value: "approved", label: "Aprovado" },
+  { value: "blocked", label: "Bloqueado" },
+  { value: "archived", label: "Arquivado" },
+];
+
+const orderStatusOptions = [
+  { value: "pending_compliance", label: "Compliance" },
+  { value: "pending_payment", label: "Pagamento" },
+  { value: "funded", label: "Funded" },
+  { value: "settled", label: "Liquidada" },
+  { value: "blocked", label: "Bloqueada" },
+  { value: "cancelled", label: "Cancelada" },
+  { value: "refunded", label: "Devolvida" },
+];
 
 function InvestorAdmin() {
   const [investors, setInvestors] = useState<InvestorUser[]>([]);
@@ -339,15 +373,11 @@ function InvestorAdmin() {
               />
             </Field>
             <Field label="Moeda">
-              <select
+              <GlassSelect
                 value={form.currency}
-                onChange={(event) => setFormValue("currency", event.target.value, setForm)}
-                className="input"
-              >
-                <option value="USD">USD</option>
-                <option value="EUR">EUR</option>
-                <option value="BRL">BRL</option>
-              </select>
+                onValueChange={(value) => setFormValue("currency", value, setForm)}
+                options={currencyOptions}
+              />
             </Field>
             <Field label="Yield esperado">
               <input
@@ -360,16 +390,11 @@ function InvestorAdmin() {
               />
             </Field>
             <Field label="Risco">
-              <select
+              <GlassSelect
                 value={form.risk_level}
-                onChange={(event) => setFormValue("risk_level", event.target.value, setForm)}
-                className="input"
-              >
-                <option value="low">Baixo</option>
-                <option value="medium">Médio</option>
-                <option value="high">Alto</option>
-                <option value="critical">Crítico</option>
-              </select>
+                onValueChange={(value) => setFormValue("risk_level", value, setForm)}
+                options={riskOptions}
+              />
             </Field>
             <Field label="Resumo" wide>
               <textarea
@@ -414,19 +439,13 @@ function InvestorAdmin() {
                       {formatMoney(opportunity.target_amount, opportunity.currency)}
                     </td>
                     <td className="px-5 py-4">
-                      <select
+                      <GlassSelect
                         value={opportunity.status}
-                        onChange={(event) => setOpportunityStatus(opportunity, event.target.value)}
-                        className="rounded-full border border-glass-border bg-glass-fill px-3 py-1 text-xs"
-                      >
-                        <option value="draft">Rascunho</option>
-                        <option value="pending_review">Revisão</option>
-                        <option value="legal_review">Jurídico</option>
-                        <option value="approved_with_conditions">Condicionado</option>
-                        <option value="approved">Aprovado</option>
-                        <option value="blocked">Bloqueado</option>
-                        <option value="archived">Arquivado</option>
-                      </select>
+                        onValueChange={(value) => setOpportunityStatus(opportunity, value)}
+                        options={opportunityStatusOptions}
+                        triggerClassName="h-8 w-auto min-w-36 rounded-full px-3 py-1 text-xs"
+                        itemClassName="text-xs"
+                      />
                     </td>
                     <td className="px-5 py-4">
                       <Badge variant={opportunity.published_at ? "emerald" : "muted"}>
@@ -474,19 +493,13 @@ function InvestorAdmin() {
                     </td>
                     <td className="px-5 py-4">{formatMoney(order.amount, order.currency)}</td>
                     <td className="px-5 py-4">
-                      <select
+                      <GlassSelect
                         value={order.status}
-                        onChange={(event) => setOrderStatus(order, event.target.value)}
-                        className="rounded-full border border-glass-border bg-glass-fill px-3 py-1 text-xs"
-                      >
-                        <option value="pending_compliance">Compliance</option>
-                        <option value="pending_payment">Pagamento</option>
-                        <option value="funded">Funded</option>
-                        <option value="settled">Liquidada</option>
-                        <option value="blocked">Bloqueada</option>
-                        <option value="cancelled">Cancelada</option>
-                        <option value="refunded">Devolvida</option>
-                      </select>
+                        onValueChange={(value) => setOrderStatus(order, value)}
+                        options={orderStatusOptions}
+                        triggerClassName="h-8 w-auto min-w-36 rounded-full px-3 py-1 text-xs"
+                        itemClassName="text-xs"
+                      />
                     </td>
                   </tr>
                 ))}
