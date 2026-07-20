@@ -67,7 +67,7 @@ function InvestorPortfolio() {
 
       if (!error) {
         setHoldings(
-          ((data as InvestorPositionRow[]) ?? []).map((row) => ({
+          ((data as unknown as InvestorPositionRow[]) ?? []).map((row) => ({
             id: row.id,
             token_code: row.token_code,
             title: row.investment_opportunities?.title ?? row.token_code,
@@ -93,7 +93,7 @@ function InvestorPortfolio() {
         .order("created_at", { ascending: false });
 
       setHoldings(
-        ((legacy as LegacyTokenRow[]) ?? []).map((row) => {
+        ((legacy as unknown as LegacyTokenRow[]) ?? []).map((row) => {
           const principal =
             (Number(row.properties?.price ?? 0) * Number(row.fraction_percent ?? 0)) / 100;
           return {
@@ -127,7 +127,8 @@ function InvestorPortfolio() {
 
       {schemaMissing && (
         <Card className="mb-6 border-dashed border-skyblue/30 text-sm text-muted-foreground">
-          Exibindo dados legados de `property_tokens` até a migração de investidor ser aplicada.
+          Não foi possível carregar todas as posições de investidor. Os dados disponíveis seguem
+          visíveis enquanto a conexão é restabelecida.
         </Card>
       )}
 

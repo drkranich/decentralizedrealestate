@@ -8,7 +8,10 @@ import { supabase } from "@/lib/supabase";
  * renders instantly and never breaks if a row is missing or still loading —
  * it just falls back to the defaults until (and unless) the DB values load.
  */
-export function usePublicContent<T extends Record<string, string>>(sectionKey: string, defaults: T): T {
+export function usePublicContent<T extends Record<string, unknown>>(
+  sectionKey: string,
+  defaults: T,
+): T {
   const [data, setData] = useState<T>(defaults);
 
   useEffect(() => {

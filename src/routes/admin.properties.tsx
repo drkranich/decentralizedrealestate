@@ -1,9 +1,22 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Plus, Filter, Grid3x3, List, MapPin, Building2, Loader2, ImageOff, Share2 } from "lucide-react";
+import {
+  Plus,
+  Filter,
+  Grid3x3,
+  List,
+  MapPin,
+  Building2,
+  Loader2,
+  ImageOff,
+  Share2,
+} from "lucide-react";
 import { PageHeader, Card, Badge, StatCard } from "@/components/app/ui";
 import { AddPropertyModal } from "@/components/properties/AddPropertyModal";
-import { EditPropertyModal, type EditableProperty } from "@/components/properties/EditPropertyModal";
+import {
+  EditPropertyModal,
+  type EditableProperty,
+} from "@/components/properties/EditPropertyModal";
 import { PropertyActionsMenu } from "@/components/properties/PropertyActionsMenu";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
@@ -69,7 +82,9 @@ function Properties() {
 
     const { data, error } = await supabase
       .from("properties")
-      .select("id, title, description, city, country, price, status, listing_type, bedrooms, bathrooms, area_sqm, owner_id, property_media(storage_path, media_type, position)")
+      .select(
+        "id, title, description, city, country, price, status, listing_type, bedrooms, bathrooms, area_sqm, owner_id, property_media(storage_path, media_type, position)",
+      )
       .order("created_at", { ascending: false });
 
     if (!error && data) {
@@ -91,9 +106,17 @@ function Properties() {
     load();
   }, []);
 
-  const byStatus = filter === "All" ? rows : rows.filter((p) => (p.status ?? "").toLowerCase() === filter.toLowerCase());
-  const byListing = listingFilter === "Todos" ? byStatus : byStatus.filter((p) => p.listing_type === listingFilter.toLowerCase());
-  const filtered = textQuery ? byListing.filter((p) => p.title.toLowerCase().includes(textQuery.toLowerCase())) : byListing;
+  const byStatus =
+    filter === "All"
+      ? rows
+      : rows.filter((p) => (p.status ?? "").toLowerCase() === filter.toLowerCase());
+  const byListing =
+    listingFilter === "Todos"
+      ? byStatus
+      : byStatus.filter((p) => p.listing_type === listingFilter.toLowerCase());
+  const filtered = textQuery
+    ? byListing.filter((p) => p.title.toLowerCase().includes(textQuery.toLowerCase()))
+    : byListing;
   const total = rows.length;
   const available = rows.filter((p) => p.status === "available").length;
   const own = userId ? rows.filter((p) => p.owner_id === userId).length : 0;
@@ -102,7 +125,11 @@ function Properties() {
     <>
       <PageHeader
         title="Properties"
-        subtitle={loading ? "Loading your portfolio…" : `${filtered.length} ${filtered.length === 1 ? "property" : "properties"} on the platform right now.`}
+        subtitle={
+          loading
+            ? "Loading your portfolio…"
+            : `${filtered.length} ${filtered.length === 1 ? "property" : "properties"} on the platform right now.`
+        }
       >
         <button
           onClick={() => setShowFilters((v) => !v)}
@@ -110,21 +137,34 @@ function Properties() {
         >
           <Filter className="h-4 w-4" /> Filters
         </button>
-        <button onClick={() => setOpen(true)} className="flex items-center gap-2 rounded-full bg-emerald px-4 py-2 text-sm font-semibold text-white shadow-glow">
+        <button
+          onClick={() => setOpen(true)}
+          className="flex items-center gap-2 rounded-full bg-emerald px-4 py-2 text-sm font-semibold text-white shadow-glow"
+        >
           <Plus className="h-4 w-4" /> Add property
         </button>
       </PageHeader>
 
       <div className="mb-6 grid gap-4 sm:grid-cols-3">
         <StatCard label="Total properties" value={String(total)} icon={Building2} />
-        <StatCard label="Available now" value={String(available)} icon={Building2} accent="skyblue" />
+        <StatCard
+          label="Available now"
+          value={String(available)}
+          icon={Building2}
+          accent="skyblue"
+        />
         <StatCard label="Yours" value={String(own)} icon={Building2} />
       </div>
 
       {textQuery && (
         <div className="mb-3 flex items-center gap-2 text-xs text-muted-foreground">
           Buscando por "{textQuery}"
-          <button onClick={() => setTextQuery("")} className="font-medium text-emerald hover:underline">Limpar</button>
+          <button
+            onClick={() => setTextQuery("")}
+            className="font-medium text-emerald hover:underline"
+          >
+            Limpar
+          </button>
         </div>
       )}
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
@@ -134,7 +174,9 @@ function Properties() {
               key={s}
               onClick={() => setFilter(s)}
               className={`rounded-full px-3.5 py-1.5 text-xs font-medium capitalize transition-all ${
-                filter === s ? "bg-foreground text-background" : "border border-glass-border bg-card text-muted-foreground hover:bg-secondary"
+                filter === s
+                  ? "bg-foreground text-background"
+                  : "border border-glass-border bg-card text-muted-foreground hover:bg-secondary"
               }`}
             >
               {s}
@@ -148,7 +190,9 @@ function Properties() {
                   key={s}
                   onClick={() => setListingFilter(s)}
                   className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-all ${
-                    listingFilter === s ? "bg-emerald text-white" : "border border-glass-border bg-card text-muted-foreground hover:bg-secondary"
+                    listingFilter === s
+                      ? "bg-emerald text-white"
+                      : "border border-glass-border bg-card text-muted-foreground hover:bg-secondary"
                   }`}
                 >
                   {s}
@@ -158,10 +202,16 @@ function Properties() {
           )}
         </div>
         <div className="flex rounded-full border border-glass-border bg-card p-0.5">
-          <button onClick={() => setView("grid")} className={`flex h-8 w-8 items-center justify-center rounded-full ${view === "grid" ? "bg-secondary" : ""}`}>
+          <button
+            onClick={() => setView("grid")}
+            className={`flex h-8 w-8 items-center justify-center rounded-full ${view === "grid" ? "bg-secondary" : ""}`}
+          >
             <Grid3x3 className="h-4 w-4" />
           </button>
-          <button onClick={() => setView("list")} className={`flex h-8 w-8 items-center justify-center rounded-full ${view === "list" ? "bg-secondary" : ""}`}>
+          <button
+            onClick={() => setView("list")}
+            className={`flex h-8 w-8 items-center justify-center rounded-full ${view === "list" ? "bg-secondary" : ""}`}
+          >
             <List className="h-4 w-4" />
           </button>
         </div>
@@ -175,13 +225,26 @@ function Properties() {
         <Card className="flex flex-col items-center gap-3 py-16 text-center">
           <Building2 className="h-8 w-8 text-muted-foreground" />
           <div className="font-display text-lg font-semibold">No properties yet</div>
-          <p className="max-w-sm text-sm text-muted-foreground">Real properties published on the platform will show up here — no demo data.</p>
-          <button onClick={() => setOpen(true)} className="mt-2 rounded-full bg-emerald px-5 py-2 text-sm font-semibold text-white">Add your first property</button>
+          <p className="max-w-sm text-sm text-muted-foreground">
+            Real properties published on the platform will show up here — no demo data.
+          </p>
+          <button
+            onClick={() => setOpen(true)}
+            className="mt-2 rounded-full bg-emerald px-5 py-2 text-sm font-semibold text-white"
+          >
+            Add your first property
+          </button>
         </Card>
       ) : view === "grid" ? (
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {filtered.map((p) => (
-            <Link key={p.id} to="/admin/properties/$id" params={{ id: p.id }} className="group overflow-hidden rounded-3xl border border-glass-border bg-card transition-all hover:-translate-y-1 hover:shadow-elegant">
+            <Link
+              key={p.id}
+              to="/admin/properties/$id"
+              params={{ id: p.id }}
+              search={{ q: search.q, add: "" }}
+              className="group overflow-hidden rounded-3xl border border-glass-border bg-card transition-all hover:-translate-y-1 hover:shadow-elegant"
+            >
               <div className="relative aspect-[4/3] overflow-hidden bg-secondary/40">
                 {p.cover_url ? (
                   <img src={p.cover_url} className="h-full w-full object-cover" />
@@ -191,12 +254,22 @@ function Properties() {
                   </div>
                 )}
                 <div className="absolute left-4 top-4 flex gap-1.5">
-                  <Badge variant={p.status === "available" ? "emerald" : "muted"}>{p.status ?? "unknown"}</Badge>
-                  {p.listing_type && <Badge variant={p.listing_type === "venda" ? "warn" : "blue"}>{p.listing_type}</Badge>}
+                  <Badge variant={p.status === "available" ? "emerald" : "muted"}>
+                    {p.status ?? "unknown"}
+                  </Badge>
+                  {p.listing_type && (
+                    <Badge variant={p.listing_type === "venda" ? "warn" : "blue"}>
+                      {p.listing_type}
+                    </Badge>
+                  )}
                 </div>
                 <div className="absolute right-3 top-3 flex gap-1.5">
                   <button
-                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); shareProperty(p.id, p.title); }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      shareProperty(p.id, p.title);
+                    }}
                     className="flex h-8 w-8 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-colors hover:bg-black/60"
                     aria-label="Compartilhar imóvel"
                   >
@@ -212,14 +285,16 @@ function Properties() {
                 </div>
                 {p.price != null && (
                   <div className="absolute bottom-3 left-3 rounded-xl glass-strong px-2.5 py-1 text-[10px] font-semibold">
-                    €{Number(p.price).toLocaleString("en-US")}{p.listing_type === "venda" ? "" : "/mo"}
+                    €{Number(p.price).toLocaleString("en-US")}
+                    {p.listing_type === "venda" ? "" : "/mo"}
                   </div>
                 )}
               </div>
               <div className="p-5">
                 <h3 className="font-display text-base font-semibold">{p.title}</h3>
                 <div className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
-                  <MapPin className="h-3 w-3" /> {[p.city, p.country].filter(Boolean).join(", ") || "Location not set"}
+                  <MapPin className="h-3 w-3" />{" "}
+                  {[p.city, p.country].filter(Boolean).join(", ") || "Location not set"}
                 </div>
                 <div className="mt-4 flex items-center justify-between border-t border-glass-border pt-3 text-xs">
                   <span className="text-muted-foreground">
@@ -245,14 +320,38 @@ function Properties() {
             </thead>
             <tbody>
               {filtered.map((p) => (
-                <tr key={p.id} className="border-b border-glass-border last:border-0 hover:bg-secondary/30">
+                <tr
+                  key={p.id}
+                  className="border-b border-glass-border last:border-0 hover:bg-secondary/30"
+                >
                   <td className="px-5 py-4">
-                    <Link to="/admin/properties/$id" params={{ id: p.id }} className="font-semibold">{p.title}</Link>
+                    <Link
+                      to="/admin/properties/$id"
+                      params={{ id: p.id }}
+                      search={{ q: search.q, add: "" }}
+                      className="font-semibold"
+                    >
+                      {p.title}
+                    </Link>
                   </td>
-                  <td className="px-5 py-4 text-muted-foreground">{[p.city, p.country].filter(Boolean).join(", ") || "—"}</td>
-                  <td className="px-5 py-4">{p.listing_type && <Badge variant={p.listing_type === "venda" ? "warn" : "blue"}>{p.listing_type}</Badge>}</td>
-                  <td className="px-5 py-4"><Badge variant={p.status === "available" ? "emerald" : "muted"}>{p.status ?? "unknown"}</Badge></td>
-                  <td className="px-5 py-4 text-right font-semibold">{p.price != null ? `€${Number(p.price).toLocaleString("en-US")}` : "—"}</td>
+                  <td className="px-5 py-4 text-muted-foreground">
+                    {[p.city, p.country].filter(Boolean).join(", ") || "—"}
+                  </td>
+                  <td className="px-5 py-4">
+                    {p.listing_type && (
+                      <Badge variant={p.listing_type === "venda" ? "warn" : "blue"}>
+                        {p.listing_type}
+                      </Badge>
+                    )}
+                  </td>
+                  <td className="px-5 py-4">
+                    <Badge variant={p.status === "available" ? "emerald" : "muted"}>
+                      {p.status ?? "unknown"}
+                    </Badge>
+                  </td>
+                  <td className="px-5 py-4 text-right font-semibold">
+                    {p.price != null ? `€${Number(p.price).toLocaleString("en-US")}` : "—"}
+                  </td>
                   <td className="px-5 py-4">
                     <div className="flex items-center justify-end gap-1.5">
                       <button

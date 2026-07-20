@@ -72,6 +72,18 @@ type Position = {
   status: string;
 };
 
+type OpportunityFormState = {
+  title: string;
+  location: string;
+  token_symbol: string;
+  target_amount: string;
+  min_ticket: string;
+  currency: string;
+  expected_yield_percent: string;
+  risk_level: string;
+  summary: string;
+};
+
 function InvestorAdmin() {
   const [investors, setInvestors] = useState<InvestorUser[]>([]);
   const [profiles, setProfiles] = useState<InvestorProfile[]>([]);
@@ -81,7 +93,7 @@ function InvestorAdmin() {
   const [loading, setLoading] = useState(true);
   const [schemaMissing, setSchemaMissing] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<OpportunityFormState>({
     title: "",
     location: "",
     token_symbol: "",
@@ -139,7 +151,7 @@ function InvestorAdmin() {
     setInvestors((users as InvestorUser[]) ?? []);
     setProfiles((profileRows as InvestorProfile[]) ?? []);
     setOpportunities((opportunityRows as Opportunity[]) ?? []);
-    setOrders((orderRows as Order[]) ?? []);
+    setOrders((orderRows as unknown as Order[]) ?? []);
     setPositions((positionRows as Position[]) ?? []);
     setLoading(false);
   };
@@ -252,8 +264,8 @@ function InvestorAdmin() {
 
       {schemaMissing && (
         <Card className="mb-6 border-dashed border-destructive/30 text-sm text-muted-foreground">
-          A migração LegalTech/Investidor ainda não foi aplicada; algumas tabelas podem aparecer
-          vazias.
+          Não foi possível carregar todos os dados de investidor. Verifique conexão, permissões RLS
+          e exposição das tabelas no Supabase.
         </Card>
       )}
 
@@ -560,10 +572,10 @@ function Field({
   );
 }
 
-function setFormValue(
-  key: string,
-  value: string,
-  setForm: React.Dispatch<React.SetStateAction<Record<string, string>>>,
+function setFormValue<K extends keyof OpportunityFormState>(
+  key: K,
+  value: OpportunityFormState[K],
+  setForm: React.Dispatch<React.SetStateAction<OpportunityFormState>>,
 ) {
   setForm((prev) => ({ ...prev, [key]: value }));
 }

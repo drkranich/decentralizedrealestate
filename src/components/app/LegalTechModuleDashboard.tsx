@@ -608,8 +608,8 @@ export function LegalTechModuleDashboard({ moduleKey }: { moduleKey: LegalTechMo
         </button>
       </PageHeader>
 
-      <div className="mb-6 rounded-2xl border border-dashed border-skyblue/35 bg-skyblue/10 p-4 text-sm text-muted-foreground">
-        <span className="font-semibold text-skyblue">Modo infraestrutura:</span>{" "}
+      <div className="mb-6 rounded-2xl border border-emerald/30 bg-emerald/10 p-4 text-sm text-muted-foreground">
+        <span className="font-semibold text-emerald">Controle operacional:</span>{" "}
         {module.operationalNote}
       </div>
 
@@ -618,11 +618,10 @@ export function LegalTechModuleDashboard({ moduleKey }: { moduleKey: LegalTechMo
           <div className="flex gap-3 text-sm text-muted-foreground">
             <AlertTriangle className="h-5 w-5 shrink-0 text-destructive" />
             <div>
-              <div className="font-semibold text-foreground">Migração Supabase pendente</div>
+              <div className="font-semibold text-foreground">Dados LegalTech indisponíveis</div>
               <p>
-                A interface já está pronta, mas as tabelas LegalTech ainda não foram aplicadas neste
-                banco. Rode a migration `create_legaltech_investor_infrastructure` para ativar o
-                CRUD real.
+                Não foi possível carregar os registros deste módulo. Verifique conexão, permissões
+                RLS e exposição das tabelas no Supabase antes de operar.
               </p>
             </div>
           </div>
@@ -666,7 +665,7 @@ export function LegalTechModuleDashboard({ moduleKey }: { moduleKey: LegalTechMo
             </p>
           </div>
           <Badge variant={schemaMissing ? "warn" : "emerald"}>
-            {schemaMissing ? "Pendente" : "Ativo"}
+            {schemaMissing ? "Indisponível" : "Operacional"}
           </Badge>
         </div>
 
@@ -820,7 +819,7 @@ export function LegalTechModuleDashboard({ moduleKey }: { moduleKey: LegalTechMo
           variant="warn"
         />
         <ChecklistCard
-          title="Automações esperadas"
+          title="Controles operacionais"
           icon={FileSearch}
           items={module.automations}
           variant="blue"

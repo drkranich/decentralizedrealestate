@@ -137,8 +137,8 @@ function ServiceMarketplace() {
     }
 
     setCategories((categoryResult.data as Category[]) ?? []);
-    setListings((listingResult.data as Listing[]) ?? []);
-    setRequests((requestResult.data as RequestRow[]) ?? []);
+    setListings((listingResult.data as unknown as Listing[]) ?? []);
+    setRequests((requestResult.data as unknown as RequestRow[]) ?? []);
     setLoading(false);
   }, [user]);
 

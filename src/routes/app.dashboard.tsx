@@ -245,7 +245,7 @@ function InvestorDashboard({ userId }: { userId: string | null }) {
           .select("fraction_percent, status, property_id, properties(price)")
           .eq("owner_id", userId)
           .eq("status", "active");
-        const rows = (tokens ?? []) as LegacyTokenSummary[];
+        const rows = (tokens ?? []) as unknown as LegacyTokenSummary[];
         const propertyIds = Array.from(new Set(rows.map((row) => row.property_id)));
         const invested = rows.reduce((sum, row) => {
           const price = Number(row.properties?.price ?? 0);
@@ -262,7 +262,7 @@ function InvestorDashboard({ userId }: { userId: string | null }) {
         return;
       }
 
-      const positionRows = (positions ?? []) as InvestorPositionSummary[];
+      const positionRows = (positions ?? []) as unknown as InvestorPositionSummary[];
       const propertyIds = Array.from(
         new Set(positionRows.map((row) => row.property_id).filter(Boolean)),
       );
@@ -270,7 +270,7 @@ function InvestorDashboard({ userId }: { userId: string | null }) {
         (sum, row) => sum + Number(row.principal_amount ?? 0),
         0,
       );
-      const pendingIncome = ((earnings ?? []) as InvestorEarningSummary[])
+      const pendingIncome = ((earnings ?? []) as unknown as InvestorEarningSummary[])
         .filter((row) => row.status !== "approved")
         .reduce((sum, row) => sum + Number(row.net_amount ?? 0), 0);
 
@@ -279,7 +279,9 @@ function InvestorDashboard({ userId }: { userId: string | null }) {
         invested,
         pendingIncome,
         opportunities: opportunities ?? 0,
-        compliance: statusLabel((profile as InvestorProfileSummary | null)?.onboarding_status),
+        compliance: statusLabel(
+          (profile as unknown as InvestorProfileSummary | null)?.onboarding_status,
+        ),
       });
     })();
   }, [userId]);
@@ -402,7 +404,7 @@ function ServiceProviderDashboard({ userId }: { userId: string | null }) {
         return;
       }
 
-      const profile = profileData as ServiceProviderProfileSummary;
+      const profile = profileData as unknown as ServiceProviderProfileSummary;
       const [{ count: activeListings }, { count: openLeads }, { data: commissionRows }] =
         await Promise.all([
           supabase

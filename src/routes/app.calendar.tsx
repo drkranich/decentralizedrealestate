@@ -25,7 +25,10 @@ function OwnerCalendar() {
   useEffect(() => {
     if (!user) return;
     (async () => {
-      const { data: props } = await supabase.from("properties").select("id").eq("owner_id", user.id);
+      const { data: props } = await supabase
+        .from("properties")
+        .select("id")
+        .eq("owner_id", user.id);
       const propertyIds = (props ?? []).map((p) => p.id);
       if (propertyIds.length === 0) {
         setContracts([]);
@@ -43,7 +46,7 @@ function OwnerCalendar() {
           start_date: c.start_date,
           end_date: c.end_date,
           property_title: c.properties?.title ?? "Imóvel",
-        }))
+        })),
       );
     })();
   }, [user]);
@@ -63,15 +66,20 @@ function OwnerCalendar() {
 
   return (
     <>
-      <PageHeader title="Calendário" subtitle="Ocupação real dos seus imóveis, com base nos contratos ativos" />
+      <PageHeader
+        title="Calendário"
+        subtitle="Ocupação real dos seus imóveis, com base nos contratos ativos"
+      />
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[auto_1fr]">
         <Card className="w-fit">
           <DatePicker
-            mode="default"
+            mode="single"
             month={month}
             onMonthChange={setMonth}
             modifiers={{ occupied: occupiedDays }}
-            modifiersClassNames={{ occupied: "bg-emerald/25 text-emerald font-semibold rounded-full" }}
+            modifiersClassNames={{
+              occupied: "bg-emerald/25 text-emerald font-semibold rounded-full",
+            }}
           />
           <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
             <span className="h-3 w-3 rounded-full bg-emerald/25" /> Período de contrato ativo
@@ -88,7 +96,10 @@ function OwnerCalendar() {
           ) : (
             <div className="space-y-3">
               {contracts.map((c) => (
-                <div key={c.id} className="flex items-center justify-between rounded-xl border border-glass-border bg-secondary/30 px-4 py-3">
+                <div
+                  key={c.id}
+                  className="flex items-center justify-between rounded-xl border border-glass-border bg-secondary/30 px-4 py-3"
+                >
                   <div>
                     <div className="font-medium">{c.property_title}</div>
                     <div className="text-xs text-muted-foreground">

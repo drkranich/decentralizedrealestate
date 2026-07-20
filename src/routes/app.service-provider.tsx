@@ -188,7 +188,7 @@ function ServiceProviderPanel() {
 
     const nextPlans = (plansResult.data as Plan[]) ?? [];
     const nextCategories = (categoriesResult.data as Category[]) ?? [];
-    const nextProfile = profileResult.data as ProviderProfile | null;
+    const nextProfile = profileResult.data as unknown as ProviderProfile | null;
 
     setPlans(nextPlans);
     setCategories(nextCategories);
@@ -244,8 +244,8 @@ function ServiceProviderPanel() {
         .order("created_at", { ascending: false }),
     ]);
 
-    setListings((listingsResult.data as ServiceListing[]) ?? []);
-    setLeads((leadsResult.data as Lead[]) ?? []);
+    setListings((listingsResult.data as unknown as ServiceListing[]) ?? []);
+    setLeads((leadsResult.data as unknown as Lead[]) ?? []);
     setQuotes((quotesResult.data as Quote[]) ?? []);
     setLedger((ledgerResult.data as Ledger[]) ?? []);
     setLoading(false);

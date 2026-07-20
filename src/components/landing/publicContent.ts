@@ -382,7 +382,9 @@ export function getPublicPageDefaults(key: string) {
   return publicPageDefaults.find((page) => page.key === key) ?? publicPageDefaults[0];
 }
 
-export function getPublicPageStatus(data: { status?: string }): PublicPageStatus {
+export function getPublicPageStatus(
+  data: Record<string, unknown> & { status?: string },
+): PublicPageStatus {
   if (data.status === "archived" || data.status === "deleted") return data.status;
   return "published";
 }

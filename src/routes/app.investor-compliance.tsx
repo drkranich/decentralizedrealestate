@@ -258,7 +258,7 @@ function InvestorCompliance() {
 
       {schemaMissing && (
         <Card className="mb-6 border-dashed border-destructive/30 text-sm text-muted-foreground">
-          A migração LegalTech/Investidor ainda não foi aplicada no Supabase.
+          Não foi possível carregar seus dados regulatórios. Verifique sua sessão e tente novamente.
         </Card>
       )}
 

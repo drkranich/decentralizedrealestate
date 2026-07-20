@@ -182,10 +182,10 @@ function AdminServiceMarketplace() {
 
     setPlans((plansResult.data as Plan[]) ?? []);
     setCategories((categoriesResult.data as Category[]) ?? []);
-    setProviders((providersResult.data as ProviderProfile[]) ?? []);
-    setListings((listingsResult.data as Listing[]) ?? []);
-    setRequests((requestsResult.data as RequestRow[]) ?? []);
-    setLedger((ledgerResult.data as LedgerRow[]) ?? []);
+    setProviders((providersResult.data as unknown as ProviderProfile[]) ?? []);
+    setListings((listingsResult.data as unknown as Listing[]) ?? []);
+    setRequests((requestsResult.data as unknown as RequestRow[]) ?? []);
+    setLedger((ledgerResult.data as unknown as LedgerRow[]) ?? []);
     setLoading(false);
   }, []);
 

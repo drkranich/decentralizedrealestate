@@ -131,7 +131,7 @@ function AppLayout() {
               )}
             />
             <button
-              onClick={() => navigate({ to: "/admin/properties", search: { add: "1" } })}
+              onClick={() => navigate({ to: "/admin/properties", search: { q: "", add: "1" } })}
               className="hidden items-center gap-2 rounded-full bg-emerald px-4 py-2 text-sm font-medium text-white shadow-glow transition-transform hover:scale-105 md:flex"
             >
               <Plus className="h-4 w-4" /> Add property

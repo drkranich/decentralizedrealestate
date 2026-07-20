@@ -64,7 +64,7 @@ function InvestorDocuments() {
 
       if (!error) {
         setDocs(
-          ((data as InvestorDocumentRow[]) ?? []).map((doc) => ({
+          ((data as unknown as InvestorDocumentRow[]) ?? []).map((doc) => ({
             id: doc.id,
             title: doc.title,
             document_type: doc.document_type,
@@ -110,7 +110,8 @@ function InvestorDocuments() {
 
       {schemaMissing && (
         <Card className="mb-6 border-dashed border-skyblue/30 text-sm text-muted-foreground">
-          Exibindo contratos legados até a migração de documentos do investidor ser aplicada.
+          Não foi possível carregar todos os documentos de investidor. Verifique sessão e permissões
+          antes de operar arquivos sensíveis.
         </Card>
       )}
 
@@ -180,7 +181,7 @@ async function loadLegacyDocs(userId: string): Promise<Doc[]> {
     .in("property_id", propertyIds)
     .order("created_at", { ascending: false });
 
-  return ((data as LegacyContractDocumentRow[]) ?? []).map((contract) => ({
+  return ((data as unknown as LegacyContractDocumentRow[]) ?? []).map((contract) => ({
     id: contract.id,
     title: contract.properties?.title ?? "Contrato",
     document_type: "contract",

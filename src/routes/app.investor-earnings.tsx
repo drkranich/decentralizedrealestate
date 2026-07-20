@@ -65,7 +65,7 @@ function InvestorEarnings() {
 
       if (!error) {
         setRows(
-          ((data as InvestorEarningRecord[]) ?? []).map((item) => ({
+          ((data as unknown as InvestorEarningRecord[]) ?? []).map((item) => ({
             id: item.id,
             title: item.investment_opportunities?.title ?? "Investimento",
             period: formatPeriod(item.period_start, item.period_end),
@@ -99,7 +99,8 @@ function InvestorEarnings() {
 
       {schemaMissing && (
         <Card className="mb-6 border-dashed border-skyblue/30 text-sm text-muted-foreground">
-          Exibindo rendimentos calculados a partir de contratos legados até a migração ser aplicada.
+          Não foi possível carregar todos os rendimentos. Os valores exibidos podem vir de contratos
+          já existentes enquanto a conexão é restabelecida.
         </Card>
       )}
 
@@ -184,7 +185,7 @@ async function loadLegacyEarnings(userId: string): Promise<EarningRow[]> {
     .select("id, property_id, properties(title)")
     .in("property_id", propertyIds);
 
-  const contractRows = (contracts ?? []) as LegacyContractRecord[];
+  const contractRows = (contracts ?? []) as unknown as LegacyContractRecord[];
   const contractIds = contractRows.map((contract) => contract.id);
   const propertyByContract = new Map(
     contractRows.map((contract) => [
