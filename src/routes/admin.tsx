@@ -16,8 +16,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { supabase } from "@/lib/supabase";
-import { getSafeSession, useAuthUser, useAvatarUrl, useUserRole, initials } from "@/lib/auth";
+import {
+  fetchUserRole,
+  getSafeSession,
+  useAuthUser,
+  useAvatarUrl,
+  useUserRole,
+  initials,
+} from "@/lib/auth";
 import {
   getFirstAllowedPath,
   isPathAllowedForRole,
@@ -37,12 +43,8 @@ export const Route = createFileRoute("/admin")({
     }
     // /admin is the super-admin console only. Owners/tenants get redirected
     // to their own portal at /app instead of seeing an error.
-    const { data: profile } = await supabase
-      .from("users")
-      .select("role")
-      .eq("id", session.user.id)
-      .maybeSingle();
-    if (profile?.role !== "admin") {
+    const role = await fetchUserRole(session.user);
+    if (role !== "admin") {
       throw redirect({ to: "/app/dashboard" });
     }
   },

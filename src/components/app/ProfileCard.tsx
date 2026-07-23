@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Camera, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Card, SectionTitle, Badge } from "@/components/app/ui";
-import { useAuthUser, initials, type UserRole } from "@/lib/auth";
+import { useAuthUser, initials, normalizeUserRole, type UserRole } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 
 const roleLabels: Record<UserRole, string> = {
@@ -37,7 +37,7 @@ export function ProfileCard() {
       .then(({ data }) => {
         setName(data?.name ?? (user.user_metadata?.name as string | undefined) ?? "");
         setPhone(data?.phone ?? (user.user_metadata?.phone as string | undefined) ?? "");
-        setRole((data?.role as UserRole | undefined) ?? "tenant");
+        setRole(normalizeUserRole(data?.role));
         setAvatarUrl(data?.avatar_url ?? null);
         setLoading(false);
       });

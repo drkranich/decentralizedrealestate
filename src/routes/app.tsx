@@ -16,8 +16,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { supabase } from "@/lib/supabase";
-import { getSafeSession, useAuthUser, useAvatarUrl, useUserRole, initials } from "@/lib/auth";
+import {
+  fetchUserRole,
+  getSafeSession,
+  useAuthUser,
+  useAvatarUrl,
+  useUserRole,
+  initials,
+} from "@/lib/auth";
 import {
   getFirstAllowedPath,
   isPathAllowedForRole,
@@ -37,13 +43,12 @@ export const Route = createFileRoute("/app")({
     }
     // /app is the SaaS portal for owners and tenants. The super admin has
     // its own dedicated console at /admin instead.
-    const { data: profile } = await supabase
-      .from("users")
-      .select("role")
-      .eq("id", session.user.id)
-      .maybeSingle();
-    if (profile?.role === "admin") {
+    const role = await fetchUserRole(session.user, { allowAppMetadataFallback: true });
+    if (role === "admin") {
       throw redirect({ to: "/admin/dashboard" });
+    }
+    if (!role) {
+      throw redirect({ to: "/login" });
     }
   },
   component: UserLayout,
@@ -69,6 +74,10 @@ function UserLayout() {
       navigate({ to: "/admin/dashboard", replace: true });
       return;
     }
+    if (!role) {
+      navigate({ to: "/login", replace: true });
+      return;
+    }
     if (!permissionsLoading && role && !isPathAllowedForRole(role, pathname, permissions)) {
       navigate({ to: getFirstAllowedPath(role, "app", permissions), replace: true });
     }
@@ -79,7 +88,7 @@ function UserLayout() {
     navigate({ to: "/login" });
   };
 
-  if (authLoading || roleLoading || permissionsLoading || !user || role === "admin") {
+  if (authLoading || roleLoading || permissionsLoading || !user || role === "admin" || !role) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="rounded-2xl border border-glass-border bg-card/70 px-6 py-4 text-sm text-muted-foreground shadow-soft backdrop-blur-xl">

@@ -3,6 +3,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Loader2, Mail, Lock } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { Logo } from "@/components/brand/Logo";
+import { fetchUserRole } from "@/lib/auth";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
@@ -19,13 +20,17 @@ function LoginPage() {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    setLoading(false);
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
+      setLoading(false);
       setError(error.message);
       return;
     }
-    navigate({ to: "/app/dashboard" });
+    const role = data.user
+      ? await fetchUserRole(data.user, { allowAppMetadataFallback: true })
+      : null;
+    setLoading(false);
+    navigate({ to: role === "admin" ? "/admin/dashboard" : "/app/dashboard" });
   };
 
   return (
@@ -45,20 +50,38 @@ function LoginPage() {
             <label className="mb-1 block text-xs font-medium text-muted-foreground">Email</label>
             <div className="relative">
               <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="input pl-9" placeholder="you@example.com" />
+              <input
+                required
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="input pl-9"
+                placeholder="you@example.com"
+              />
             </div>
           </div>
           <div>
             <label className="mb-1 block text-xs font-medium text-muted-foreground">Password</label>
             <div className="relative">
               <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <input required type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="input pl-9" placeholder="••••••••" />
+              <input
+                required
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="input pl-9"
+                placeholder="••••••••"
+              />
             </div>
           </div>
 
           {error && <p className="text-sm text-destructive">{error}</p>}
 
-          <button disabled={loading} type="submit" className="flex w-full items-center justify-center gap-2 rounded-full bg-emerald py-2.5 text-sm font-semibold text-white disabled:opacity-60">
+          <button
+            disabled={loading}
+            type="submit"
+            className="flex w-full items-center justify-center gap-2 rounded-full bg-emerald py-2.5 text-sm font-semibold text-white disabled:opacity-60"
+          >
             {loading && <Loader2 className="h-4 w-4 animate-spin" />}
             {loading ? "Signing in…" : "Sign in"}
           </button>
@@ -66,7 +89,9 @@ function LoginPage() {
 
         <p className="mt-6 text-center text-sm text-muted-foreground">
           Don't have an account?{" "}
-          <Link to="/signup" className="font-medium text-emerald hover:underline">Create one</Link>
+          <Link to="/signup" className="font-medium text-emerald hover:underline">
+            Create one
+          </Link>
         </p>
       </div>
 

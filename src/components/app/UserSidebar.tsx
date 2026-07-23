@@ -88,7 +88,9 @@ export function UserSidebar({ role }: { role: UserRole | null }) {
         ? investorItems
         : role === "service_provider"
           ? serviceProviderItems
-          : tenantItems;
+          : role === "tenant"
+            ? tenantItems
+            : [];
   const items = role
     ? baseItems.filter((item) => isPathAllowedForRole(role, item.to, permissions))
     : baseItems;
@@ -100,7 +102,9 @@ export function UserSidebar({ role }: { role: UserRole | null }) {
         ? "Investidor"
         : role === "service_provider"
           ? "Prestador"
-          : "Inquilino";
+          : role === "tenant"
+            ? "Inquilino"
+            : "Perfil";
 
   return (
     <Sidebar

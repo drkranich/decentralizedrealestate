@@ -51,6 +51,37 @@ export function useAuthUser() {
 
 export type UserRole = "admin" | "owner" | "tenant" | "investor" | "service_provider";
 
+export const userRoles: UserRole[] = ["admin", "owner", "tenant", "investor", "service_provider"];
+
+export function normalizeUserRole(value: unknown): UserRole | null {
+  return typeof value === "string" && userRoles.includes(value as UserRole)
+    ? (value as UserRole)
+    : null;
+}
+
+export async function fetchUserRole(
+  user: User,
+  { allowAppMetadataFallback = false }: { allowAppMetadataFallback?: boolean } = {},
+) {
+  const { data, error } = await supabase
+    .from("users")
+    .select("role")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  const dbRole = normalizeUserRole(data?.role);
+  if (dbRole) return dbRole;
+
+  if (allowAppMetadataFallback) {
+    return normalizeUserRole(user.app_metadata?.role);
+  }
+
+  if (error) {
+    console.warn("Could not load user role from public.users", error.message);
+  }
+  return null;
+}
+
 /**
  * Real role for the current session, read from public.users.role (the
  * source of truth RLS policies key off), not just the JWT's user_metadata
@@ -70,16 +101,11 @@ export function useUserRole() {
       return;
     }
     let cancelled = false;
-    supabase
-      .from("users")
-      .select("role")
-      .eq("id", user.id)
-      .maybeSingle()
-      .then(({ data }) => {
-        if (cancelled) return;
-        setRole((data?.role as UserRole | undefined) ?? "tenant");
-        setLoading(false);
-      });
+    fetchUserRole(user, { allowAppMetadataFallback: true }).then((nextRole) => {
+      if (cancelled) return;
+      setRole(nextRole);
+      setLoading(false);
+    });
     return () => {
       cancelled = true;
     };
